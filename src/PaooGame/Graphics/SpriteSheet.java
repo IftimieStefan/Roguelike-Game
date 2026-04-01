@@ -21,7 +21,7 @@ public class SpriteSheet
      */
     public SpriteSheet(BufferedImage buffImg)
     {
-            /// Retine referinta catre BufferedImage object.
+        /// Retine referinta catre BufferedImage object.
         spriteSheet = buffImg;
     }
 
@@ -35,9 +35,9 @@ public class SpriteSheet
      */
     public BufferedImage crop(int x, int y)
     {
-            /// Subimaginea (dala) este regasita in sprite sheet specificad coltul stanga sus
-            /// al imaginii si apoi latimea si inaltimea (totul in pixeli). Coltul din stanga sus al imaginii
-            /// se obtine inmultind numarul de ordine al dalei cu dimensiunea in pixeli a unei dale.
+        /// Subimaginea (dala) este regasita in sprite sheet specificad coltul stanga sus
+        /// al imaginii si apoi latimea si inaltimea (totul in pixeli). Coltul din stanga sus al imaginii
+        /// se obtine inmultind numarul de ordine al dalei cu dimensiunea in pixeli a unei dale.
         return spriteSheet.getSubimage(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
     }
 }
