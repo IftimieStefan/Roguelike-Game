@@ -31,7 +31,6 @@ public class ImageLoader
         }
         catch(IOException e)
         {
-            /// Afiseaza informatiile necesare depanarii.
             e.printStackTrace();
         }
         return null;

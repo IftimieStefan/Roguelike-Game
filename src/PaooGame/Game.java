@@ -35,7 +35,7 @@ public class Game implements Runnable
     {
         wnd = new GameWindow(this.title, wnd.GetWndWidth(), wnd.GetWndHeight());
         wnd.BuildGameWindow();
-        Assets.Init();
+//        Assets.Init();
 
         gameState = GameState.MENU;
         mainMenu  = new MainMenuState(wnd);
