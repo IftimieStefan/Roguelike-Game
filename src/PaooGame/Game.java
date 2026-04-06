@@ -14,6 +14,7 @@ public class Game implements Runnable
     public enum GameState { MENU, PLAYING }
 
     private GameWindow      wnd;
+
     private boolean         runState;
     private Thread          gameThread;
     private BufferStrategy  bs;
@@ -28,6 +29,7 @@ public class Game implements Runnable
     {
         wnd      = new GameWindow(title, width, height);
         SetTitle(title);
+
         runState = false;
     }
 
@@ -36,6 +38,7 @@ public class Game implements Runnable
         wnd = new GameWindow(this.title, wnd.GetWndWidth(), wnd.GetWndHeight());
         wnd.BuildGameWindow();
 //        Assets.Init();
+
 
         gameState = GameState.MENU;
         mainMenu  = new MainMenuState(wnd);
