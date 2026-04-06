@@ -40,4 +40,8 @@ public class SpriteSheet
         /// se obtine inmultind numarul de ordine al dalei cu dimensiunea in pixeli a unei dale.
         return spriteSheet.getSubimage(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
     }
+
+    public BufferedImage cropAbsolute(int x,int y,int width,int height){
+        return spriteSheet.getSubimage(x,y,width,height);
+    }
 }
