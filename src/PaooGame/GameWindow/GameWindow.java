@@ -56,7 +56,7 @@ public class GameWindow
             /// ce apare in bara de titlu
         wndFrame = new JFrame(wndTitle);
             /// Seteaza dimensiunile ferestrei in pixeli
-        wndFrame.setSize(wndWidth, wndHeight);
+        wndFrame.setUndecorated(true);
             /// Operatia de inchidere (fereastra sa poata fi inchisa atunci cand
             /// este apasat butonul x din dreapta sus al ferestrei). Totodata acest
             /// lucru garanteaza ca nu doar fereastra va fi inchisa ci intregul
@@ -70,10 +70,8 @@ public class GameWindow
         wndFrame.setResizable(false);
             /// Recomand ca fereastra sa apara in centrul ecranului. Pentru orice
             /// alte pozitie se va apela "wndFrame.setLocation(x, y)" etc.
-        wndFrame.setLocationRelativeTo(null);
-            /// Implicit o fereastra cand este creata nu este vizibila motiv pentru
-            /// care trebuie setata aceasta proprietate
-        wndFrame.setVisible(true);
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();///obtinem accesul de la placa video pentru a face fereastra full screen
 
             /// Creaza obiectul de tip canvas (panza) pe care se poate desena.
         canvas = new Canvas();
@@ -95,7 +93,26 @@ public class GameWindow
             /// Urmatorul apel de functie are ca scop eventuala redimensionare a ferestrei
             /// ca tot ce contine sa poate fi afisat complet
         wndFrame.pack();
+
+        try {
+            if (gd.isFullScreenSupported()) {
+                // Această linie face magia!
+                gd.setFullScreenWindow(wndFrame);
+            } else {
+                // Dacă monitorul nu suportă modul exclusiv, doar o maximizăm
+                wndFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                wndFrame.setVisible(true);
+            }
+        } catch (Exception e) {
+            wndFrame.setVisible(true);
+            e.printStackTrace();
+        }
+
+        // 5. Asigurăm focusul pentru tastatură
+        canvas.requestFocus();
     }
+
+
 
     /*! \fn public int GetWndWidth()
         \brief Returneaza latimea ferestrei.

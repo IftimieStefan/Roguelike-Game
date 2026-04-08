@@ -2,7 +2,7 @@ package PaooGame;
 
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Graphics.Assets;
-import PaooGame.States.MainMenuState;
+import PaooGame.States.*;
 import PaooGame.Tiles.Tile;
 import PaooGame.Entities.Player;
 
@@ -11,10 +11,9 @@ import java.awt.image.BufferStrategy;
 
 public class Game implements Runnable
 {
-    public enum GameState { MENU, PLAYING }
+    public enum GameState { MENU, SAVE_SELECTION, PLAYING }
 
     private GameWindow      wnd;
-
     private boolean         runState;
     private Thread          gameThread;
     private BufferStrategy  bs;
@@ -22,14 +21,16 @@ public class Game implements Runnable
     private String title;
 
     private GameState       gameState;
+    private SaveSelectionState saveMenu;
     private MainMenuState   mainMenu;
     private Player          player;     //DINU
+
+    private float animTime = 0;
 
     public Game(String title, int width, int height)
     {
         wnd      = new GameWindow(title, width, height);
         SetTitle(title);
-
         runState = false;
     }
 
@@ -39,10 +40,9 @@ public class Game implements Runnable
         wnd.BuildGameWindow();
 //        Assets.Init();
 
-
         gameState = GameState.MENU;
         mainMenu  = new MainMenuState(wnd);
-
+        saveMenu = new SaveSelectionState(wnd);
 
     }
 
@@ -107,21 +107,47 @@ public class Game implements Runnable
 
     private void Update()
     {
+        animTime += 0.005;
+
         if(gameState == GameState.MENU)
         {
-            mainMenu.Update();
+            mainMenu.Update(animTime);
 
             /// daca da pe play go play
             if(mainMenu.IsPlayPressed())
             {
-                gameState = GameState.PLAYING;
-                wnd.GetCanvas().requestFocusInWindow();
+                ClearMouseListeners();
+                gameState = GameState.SAVE_SELECTION;
+                saveMenu = new SaveSelectionState(wnd);
+                mainMenu.Reset();
             }
         }
-        else if(gameState == GameState.PLAYING)
-        {
-            player.Update(); // updatam pe dinu
-        }
+            else if(gameState == GameState.SAVE_SELECTION)
+            {
+                saveMenu.Update(animTime);
+
+                if(saveMenu.GetSelectedSlot()!=-1)
+                {
+                    int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
+
+                    ClearMouseListeners();
+                    gameState = GameState.PLAYING;
+                    wnd.GetCanvas().requestFocusInWindow();
+                }
+
+                if(saveMenu.IsBackPressed())
+                {
+                    ClearMouseListeners();
+                    gameState=GameState.MENU;
+                    mainMenu=new MainMenuState(wnd);
+                    saveMenu.Reset();
+                }
+            }
+            else if(gameState==GameState.PLAYING)
+            {
+                if (player != null) player.Update();
+            }
+
     }
 
     private void Draw()
@@ -147,16 +173,25 @@ public class Game implements Runnable
         {
             mainMenu.Draw(g);
         }
+        else if(gameState == GameState.SAVE_SELECTION)
+        {
+            saveMenu.Draw(g);
+        }
         else if(gameState == GameState.PLAYING)
         {
-//            Play state  :
-//                    -personaj
-//                    -mapa/mape
-
-            player.Draw(g);
+            if(player!=null) player.Draw(g);
         }
 
         bs.show();
         g.dispose();
     }
+
+    private void ClearMouseListeners()
+    {
+        for (java.awt.event.MouseListener ml : wnd.GetCanvas().getMouseListeners())
+        {
+            wnd.GetCanvas().removeMouseListener(ml);
+        }
+    }
+
 }

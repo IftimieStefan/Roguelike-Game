@@ -24,18 +24,18 @@ public class MainMenuState
         exitPressed     = false;
         animTime        = 0;
 
-        int cx = wnd.GetWndWidth() / 2;
+        int cx = wnd.GetCanvas().getWidth() / 2;
 
 
 //        offset de 100, pare sa fie ok dar nu
         playButton = new Rectangle(cx - 100, 300, 200, 100);
-        optionsButton= new Rectangle( cx - 100,450,200,100);
+        optionsButton= new Rectangle( cx-100,450,200,100);
         exitButton = new Rectangle(cx - 100, 600, 200, 100);
 
         wnd.GetCanvas().addMouseListener(new MouseAdapter()
         {
             @Override
-            public void mousePressed(MouseEvent e)
+            public void mouseClicked(MouseEvent e)
             {
                 if(playButton.contains(e.getPoint()))
                 {
@@ -49,9 +49,9 @@ public class MainMenuState
         });
     }
 
-    public void Update()
+    public void Update(float time)
     {
-        animTime+=0.005;
+        this.animTime=time;
         if(exitPressed)
         {
             System.exit(0);
@@ -61,7 +61,8 @@ public class MainMenuState
     public void Draw(Graphics g)
     {
         g.setColor(new Color(15, 25, 45));
-        g.fillRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
+        int cx = wnd.GetCanvas().getWidth();
+        g.fillRect(0, 0, cx, wnd.GetWndHeight());
 
         for(int i = 0; i < 40; i++)
         {
@@ -79,16 +80,16 @@ public class MainMenuState
         g.setColor(new Color(0, 0, 0, 120));
         String title = "Dinu : Pinguinu";
         FontMetrics fm = g.getFontMetrics();
-        g.drawString(title, (wnd.GetWndWidth() - fm.stringWidth(title)) / 2 + 4, titleY + 4);
+        g.drawString(title, (cx - fm.stringWidth(title)) / 2 + 4, titleY + 4);
 
         g.setColor(new Color(255, 215, 50));
-        g.drawString(title, (wnd.GetWndWidth() - fm.stringWidth(title)) / 2, titleY);
+        g.drawString(title, (cx - fm.stringWidth(title)) / 2, titleY);
 
         g.setFont(new Font("Arial", Font.ITALIC, 18));
         g.setColor(new Color(160, 180, 210));
         String sub = "Apasa Play pentru a incepe aventura...";
         fm = g.getFontMetrics();
-        g.drawString(sub, (wnd.GetWndWidth() - fm.stringWidth(sub)) / 2, titleY + 50);
+        g.drawString(sub, (cx - fm.stringWidth(sub)) / 2, titleY + 50);
 
         DrawButton(g, playButton, "PLAY",  new Color(40, 160, 80));
         DrawButton(g, optionsButton, "OPTIONS", new Color(60, 239, 10, 72));
@@ -115,4 +116,8 @@ public class MainMenuState
     }
 
     public boolean IsPlayPressed() { return playPressed; }
+
+    public void Reset() {
+        this.playPressed = false;
+    }
 }
