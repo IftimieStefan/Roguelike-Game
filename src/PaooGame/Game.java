@@ -24,6 +24,7 @@ public class Game implements Runnable
     private SaveSelectionState saveMenu;
     private MainMenuState   mainMenu;
     private Player          player;     //DINU
+    private Map currentMap;
 
     private float animTime = 0;
 
@@ -36,9 +37,8 @@ public class Game implements Runnable
 
     private void InitGame()
     {
-        wnd = new GameWindow(this.title, wnd.GetWndWidth(), wnd.GetWndHeight());
         wnd.BuildGameWindow();
-//        Assets.Init();
+        Assets.Init();
 
         gameState = GameState.MENU;
         mainMenu  = new MainMenuState(wnd);
@@ -109,15 +109,14 @@ public class Game implements Runnable
     {
         animTime += 0.005;
 
-        if(gameState == GameState.MENU)
+        if(gameState == GameState.MENU)//meniu prinipal
         {
             mainMenu.Update(animTime);
 
-            /// daca da pe play go play
             if(mainMenu.IsPlayPressed())
             {
                 ClearMouseListeners();
-                gameState = GameState.SAVE_SELECTION;
+                gameState = GameState.SAVE_SELECTION;//trecem in starea de seletie a salavrilor
                 saveMenu = new SaveSelectionState(wnd);
                 mainMenu.Reset();
             }
@@ -130,12 +129,13 @@ public class Game implements Runnable
                 {
                     int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
 
+                    currentMap = new Map("res/harti/Level1/room1.txt");//incarcam nivelul 1
                     ClearMouseListeners();
-                    gameState = GameState.PLAYING;
+                    gameState = GameState.PLAYING;//trecem in starea de joc
                     wnd.GetCanvas().requestFocusInWindow();
                 }
 
-                if(saveMenu.IsBackPressed())
+                if(saveMenu.IsBackPressed())//ne intoarcem la meniul prinipal
                 {
                     ClearMouseListeners();
                     gameState=GameState.MENU;
@@ -145,6 +145,7 @@ public class Game implements Runnable
             }
             else if(gameState==GameState.PLAYING)
             {
+                if(currentMap !=null) currentMap.Update();
                 if (player != null) player.Update();
             }
 
@@ -179,6 +180,7 @@ public class Game implements Runnable
         }
         else if(gameState == GameState.PLAYING)
         {
+            if(currentMap!=null) currentMap.Draw(g);
             if(player!=null) player.Draw(g);
         }
 

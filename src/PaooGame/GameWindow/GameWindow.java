@@ -96,7 +96,6 @@ public class GameWindow
 
         try {
             if (gd.isFullScreenSupported()) {
-                // Această linie face magia!
                 gd.setFullScreenWindow(wndFrame);
             } else {
                 // Dacă monitorul nu suportă modul exclusiv, doar o maximizăm
@@ -108,7 +107,6 @@ public class GameWindow
             e.printStackTrace();
         }
 
-        // 5. Asigurăm focusul pentru tastatură
         canvas.requestFocus();
     }
 
