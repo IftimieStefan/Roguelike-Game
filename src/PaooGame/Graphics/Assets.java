@@ -42,9 +42,9 @@ public class Assets
 
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         grass = sheet.crop(0, 0);
-//        snow = sheet.crop(2, 15);
+        snow = sheet.crop(2, 15);
 
-        snow = sheet.cropAbsolute(1200,619,230,220);
+//        snow = sheet.cropAbsolute(1200,619,230,220);
         perete_sus= sheet.cropAbsolute(3,296,327,295);
 
         water = sheet.crop(2, 0);
