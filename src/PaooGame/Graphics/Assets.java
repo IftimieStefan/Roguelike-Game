@@ -12,7 +12,7 @@ public class Assets
     /// Referinte catre elementele grafice (dale) utilizate in joc.
     public static BufferedImage playerLeft;
     public static BufferedImage playerRight;
-    public static BufferedImage soil;
+    public static BufferedImage snow;
     public static BufferedImage grass;
     public static BufferedImage mountain;
     public static BufferedImage townGrass;
@@ -34,11 +34,11 @@ public class Assets
     public static void Init()
     {
         /// Se creaza temporar un obiect SpriteSheet initializat prin intermediul clasei ImageLoader
-        SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/PaooGameSpriteSheet.png"));
+        SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/dungeon_tiles.png"));
 
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         grass = sheet.crop(0, 0);
-        soil = sheet.crop(1, 0);
+        snow = sheet.crop(2, 15);
         water = sheet.crop(2, 0);
         mountain = sheet.crop(3, 0);
         townGrass = sheet.crop(0, 1);

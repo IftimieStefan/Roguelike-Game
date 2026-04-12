@@ -26,8 +26,6 @@ public class MainMenuState
 
         int cx = wnd.GetCanvas().getWidth() / 2;
 
-
-//        offset de 100, pare sa fie ok dar nu
         playButton = new Rectangle(cx - 100, 300, 200, 100);
         optionsButton= new Rectangle( cx-100,450,200,100);
         exitButton = new Rectangle(cx - 100, 600, 200, 100);
