@@ -12,7 +12,11 @@ public class Assets
     /// Referinte catre elementele grafice (dale) utilizate in joc.
     public static BufferedImage playerLeft;
     public static BufferedImage playerRight;
+
     public static BufferedImage snow;
+    public static BufferedImage perete_sus;
+
+
     public static BufferedImage grass;
     public static BufferedImage mountain;
     public static BufferedImage townGrass;
@@ -38,7 +42,11 @@ public class Assets
 
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         grass = sheet.crop(0, 0);
-        snow = sheet.crop(2, 15);
+//        snow = sheet.crop(2, 15);
+
+        snow = sheet.cropAbsolute(1200,619,230,220);
+        perete_sus= sheet.cropAbsolute(3,296,327,295);
+
         water = sheet.crop(2, 0);
         mountain = sheet.crop(3, 0);
         townGrass = sheet.crop(0, 1);

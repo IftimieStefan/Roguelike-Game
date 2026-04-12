@@ -1,15 +1,21 @@
 package PaooGame.Core;
 
+import PaooGame.Entities.Player;
 
 public class GameCamera {
-    float xOff,yOff;
+    private float xOff,yOff;
+    private int gameWidth, gameHeight;
 
-    GameCamera (){
+    public GameCamera (int gameWidth, int gameHeight){
+        this.gameWidth = gameWidth;
+        this.gameHeight = gameHeight;
+        xOff = 0;
+        yOff = 0;
     }
 
-    //TODO
-    public void centerOnDinu(){
-
+    public void centerOnDinu(Player p){
+        xOff = p.GetX() - gameWidth / 2f;
+        yOff = p.GetY() - gameHeight / 2f;
     }
 
     public void move(float x,float y){

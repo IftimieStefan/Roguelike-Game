@@ -1,5 +1,6 @@
 package PaooGame;
 
+import PaooGame.Core.GameCamera;
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Graphics.Assets;
 import PaooGame.States.*;
@@ -19,6 +20,8 @@ public class Game implements Runnable
     private BufferStrategy  bs;
     private Graphics        g;
     private String title;
+
+    private GameCamera camera;
 
     private GameState       gameState;
     private SaveSelectionState saveMenu;
@@ -130,6 +133,8 @@ public class Game implements Runnable
                     int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
 
                     currentMap = new Map("res/harti/Level1/room1.txt");//incarcam nivelul 1
+                    player = new Player(100, 100, wnd.GetCanvas());
+                    camera = new GameCamera(wnd.GetWndWidth(), wnd.GetWndHeight());
                     ClearMouseListeners();
                     gameState = GameState.PLAYING;//trecem in starea de joc
                     wnd.GetCanvas().requestFocusInWindow();
@@ -145,8 +150,9 @@ public class Game implements Runnable
             }
             else if(gameState==GameState.PLAYING)
             {
-                if(currentMap !=null) currentMap.Update();
+                if (currentMap !=null) currentMap.Update();
                 if (player != null) player.Update();
+                if (camera != null && player != null) camera.centerOnDinu(player);
             }
 
     }
@@ -180,8 +186,8 @@ public class Game implements Runnable
         }
         else if(gameState == GameState.PLAYING)
         {
-            if(currentMap!=null) currentMap.Draw(g);
-            if(player!=null) player.Draw(g);
+            if(currentMap!=null) currentMap.Draw(g, camera);
+            if(player!=null) player.Draw(g, camera);
         }
 
         bs.show();

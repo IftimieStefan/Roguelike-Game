@@ -1,6 +1,8 @@
 package PaooGame;
 
 import java.awt.*;
+
+import PaooGame.Core.GameCamera;
 import PaooGame.Tiles.Tile;
 import java.util.Scanner;
 import java.io.File;
@@ -43,7 +45,7 @@ public class Map
 
     }
 
-    public void Draw(Graphics g)
+    public void Draw(Graphics g, GameCamera camera)
     {
         for(int j=0;j<height;++j)
         {
@@ -52,7 +54,14 @@ public class Map
                 Tile t=Tile.tiles[tiles[i][j]];
                 if(t!=null)
                 {
-                    t.Draw(g,i*Tile.TILE_WIDTH,j*Tile.TILE_HEIGHT);//desenam tile-urile
+                    int xOff,yOff;
+                    if (camera!=null){
+                        xOff=(int)camera.getxOff();
+                        yOff=(int)camera.getyOff();
+                    }else{
+                        xOff=yOff=0;
+                    }
+                    t.Draw(g, i*Tile.TILE_WIDTH - xOff, j*Tile.TILE_HEIGHT - yOff);//desenam tile-urile
                 }
             }
         }

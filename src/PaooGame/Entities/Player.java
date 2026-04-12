@@ -11,9 +11,12 @@ import java.awt.image.BufferedImage;
 
 public class Player
 {
+    private float x, y;
 
     public Player(float startX, float startY, Canvas canvas)
     {
+        this.x = startX;
+        this.y = startY;
 
 
         canvas.addKeyListener(new KeyAdapter()
@@ -40,11 +43,13 @@ public class Player
 
     }
 
-    public void Draw(Graphics g)
+    public void Draw(Graphics g, PaooGame.Core.GameCamera camera)
     {
-
+        int xOff = (camera != null) ? (int)camera.getxOff() : 0;
+        int yOff = (camera != null) ? (int)camera.getyOff() : 0;
+        g.drawImage(Assets.playerRight, (int)x - xOff, (int)y - yOff, null);
     }
 
-    public float GetX() { return 0; }
-    public float GetY() { return 0; }
+    public float GetX() { return x; }
+    public float GetY() { return y; }
 }
