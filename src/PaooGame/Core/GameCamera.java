@@ -3,14 +3,25 @@ package PaooGame.Core;
 import PaooGame.Entities.Player;
 
 public class GameCamera {
+    private static GameCamera instance;
     private float xOff,yOff;
     private int gameWidth, gameHeight;
 
-    public GameCamera (int gameWidth, int gameHeight){
+    private GameCamera (int gameWidth, int gameHeight){
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
         xOff = 0;
         yOff = 0;
+    }
+
+    public static void init(int gameWidth, int gameHeight) {
+        if (instance == null) {
+            instance = new GameCamera(gameWidth, gameHeight);
+        }
+    }
+
+    public static GameCamera getInstance() {
+        return instance;
     }
 
     public void centerOnDinu(Player p){

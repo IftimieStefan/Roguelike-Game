@@ -45,7 +45,7 @@ public class Map
 
     }
 
-    public void Draw(Graphics g, GameCamera camera)
+    public void Draw(Graphics g)
     {
         for(int j=0;j<height;++j)
         {
@@ -55,6 +55,7 @@ public class Map
                 if(t!=null)
                 {
                     int xOff,yOff;
+                    GameCamera camera = GameCamera.getInstance();
                     if (camera!=null){
                         xOff=(int)camera.getxOff();
                         yOff=(int)camera.getyOff();

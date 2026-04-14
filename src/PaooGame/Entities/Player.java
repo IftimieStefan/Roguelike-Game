@@ -43,8 +43,9 @@ public class Player
 
     }
 
-    public void Draw(Graphics g, PaooGame.Core.GameCamera camera)
+    public void Draw(Graphics g)
     {
+        PaooGame.Core.GameCamera camera = PaooGame.Core.GameCamera.getInstance();
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;
         int yOff = (camera != null) ? (int)camera.getyOff() : 0;
         g.drawImage(Assets.playerRight, (int)x - xOff, (int)y - yOff, null);
