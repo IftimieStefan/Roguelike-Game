@@ -55,10 +55,10 @@ public class Tile
         \param x Coordonata x in cadrul ferestrei unde sa fie desenata dala
         \param y Coordonata y in cadrul ferestrei unde sa fie desenata dala
      */
-    public void Draw(Graphics g, int x, int y,int w, int h)
+    public void Draw(Graphics g, int x, int y)
     {
             /// Desenare dala
-        g.drawImage(img, x, y, w, h , null);
+        g.drawImage(img, x, y, null);
     }
 
     /*! \fn public boolean IsSolid()

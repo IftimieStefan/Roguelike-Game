@@ -7,12 +7,12 @@ import PaooGame.Tiles.Tile;
 import java.util.Scanner;
 import java.io.File;
 
-public class Map
+public class MapLoader
 {
     private int width, height;
     private int[][] tiles;
 
-    public Map(String path)
+    public MapLoader(String path)
     {
         LoadWorld(path);
     }
