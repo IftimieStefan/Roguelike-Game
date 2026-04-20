@@ -10,7 +10,7 @@ import java.awt.event.MouseEvent;
 public class MainMenuState
 {
     private GameWindow  wnd;
-    private Rectangle   playButton;     /*!< Zona butonului Play */
+    private Rectangle   playButton;     //play
     private Rectangle   exitButton;     /*!< Zona butonului Exit */
     private Rectangle   optionsButton;
     private boolean     playPressed;    /*!< Flag - s-a apasat Play */
@@ -24,10 +24,10 @@ public class MainMenuState
         exitPressed     = false;
         animTime        = 0;
 
-        int cx = wnd.GetCanvas().getWidth() / 2;
+        int cx = wnd.GetCanvas().getWidth() / 2; // mijloc pe latime
 
         playButton = new Rectangle(cx - 100, 300, 200, 100);
-        optionsButton= new Rectangle( cx-100,450,200,100);
+        optionsButton= new Rectangle( cx- 100,450,200,100);
         exitButton = new Rectangle(cx - 100, 600, 200, 100);
 
         wnd.GetCanvas().addMouseListener(new MouseAdapter()

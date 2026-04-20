@@ -132,7 +132,7 @@ public class Game implements Runnable
                     int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
 
                     currentMap = new Map("res/harti/Level1/room1.txt");//incarcam nivelul 1
-                    player = new Player(100, 100, wnd.GetCanvas());
+                    player = new Player(400, 400, wnd.GetCanvas());
                     GameCamera.init(wnd.GetWndWidth(), wnd.GetWndHeight());
                     ClearMouseListeners();
                     gameState = GameState.PLAYING;//trecem in starea de joc
