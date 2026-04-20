@@ -1,16 +1,16 @@
-package PaooGame;
+package PaooGame.Graphics;
 
 import java.awt.*;
 import PaooGame.Tiles.Tile;
 import java.util.Scanner;
 import java.io.File;
 
-public class Map
+public class MapLoader
 {
     private int width, height;
     private int[][] tiles;
 
-    public Map(String path)
+    public MapLoader(String path)
     {
         LoadWorld(path);
     }
@@ -43,8 +43,14 @@ public class Map
 
     }
 
-    public void Draw(Graphics g)
+    public void Draw(Graphics g, int screenWidth, int screenHeight)
     {
+        int scaledSize = screenHeight/11;
+
+        int mapWidth = 24*scaledSize;
+
+        int offsetX=(screenWidth-mapWidth)/2;
+
         for(int j=0;j<height;++j)
         {
             for(int i=0;i<width;++i)
@@ -52,7 +58,7 @@ public class Map
                 Tile t=Tile.tiles[tiles[i][j]];
                 if(t!=null)
                 {
-                    t.Draw(g,i*Tile.TILE_WIDTH,j*Tile.TILE_HEIGHT);//desenam tile-urile
+                    t.Draw(g,offsetX+i*scaledSize,j*scaledSize,scaledSize,scaledSize);//desenam tile-urile
                 }
             }
         }

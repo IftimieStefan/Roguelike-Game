@@ -13,9 +13,9 @@ public class Assets
     public static BufferedImage playerLeft;
     public static BufferedImage playerRight;
     public static BufferedImage snow;
-    public static BufferedImage grass;
-    public static BufferedImage mountain;
-    public static BufferedImage townGrass;
+    public static BufferedImage ice;
+    public static BufferedImage stonePath;
+    public static BufferedImage iceWater;
     public static BufferedImage townGrassDestroyed;
     public static BufferedImage townSoil;
     public static BufferedImage water;
@@ -37,11 +37,11 @@ public class Assets
         SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/dungeon_tiles.png"));
 
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
-        grass = sheet.crop(0, 0);
-        snow = sheet.crop(2, 15);
-        water = sheet.crop(2, 0);
-        mountain = sheet.crop(3, 0);
-        townGrass = sheet.crop(0, 1);
+        snow = sheet.crop(0, 0);
+        ice = sheet.crop(1, 0);
+
+        water = sheet.crop(3, 0);
+
         townGrassDestroyed = sheet.crop(1, 1);
         townSoil = sheet.crop(2, 1);
         tree = sheet.crop(3, 1);

@@ -2,8 +2,8 @@ package PaooGame;
 
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Graphics.Assets;
+import PaooGame.Graphics.MapLoader;
 import PaooGame.States.*;
-import PaooGame.Tiles.Tile;
 import PaooGame.Entities.Player;
 
 import java.awt.*;
@@ -24,7 +24,7 @@ public class Game implements Runnable
     private SaveSelectionState saveMenu;
     private MainMenuState   mainMenu;
     private Player          player;     //DINU
-    private Map currentMap;
+    private MapLoader currentMap;
 
     private float animTime = 0;
 
@@ -129,7 +129,7 @@ public class Game implements Runnable
                 {
                     int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
 
-                    currentMap = new Map("res/harti/Level1/room1.txt");//incarcam nivelul 1
+                    currentMap = new MapLoader("res/harti/Level1/room1.txt");//incarcam nivelul 1
                     ClearMouseListeners();
                     gameState = GameState.PLAYING;//trecem in starea de joc
                     wnd.GetCanvas().requestFocusInWindow();
@@ -180,7 +180,7 @@ public class Game implements Runnable
         }
         else if(gameState == GameState.PLAYING)
         {
-            if(currentMap!=null) currentMap.Draw(g);
+            if(currentMap!=null) currentMap.Draw(g, wnd.GetCanvas().getWidth(), wnd.GetCanvas().getHeight());
             if(player!=null) player.Draw(g);
         }
 
