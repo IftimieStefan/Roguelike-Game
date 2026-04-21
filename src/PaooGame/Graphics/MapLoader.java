@@ -47,21 +47,24 @@ public class MapLoader
 
     public void Draw(Graphics g, GameCamera camera)
     {
-        for(int j=0;j<height;++j)
+        for(int j = 0; j < height; ++j)
         {
-            for(int i=0;i<width;++i)
+            for(int i = 0; i < width; ++i)
             {
-                Tile t=Tile.tiles[tiles[i][j]];
-                if(t!=null)
+                Tile t = Tile.tiles[tiles[i][j]];
+                if(t != null)
                 {
-                    int xOff,yOff;
-                    if (camera!=null){
-                        xOff=(int)camera.getxOff();
-                        yOff=(int)camera.getyOff();
-                    }else{
-                        xOff=yOff=0;
+                    int xOff = 0, yOff = 0;
+
+                    // Dacă avem cameră, preluăm offset-urile ei
+                    if (camera != null) {
+                        xOff = (int)camera.getxOff();
+                        yOff = (int)camera.getyOff();
                     }
-                    t.Draw(g, i*Tile.TILE_WIDTH - xOff, j*Tile.TILE_HEIGHT - yOff);//desenam tile-urile
+
+                    // Desenăm folosind Tile.TILE_WIDTH (48) și scădem camera
+                    // Astfel, dacă pinguinul merge la dreapta, camera scade din X și harta "vine" spre noi
+                    t.Draw(g, i * Tile.TILE_WIDTH - xOff, j * Tile.TILE_HEIGHT - yOff);
                 }
             }
         }

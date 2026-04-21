@@ -27,7 +27,7 @@ public class Game implements Runnable
     private SaveSelectionState saveMenu;
     private MainMenuState   mainMenu;
     private Player          player;     //DINU
-    private Map currentMap;
+    private PaooGame.MapLoader currentMap;
 
     private float animTime = 0;
 
@@ -132,7 +132,7 @@ public class Game implements Runnable
                 {
                     int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
 
-                    currentMap = new Map("res/harti/Level1/room1.txt");//incarcam nivelul 1
+                    currentMap = new PaooGame.MapLoader("res/harti/Level1/room1.txt");//incarcam nivelul 1
                     player = new Player(100, 100, wnd.GetCanvas());
                     camera = new GameCamera(wnd.GetWndWidth(), wnd.GetWndHeight());
                     ClearMouseListeners();
