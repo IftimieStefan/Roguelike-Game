@@ -138,6 +138,7 @@ public class Game implements Runnable
                     
                     entityManager = new PaooGame.Managers.EntityManager();
                     entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, 10, 2f));
+                    entityManager.addNpc(new PaooGame.Entities.Bity(200, 200));
 
                     camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());
                     camera.centerOnDinu(player);
