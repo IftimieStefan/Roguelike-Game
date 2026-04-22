@@ -21,12 +21,14 @@ public class Game implements Runnable
     private Graphics        g;
     private String title;
 
+    private GameCamera camera;
 
     private GameState       gameState;
     private SaveSelectionState saveMenu;
     private MainMenuState   mainMenu;
     private Player          player;     //DINU
-    private Map currentMap;
+    private PaooGame.MapLoader currentMap;
+    private PaooGame.Managers.EntityManager entityManager;
 
     private float animTime = 0;
 
@@ -131,10 +133,17 @@ public class Game implements Runnable
                 {
                     int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
 
-                    currentMap = new Map("res/harti/Level1/room1.txt");//incarcam nivelul 1
-                    player = new Player(400, 400, wnd.GetCanvas());
-                    GameCamera.init(wnd.GetWndWidth(), wnd.GetWndHeight());
+                    currentMap = new PaooGame.MapLoader("res/harti/Level1/room1.txt");//incarcam nivelul 1
+                    player = new Player(100, 100, wnd.GetCanvas());
+                    
+                    entityManager = new PaooGame.Managers.EntityManager();
+                    entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, 10, 2f));
+
+                    camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());
+                    camera.centerOnDinu(player);
+
                     ClearMouseListeners();
+
                     gameState = GameState.PLAYING;//trecem in starea de joc
                     wnd.GetCanvas().requestFocusInWindow();
                 }
@@ -151,7 +160,8 @@ public class Game implements Runnable
             {
                 if (currentMap !=null) currentMap.Update();
                 if (player != null) player.Update();
-                if (GameCamera.getInstance() != null && player != null) GameCamera.getInstance().centerOnDinu(player);
+                if (entityManager != null) entityManager.Update();
+                if (camera != null && player != null) camera.centerOnDinu(player);
             }
 
     }
@@ -185,8 +195,9 @@ public class Game implements Runnable
         }
         else if(gameState == GameState.PLAYING)
         {
-            if(currentMap!=null) currentMap.Draw(g);
-            if(player!=null) player.Draw(g);
+            if(currentMap!=null) currentMap.Draw(g, camera);
+            if(player!=null) player.Draw(g, camera);
+            if(entityManager!=null) entityManager.Draw(g);
         }
 
         bs.show();

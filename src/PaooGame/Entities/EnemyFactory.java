@@ -1,5 +1,9 @@
 package PaooGame.Entities;
 
-//TODO Pastrat principui OpenClosed
+
+//TODO Pastrat principiul OpenClosed folosind un simplu HashMap
 public class EnemyFactory {
+
+
 }
+

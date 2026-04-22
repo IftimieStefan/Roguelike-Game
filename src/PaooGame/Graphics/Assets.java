@@ -10,16 +10,17 @@ import java.awt.image.BufferedImage;
 public class Assets
 {
     /// Referinte catre elementele grafice (dale) utilizate in joc.
-    public static BufferedImage playerLeft;
-    public static BufferedImage playerRight;
+    public static BufferedImage[] playerLeft=new BufferedImage[3];
+    public static BufferedImage[] playerRight=new BufferedImage[3];
+    public static BufferedImage[] playerDown=new BufferedImage[3];
+    public static BufferedImage[] playerUp=new BufferedImage[3];
+
 
     public static BufferedImage snow;
-    public static BufferedImage perete_sus;
-
-
-    public static BufferedImage grass;
-    public static BufferedImage mountain;
-    public static BufferedImage townGrass;
+    public static BufferedImage ice;
+    public static BufferedImage pereteorizontal;
+    public static BufferedImage peretevertical;
+    public static BufferedImage peretecolt;
     public static BufferedImage townGrassDestroyed;
     public static BufferedImage townSoil;
     public static BufferedImage water;
@@ -38,26 +39,28 @@ public class Assets
     public static void Init()
     {
         /// Se creaza temporar un obiect SpriteSheet initializat prin intermediul clasei ImageLoader
-        SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/dungeon_tiles.png"));
+        SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/TileMap.png"));
+        SpriteSheet dinu = new SpriteSheet(ImageLoader.LoadImage("/textures/dinu_cu_esarfa.png"));
 
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
-        grass = sheet.crop(0, 0);
-        snow = sheet.crop(2, 15);
+        snow = sheet.crop(0, 0);
+        ice = sheet.crop(1, 4);
+        pereteorizontal = sheet.crop(1,0);
+        peretevertical = sheet.crop(2,1);
+        peretecolt = sheet.crop(2,0);
+        water = sheet.crop(1, 1);
+        playerRight[0] = dinu.crop(1,1);
+        playerRight[1]=dinu.crop(2,1);
+        playerRight[2]=dinu.crop(3,1);
+        playerLeft[0] = dinu.crop(4,1);
+        playerLeft[1]=dinu.crop(0,2);
+        playerLeft[2]=dinu.crop(1,2);
+        playerDown[0] = dinu.crop(0,0);
+        playerDown[1]=dinu.crop(1,0);
+        playerDown[2]=dinu.crop(2,0);
+        playerUp[0] = dinu.crop(3,0);
+        playerUp[1]=dinu.crop(4,0);
+        playerUp[2]=dinu.crop(0,1);
 
-//        snow = sheet.cropAbsolute(1200,619,230,220);
-        perete_sus= sheet.cropAbsolute(3,296,327,295);
-
-        water = sheet.crop(2, 0);
-        mountain = sheet.crop(3, 0);
-        townGrass = sheet.crop(0, 1);
-        townGrassDestroyed = sheet.crop(1, 1);
-        townSoil = sheet.crop(2, 1);
-        tree = sheet.crop(3, 1);
-        playerLeft = sheet.crop(0, 2);
-        playerRight = sheet.crop(1, 2);
-        rockUp = sheet.crop(2, 2);
-        rockDown = sheet.crop(3, 2);
-        rockLeft = sheet.crop(0, 3);
-        rockRight = sheet.crop(1, 3);
     }
 }
