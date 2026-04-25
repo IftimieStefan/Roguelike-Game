@@ -18,7 +18,10 @@ public class Assets
     public static BufferedImage ice;
     public static BufferedImage pereteorizontal;
     public static BufferedImage peretevertical;
-    public static BufferedImage peretecolt;
+    public static BufferedImage peretecoltds;
+    public static BufferedImage peretecoltdj;
+    public static BufferedImage peretecoltss;
+    public static BufferedImage peretecoltsj;
     public static BufferedImage townGrassDestroyed;
     public static BufferedImage townSoil;
     public static BufferedImage water;
@@ -45,7 +48,10 @@ public class Assets
         ice = sheet.crop(1, 4);
         pereteorizontal = sheet.crop(1,0);
         peretevertical = sheet.crop(2,1);
-        peretecolt = sheet.crop(2,0);
+        peretecoltdj=sheet.crop(2,2);
+        peretecoltds = sheet.crop(2,0);
+        peretecoltss = sheet.crop(0,2);
+        peretecoltsj = sheet.crop(1,2);
         water = sheet.crop(1, 1);
         playerRight[0] = dinu.crop(1,1);
         playerRight[1]=dinu.crop(2,1);

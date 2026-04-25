@@ -1,5 +1,5 @@
 package PaooGame.Entities;
-
+import java.util.ArrayList;
 import PaooGame.Graphics.Assets;
 
 import java.awt.*;
@@ -11,20 +11,28 @@ import java.awt.image.BufferedImage;
 
 public class Player
 {
-    private float x, y;
-    private float speed = 3.0f;
-    private boolean up, down, left, right; // Starea tastelor
+    private float x, y;//coordonatele jucatorului
+    private float speed = 3.0f;//viteza jucatorului
+    private boolean up, down, left, right, isShooting=false, isReloading=false; // Starea tastelor
     private BufferedImage currentFrame;
-    private int i=0;
+    private int i=0;//folosit pentru a face tranzitia la animatia jucatorului
     private int timer=0;
     private final int ANIMATION_SPEED=10;
+    private ArrayList<Snowball> snowballs = new ArrayList<>();
+    private int attackMode = 0;
+    private long lastAttackTime;
+    private int attackCooldown = 500;
+    private int lastDir=0;
+    private int maxAmo=10;
+    private int amo=10;
+    private  long lastReload=0;
+    private final int reloadTime=200;
 
     public Player(float startX, float startY, Canvas canvas)
     {
         this.x = startX;
         this.y = startY;
         currentFrame = Assets.playerDown[0];
-
 
         canvas.addKeyListener(new KeyAdapter()
         {
@@ -36,6 +44,8 @@ public class Player
                 if(key == KeyEvent.VK_S) down = true;
                 if(key == KeyEvent.VK_A) left = true;
                 if(key == KeyEvent.VK_D) right = true;
+                if(key==KeyEvent.VK_SPACE) isShooting=true;
+                if(key==KeyEvent.VK_R) Reload();
             }
 
             @Override
@@ -46,11 +56,51 @@ public class Player
                 if(key == KeyEvent.VK_S) down = false;
                 if(key == KeyEvent.VK_A) left = false;
                 if(key == KeyEvent.VK_D) right = false;
+                if(key==KeyEvent.VK_SPACE) isShooting=false;
             }
         });
 
         canvas.setFocusable(true);
         canvas.requestFocusInWindow();
+    }
+
+    private void Attack()
+    {
+        if(System.currentTimeMillis()-lastAttackTime<attackCooldown) return;
+        if(amo==0 || isReloading) return;
+
+        float sX=0,sY=0;
+
+        switch (lastDir)
+        {
+            case 0: sY = -7; break;
+            case 1: sY = 7;  break;
+            case 2: sX = -7; break;
+            case 3: sX = 7;  break;
+        }
+
+        switch (attackMode)
+        {
+            case 0:
+                snowballs.add(new Snowball(x,y,sX,sY));
+                --amo;
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+
+        lastAttackTime=System.currentTimeMillis();
+    }
+
+    private void Reload()
+    {
+        if(!isReloading && amo<maxAmo)
+        {
+            isReloading=true;
+            lastReload=System.currentTimeMillis();
+        }
     }
 
     public void Update()
@@ -61,24 +111,32 @@ public class Player
             y -= speed;
             currentFrame = Assets.playerUp[i];
             isMoving=true;
+            lastDir=0;
         }
         if(down)
         {
             y += speed;
             currentFrame = Assets.playerDown[i];
             isMoving=true;
+            lastDir=1;
         }
         if(left)
         {
             x -= speed;
             currentFrame = Assets.playerLeft[i];
             isMoving=true;
+            lastDir=2;
         }
         if(right)
         {
             x += speed;
             currentFrame = Assets.playerRight[i];
             isMoving=true;
+            lastDir=3;
+        }
+        if(isShooting && !isReloading)
+        {
+            Attack();
         }
 
         if(isMoving)
@@ -91,13 +149,58 @@ public class Player
                 if(i==3) i=0;
             }
         } else i=0;
+
+        for(int k=0; k<snowballs.size();k++)
+        {
+            Snowball s=snowballs.get(k);
+            s.Update();
+            if(!s.isActive()) snowballs.remove(k);
+        }
+
+        if(isReloading)
+        {
+            if(System.currentTimeMillis()-lastReload>=reloadTime)
+            {
+                amo++;
+                lastReload=System.currentTimeMillis();
+
+                if(amo>=maxAmo)
+                {
+                    isReloading=false;
+                }
+            }
+
+        }
     }
 
     public void Draw(Graphics g, PaooGame.Core.GameCamera camera)
     {
+        //lume
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;
         int yOff = (camera != null) ? (int)camera.getyOff() : 0;
+
+        //player
         g.drawImage(currentFrame, (int)x - xOff, (int)y - yOff, null);
+
+        //bulgari
+        for (Snowball s:snowballs)
+        {
+            s.Draw(g,camera);
+        }
+
+        //hud
+        int r=32;
+        int hudX=32,hudY=32;
+
+        g.setColor(Color.BLACK);
+        g.fillOval(hudX-1,hudY-1,r+4,r+4);
+        g.setColor(Color.WHITE);
+        g.fillOval(hudX,hudY,r,r);
+        g.setColor(new Color(200,200,200));
+        g.drawOval(hudX,hudY,r,r);
+        g.setFont(new Font("Arial",Font.BOLD, 30));
+        g.drawString(amo+"/"+maxAmo,hudX+r+10,hudY+24);
+
     }
 
     public float GetX() { return x; }

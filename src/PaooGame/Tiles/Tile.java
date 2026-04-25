@@ -19,7 +19,11 @@ public class Tile
     public static Tile treeTile         = new TreeTile(3);
     public static Tile pereteorizontal = new PereteOrizontal(4);
     public static Tile peretevertical = new PereteVertical(5);
-    public static Tile peretecolt = new PereteColt(6);
+    public static Tile peretecoltss = new PereteColtSS(6);
+    public static Tile peretecoltsj = new PereteColtSJ(7);
+    public static Tile peretecoltdj = new PereteColtDJ(8);
+    public static Tile peretecoltds = new PereteColtDS(9);
+
 
 
     public static final int TILE_WIDTH  = 48;                       /*!< Latimea unei dale.*/
