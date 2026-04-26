@@ -149,6 +149,8 @@ public class Game implements Runnable
                     
                     entityManager = new PaooGame.Managers.EntityManager();
                     entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, player));
+                    entityManager.addEnemy(new PaooGame.Entities.Foca(300, 3500, player));
+                    entityManager.addEnemy(new PaooGame.Entities.Foca_Cowboy(300, 320, player));
                     entityManager.addNpc(new PaooGame.Entities.Bity(200, 200));
 
                     camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());

@@ -263,7 +263,7 @@ public class Player
 
         //hud
         int r=32;
-        int hudX=32,hudY=32;
+        int hudX=1080 - 32,hudY=32;
 
         // Indicator Bulgări
         g.setColor(Color.BLACK);
