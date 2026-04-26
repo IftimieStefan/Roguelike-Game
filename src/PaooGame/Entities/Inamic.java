@@ -2,15 +2,19 @@ package PaooGame.Entities;
 
 import java.awt.*;
 
+// Sablon parinte pentru baietii rai.
 public abstract class Inamic {
-    protected float x,y;
-    protected int health;
-    protected float speed;
+    protected float x,y; // Coordonate harta.
+    protected int health; // HP curent zic.
+    protected int maxHealth; // Viata lui full.
+    protected float speed; // Cat de repede fuge.
 
+    // Valori de baza din fabrica.
     public Inamic(float stX,float stY,int stHealth,float stSpeed){
         this.x=stX;
         this.y=stY;
         this.health=stHealth;
+        this.maxHealth=stHealth;
         this.speed=stSpeed;
     }
 

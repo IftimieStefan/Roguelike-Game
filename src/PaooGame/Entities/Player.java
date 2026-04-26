@@ -7,28 +7,41 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-//ASTA_I DINU
-
+// ASTA_I DINU, taticu' jocului.
 public class Player
 {
-    private float x, y;//coordonatele jucatorului
-    private float speed = 3.0f;//viteza jucatorului
-    private boolean up, down, left, right, isShooting=false, isReloading=false; // Starea tastelor
+
+    private float x, y;
+    
+    // Viteza ba nene.
+    private float speed = 3.0f;
+    
+    // Butoane apasate si faze.
+    private boolean up, down, left, right, isShooting=false, isReloading=false; 
+    
+    // Poza lu Dinu din momentu' asta.
     private BufferedImage currentFrame;
-    private int i=0;//folosit pentru a face tranzitia la animatia jucatorului
-    private int timer=0;
+    private int i=0; 
+    private int timer=0; 
     private final int ANIMATION_SPEED=10;
+    
+    // Bulgarii zburatori ai lu' Dinu.
     private ArrayList<Snowball> snowballs = new ArrayList<>();
-    private int attackMode = 0;
-    private long lastAttackTime;
-    private int attackCooldown = 500;
-    private int lastDir=0;
-    private int maxAmo=10;
-    private int amo=10;
-    private  long lastReload=0;
-    private final int reloadTime=200;
-    private boolean ePressed = false;
-    private boolean interact = false;
+    
+    private int attackMode = 0; // Tipul de atac curent
+    private long lastAttackTime; // Timpul de la ultimul atac pentru cooldown
+    private int attackCooldown = 500; // Cooldown intre bulgari tras (in milisecunde)
+    
+    private int lastDir=0; // Ultima directie in care s-a miscat jucatorul pentru directia atacului (0=sus, 1=jos, 2=stanga, 3=dreapta)
+    
+    // Gestioneaza munitia
+    private int maxAmo=10; // Maxim de bulgari
+    private int amo=10; // Numarul curent de bulgari disponibili
+    private long lastReload=0; // Ultimul reload time
+    private final int reloadTime=200; // Timpul de asteptare intre reîncarcari
+    
+    private boolean ePressed = false; // A dat E sau?
+    private boolean interact = false; // Parla con NPC-u?
 
     public Player(float startX, float startY, Canvas canvas)
     {
@@ -190,15 +203,15 @@ public class Player
         //player
         g.drawImage(currentFrame, (int)x - xOff, (int)y - yOff, null);
 
-        //bulgari
+        // Deseneaza ghiulele de zapada zburatoare.
         for (Snowball s:snowballs)
         {
             s.Draw(g,camera);
         }
 
-        //hud
+        // hud (heads-up display) mutat in dreapta-sus
         int r=32;
-        int hudX=32,hudY=32;
+        int hudX=1080 - 32,hudY=32;
 
         g.setColor(Color.BLACK);
         g.fillOval(hudX-1,hudY-1,r+4,r+4);
@@ -220,5 +233,9 @@ public class Player
             return true;
         }
         return false;
+    }
+
+    public ArrayList<Snowball> getSnowballs() {
+        return snowballs;
     }
 }

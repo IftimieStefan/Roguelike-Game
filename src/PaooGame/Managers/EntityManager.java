@@ -11,8 +11,8 @@ import java.util.List;
 // liste logiq
 public class EntityManager {
 
-    private final List<Inamic> enemies;
-    private final List<Npc> npcs;
+    private final List<Inamic> enemies; // Lista inamicilor existenti in nivel
+    private final List<Npc> npcs; // Lista de npc-uri din zona
 
     public EntityManager() {
         this.enemies = new ArrayList<>();
@@ -69,6 +69,25 @@ public class EntityManager {
                 if (distance <= 120) { // asprites sunt 48x48 so ma imare distanta
                     npc.toggleDialog();
                     System.out.println("Toggled dialog!");
+                }
+            }
+        }
+
+        // Coliziune bulgari cu inamici
+        if (player != null) {
+            for (PaooGame.Entities.Snowball snowball : player.getSnowballs()) {
+                if (snowball.isActive()) {
+                    for (int i = 0; i < enemies.size(); i++) {
+                        Inamic inamic = enemies.get(i);
+                        float dx = snowball.getX() - inamic.getX();
+                        float dy = snowball.getY() - inamic.getY();
+                        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+                        if (distance <= 48) { // distanta testata empiric
+                            inamic.takeDamage(5);
+                            snowball.setActive(false);
+                            break;
+                        }
+                    }
                 }
             }
         }

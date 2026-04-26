@@ -32,6 +32,10 @@ public class Assets
     public static BufferedImage rockRight;
     public static BufferedImage tree;
 
+    public  static BufferedImage inamic_samurai;
+    public  static BufferedImage inamic_cowboy;
+    public  static BufferedImage inamic_mehico;
+
     /*! \fn public static void Init()
         \brief Functia initializaza referintele catre elementele grafice utilizate.
 
@@ -43,6 +47,12 @@ public class Assets
         /// Se creaza temporar un obiect SpriteSheet initializat prin intermediul clasei ImageLoader
         SpriteSheet sheet = new SpriteSheet(ImageLoader.LoadImage("/textures/TileMap.png"));
         SpriteSheet dinu = new SpriteSheet(ImageLoader.LoadImage("/textures/dinu_cu_esarfa.png"));
+
+        SpriteSheet inamici = new SpriteSheet(ImageLoader.LoadImage("/textures/inamici.png"));
+
+        inamic_samurai = inamici.cropAbsolute(0,0,69,64);
+//        inamic_mehico = inamici.cropAbsolute(2,433,216,208);
+        inamic_cowboy = inamici.cropAbsolute(3,277,69,64);
 
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         snow = sheet.crop(0, 0);

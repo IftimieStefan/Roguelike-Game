@@ -10,6 +10,8 @@ import PaooGame.Entities.Player;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
 
+// Inima jocului, tine tot frate.
+// Rularea pe alt thread curat.
 public class Game implements Runnable
 {
     public enum GameState { MENU, SAVE_SELECTION, PLAYING }
@@ -23,11 +25,18 @@ public class Game implements Runnable
 
     private GameCamera camera;
 
+    // Fazele jocului zic, meniurile.
     private GameState       gameState;
     private SaveSelectionState saveMenu;
     private MainMenuState   mainMenu;
-    private Player          player;     //DINU
+    
+    // Main character-ul
+    private Player          player;     // DINU - personajul principal
+    
+    // Extrage harta din txt.
     private PaooGame.MapLoader currentMap;
+    
+    // Seful la inamici si chestii.
     private PaooGame.Managers.EntityManager entityManager;
 
     private float animTime = 0;
@@ -50,10 +59,12 @@ public class Game implements Runnable
 
     }
 
+    // Pune titlu la joc simplu.
     public void SetTitle(String title){
         this.title=title;
     }
 
+    // Metoda run() contine Game Loop-ul principal care dicteaza FPS-ul si viteza elementelor din joc.
     public void run()
     {
         InitGame();
@@ -137,7 +148,7 @@ public class Game implements Runnable
                     player = new Player(100, 100, wnd.GetCanvas());
                     
                     entityManager = new PaooGame.Managers.EntityManager();
-                    entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, 10, 2f, player));
+                    entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, player));
                     entityManager.addNpc(new PaooGame.Entities.Bity(200, 200));
 
                     camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());

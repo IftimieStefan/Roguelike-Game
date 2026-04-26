@@ -36,4 +36,9 @@ public class Snowball
     {
         return active;
     }
+
+    public float getX() { return x; }
+    public float getY() { return y; }
+    public void setActive(boolean active) { this.active = active; }
+    public int getRadius() { return radius; }
 }

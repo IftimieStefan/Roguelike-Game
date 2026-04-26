@@ -7,7 +7,7 @@ public class Bity extends Npc {
 
     public Bity(float x, float y) {
         super(x, y, "Bity", "Salut! Ai grija mare la foci, sunt periculoase!");
-        this.showDialog = true;
+        this.showDialog = false;
     }
 
     @Override
