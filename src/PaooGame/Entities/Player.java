@@ -18,7 +18,11 @@ public class Player
     private int i=0;//folosit pentru a face tranzitia la animatia jucatorului
     private int timer=0;
     private final int ANIMATION_SPEED=10;
+
     private ArrayList<Snowball> snowballs = new ArrayList<>();
+    private ArrayList<Bomb> bombs = new ArrayList<>();
+
+    //atac bulgari
     private int attackMode = 0;
     private long lastAttackTime;
     private int attackCooldown = 500;
@@ -28,11 +32,18 @@ public class Player
     private  long lastReload=0;
     private final int reloadTime=200;
 
+    // Aatac bomba
+    private int currentBomb = 2;
+    private int maxBomb = 2;
+    private long lastBomb;
+    private final long bombReloadTime = 60000;
+
     public Player(float startX, float startY, Canvas canvas)
     {
         this.x = startX;
         this.y = startY;
         currentFrame = Assets.playerDown[0];
+        lastBomb = System.currentTimeMillis();
 
         canvas.addKeyListener(new KeyAdapter()
         {
@@ -44,8 +55,9 @@ public class Player
                 if(key == KeyEvent.VK_S) down = true;
                 if(key == KeyEvent.VK_A) left = true;
                 if(key == KeyEvent.VK_D) right = true;
-                if(key==KeyEvent.VK_SPACE) isShooting=true;
-                if(key==KeyEvent.VK_R) Reload();
+                if(key == KeyEvent.VK_SPACE) isShooting=true;
+                if(key == KeyEvent.VK_R) Reload();
+                if(key == KeyEvent.VK_Q) throwBomb();
             }
 
             @Override
@@ -56,7 +68,7 @@ public class Player
                 if(key == KeyEvent.VK_S) down = false;
                 if(key == KeyEvent.VK_A) left = false;
                 if(key == KeyEvent.VK_D) right = false;
-                if(key==KeyEvent.VK_SPACE) isShooting=false;
+                if(key == KeyEvent.VK_SPACE) isShooting=false;
             }
         });
 
@@ -101,6 +113,23 @@ public class Player
             isReloading=true;
             lastReload=System.currentTimeMillis();
         }
+    }
+
+    private void throwBomb()
+    {
+        if(currentBomb <= 0) return;
+
+        float dirX = 0, dirY = 0;
+        switch (lastDir)
+        {
+            case 0: dirY = -1; break;
+            case 1: dirY = 1;  break;
+            case 2: dirX = -1; break;
+            case 3: dirX = 1;  break;
+        }
+
+        bombs.add(new Bomb(x, y, dirX, dirY));
+        currentBomb--;
     }
 
     public void Update()
@@ -150,13 +179,29 @@ public class Player
             }
         } else i=0;
 
+        // Update proiectile
         for(int k=0; k<snowballs.size();k++)
         {
             Snowball s=snowballs.get(k);
             s.Update();
-            if(!s.isActive()) snowballs.remove(k);
+            if(!s.isActive()) {
+                snowballs.remove(k);
+                k--;
+            }
         }
 
+        // Update bombe
+        for(int k=0; k<bombs.size();k++)
+        {
+            Bomb b=bombs.get(k);
+            b.Update();
+            if(!b.isActive()) {
+                bombs.remove(k);
+                k--;
+            }
+        }
+
+        // Reload muniție
         if(isReloading)
         {
             if(System.currentTimeMillis()-lastReload>=reloadTime)
@@ -169,7 +214,16 @@ public class Player
                     isReloading=false;
                 }
             }
+        }
 
+        // Regenerare bombe
+        if(currentBomb < maxBomb) {
+            if(System.currentTimeMillis() - lastBomb >= bombReloadTime) {
+                currentBomb++;
+                lastBomb = System.currentTimeMillis();
+            }
+        } else {
+            lastBomb = System.currentTimeMillis();
         }
     }
 
@@ -179,28 +233,34 @@ public class Player
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;
         int yOff = (camera != null) ? (int)camera.getyOff() : 0;
 
+        // Desenează obiectele din lume
+        for (Snowball s:snowballs) s.Draw(g,camera);
+        for (Bomb b:bombs) b.Draw(g,camera);
+
         //player
         g.drawImage(currentFrame, (int)x - xOff, (int)y - yOff, null);
 
-        //bulgari
-        for (Snowball s:snowballs)
-        {
-            s.Draw(g,camera);
-        }
-
-        //hud
+        // --- HUD
+        int hudX=32, hudY=32;
         int r=32;
-        int hudX=32,hudY=32;
 
+        // Indicator Bulgări
         g.setColor(Color.BLACK);
         g.fillOval(hudX-1,hudY-1,r+4,r+4);
         g.setColor(Color.WHITE);
         g.fillOval(hudX,hudY,r,r);
-        g.setColor(new Color(200,200,200));
-        g.drawOval(hudX,hudY,r,r);
+        g.setColor(Color.BLACK);
         g.setFont(new Font("Arial",Font.BOLD, 30));
-        g.drawString(amo+"/"+maxAmo,hudX+r+10,hudY+24);
+        g.drawString(amo+"/"+maxAmo, hudX+r+10, hudY+24);
 
+        // Indicator Bombe
+        int bombHudY = hudY + 45;
+        g.setColor(Color.BLACK);
+        g.fillOval(hudX-1, bombHudY-1, r+4, r+4);
+        g.setColor(Color.DARK_GRAY);
+        g.fillOval(hudX, bombHudY, r, r);
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        g.drawString("x" + currentBomb, hudX+r+10, bombHudY+24);
     }
 
     public float GetX() { return x; }
