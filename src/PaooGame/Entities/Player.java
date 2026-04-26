@@ -44,6 +44,11 @@ public class Player
     private boolean ePressed = false; // A dat E sau?
     private boolean interact = false; // Parla con NPC-u?
 
+    // Viata playerului
+    private int maxHp = 100;
+    private int hp = 100;
+    private float displayHp = 100;
+
     // Aatac bomba
     private int currentBomb = 2;
     private int maxBomb = 2;
@@ -123,6 +128,10 @@ public class Player
         lastAttackTime=System.currentTimeMillis();
     }
 
+    public void takeDamage(int catYa){
+        this.hp -=catYa;
+    }
+
     private void Reload()
     {
         if(!isReloading && amo<maxAmo)
@@ -151,6 +160,15 @@ public class Player
 
     public void Update()
     {
+        // Tranzitie lina (smooth) pentru bara de viata
+        if (displayHp > hp) {
+            displayHp -= 0.5f; // Cat de repede sa scada "animatia" barei
+            if (displayHp < hp) displayHp = hp;
+        } else if (displayHp < hp) {
+            displayHp += 0.5f; // Animatie pentru heal
+            if (displayHp > hp) displayHp = hp;
+        }
+
         boolean isMoving=false;
         if(up)
         {
@@ -252,37 +270,44 @@ public class Player
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;
         int yOff = (camera != null) ? (int)camera.getyOff() : 0;
 
-        // Desenează proiectilele
+        //  proiectilele
         for (Snowball s:snowballs) s.Draw(g,camera);
         for (Bomb b:bombs) b.Draw(g,camera);
 
         //player
         g.drawImage(currentFrame, (int)x - xOff, (int)y - yOff, null);
 
-
-
         //hud
-        int r=32;
-        int hudX=1080 - 32,hudY=32;
+        drawSnowballCounter(g);
+        drawBombCounter(g);
 
-        // Indicator Bulgări
+    }
+
+    private void drawSnowballCounter(Graphics g) {
+        int r = 32;
+        int hudX = 1080 - 32, hudY = 32;
+
         g.setColor(Color.BLACK);
-        g.fillOval(hudX-1,hudY-1,r+4,r+4);
+        g.fillOval(hudX - 1, hudY - 1, r + 4, r + 4);
         g.setColor(Color.WHITE);
-        g.fillOval(hudX,hudY,r,r);
-        g.setColor(new Color(200,200,200));
-        g.drawOval(hudX,hudY,r,r);
-        g.setFont(new Font("Arial",Font.BOLD, 30));
-        g.drawString(amo+"/"+maxAmo,hudX+r+10,hudY+24);
+        g.fillOval(hudX, hudY, r, r);
+        g.setColor(new Color(200, 200, 200));
+        g.drawOval(hudX, hudY, r, r);
+        g.setFont(new Font("Arial", Font.BOLD, 30));
+        g.drawString(amo + "/" + maxAmo, hudX + r + 10, hudY + 24);
+    }
 
-        // Indicator Bombe
+    private void drawBombCounter(Graphics g) {
+        int r = 32;
+        int hudX = 1080 - 32, hudY = 32;
         int bombHudY = hudY + 45;
+
         g.setColor(Color.BLACK);
-        g.fillOval(hudX-1, bombHudY-1, r+4, r+4);
+        g.fillOval(hudX - 1, bombHudY - 1, r + 4, r + 4);
         g.setColor(Color.DARK_GRAY);
         g.fillOval(hudX, bombHudY, r, r);
         g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("x" + currentBomb, hudX+r+10, bombHudY+24);
+        g.drawString("x" + currentBomb, hudX + r + 10, bombHudY + 24);
     }
 
     public float GetX() { return x; }

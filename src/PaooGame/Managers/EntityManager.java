@@ -3,6 +3,7 @@ package PaooGame.Managers;
 import PaooGame.Entities.Inamic;
 import PaooGame.Entities.Npc;
 import PaooGame.Entities.Player;
+import PaooGame.Entities.Snowball;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -75,14 +76,15 @@ public class EntityManager {
 
         // Coliziune bulgari cu inamici
         if (player != null) {
-            for (PaooGame.Entities.Snowball snowball : player.getSnowballs()) {
+            for (Snowball snowball : player.getSnowballs()) {
                 if (snowball.isActive()) {
                     for (int i = 0; i < enemies.size(); i++) {
                         Inamic inamic = enemies.get(i);
                         float dx = snowball.getX() - inamic.getX();
                         float dy = snowball.getY() - inamic.getY();
-                        float distance = (float) Math.sqrt(dx * dx + dy * dy);
-                        if (distance <= 48) { // distanta testata empiric
+                        float distance = (float) Math.sqrt(dx * dx + dy * dy);//in principiu daca distanta dintre 2 carcuri este <= suma razelor se intersect
+                        if (distance <= 48) { //distanta test
+
                             inamic.takeDamage(5);
                             snowball.setActive(false);
                             break;

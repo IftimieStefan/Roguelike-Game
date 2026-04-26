@@ -2,19 +2,21 @@ package PaooGame.Entities;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
+import PaooGame.Core.GameCamera;
 import PaooGame.Graphics.Assets;
 
 // Inamic basic, gen Foca.
 public class Foca extends Inamic{
     private Player player; // Tinta inamicului.
-    private long lastPrintTime = 0; // Timer spam consola.
+    private long lastAttackTime = 0; // Timer spam consola.
     private BufferedImage sprite; // Poza inamicului.
 
     // Seteaza inceput, viata si poza.
     public Foca(float stX, float stY, Player player) {
         super(stX, stY, 20, 1.0f);
         this.player = player;
-        this.sprite = Assets.inamic_samurai; // Aici punem poza pe care vrei s-o foloseasca
+        this.sprite = Assets.inamic_samurai;
     }
 
     @Override
@@ -30,9 +32,9 @@ public class Foca extends Inamic{
 
             if (distance <= 40) { // Printeaza praduiala.
                 long currentTime = System.currentTimeMillis();
-                if (currentTime - lastPrintTime > 1000) { // 1 pe secz
-                    System.out.println("attack");
-                    lastPrintTime = currentTime;
+                if (currentTime - lastAttackTime > 1000) { // 1 pe secz
+                    player.takeDamage(4);
+                    lastAttackTime = currentTime;
                 }
             } else if (distance > 0) {
                 this.x += (dx / distance) * speed;
@@ -43,13 +45,12 @@ public class Foca extends Inamic{
 
     @Override
     public void Draw(Graphics g) {
-        PaooGame.Core.GameCamera camera = PaooGame.Core.GameCamera.getInstance();
+        GameCamera camera = PaooGame.Core.GameCamera.getInstance();
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;
         int yOff = (camera != null) ? (int)camera.getyOff() : 0;
 
-        // Randare imagine sprite
             // Desenam poza de inamic
-            g.drawImage(sprite, (int)x - xOff, (int)y - yOff, 48, 48, null);
+        g.drawImage(sprite, (int)x - xOff, (int)y - yOff, 48, 48, null);
 
         // Bara de viata deasupra.
         g.setColor(Color.BLACK);

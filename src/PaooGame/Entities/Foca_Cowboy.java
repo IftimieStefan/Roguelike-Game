@@ -2,6 +2,8 @@ package PaooGame.Entities;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
+import PaooGame.Core.GameCamera;
 import PaooGame.Graphics.Assets;
 
 // Inamic basic, gen Foca.
@@ -30,7 +32,7 @@ public class Foca_Cowboy extends Inamic{
 
             if (distance <= 40) { // Printeaza praduiala.
                 long currentTime = System.currentTimeMillis();
-                if (currentTime - lastPrintTime > 1000) { // 1 pe secz
+                if (currentTime - lastPrintTime > 1000) { // 1 pe sec
                     System.out.println("attack");
                     lastPrintTime = currentTime;
                 }
@@ -43,11 +45,10 @@ public class Foca_Cowboy extends Inamic{
 
     @Override
     public void Draw(Graphics g) {
-        PaooGame.Core.GameCamera camera = PaooGame.Core.GameCamera.getInstance();
+        GameCamera camera = PaooGame.Core.GameCamera.getInstance();
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;
         int yOff = (camera != null) ? (int)camera.getyOff() : 0;
 
-        // Randare imagine sprite
         // Desenam poza de inamic
         g.drawImage(sprite, (int)x - xOff, (int)y - yOff, 48, 48, null);
 
