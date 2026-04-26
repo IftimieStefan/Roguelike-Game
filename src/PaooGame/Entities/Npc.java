@@ -26,7 +26,30 @@ public abstract class Npc {
             int xOff = (camera != null) ? (int)camera.getxOff() : 0;
             int yOff = (camera != null) ? (int)camera.getyOff() : 0;
 
-            //TODO dialog or deasupra carac or defualt dreapta jos
+            // Cutie de dialog, stil "speech bubble" deasupra NPC-ului
+            int dWidth = 400;
+            int dHeight = 80;
+            int dX = (int)x - xOff - (dWidth / 2) + 24; // centrat deasupra patratului de 48px
+            int dY = (int)y - yOff - dHeight - 20; // deasupra NPC-ului
+
+            // negru semi-transparent
+            g.setColor(new Color(0, 0, 0, 200));
+            g.fillRect(dX, dY, dWidth, dHeight);
+
+            // contur alb tip RPG
+            g.setColor(Color.WHITE);
+            g.drawRect(dX, dY, dWidth, dHeight);
+            g.drawRect(dX + 2, dY + 2, dWidth - 4, dHeight - 4);
+
+            // Numele sus
+            g.setFont(new Font("Arial", Font.BOLD, 16));
+            g.setColor(Color.YELLOW);
+            g.drawString(name + ":", dX + 10, dY + 25);
+
+            // textul mesajului
+            g.setFont(new Font("Arial", Font.PLAIN, 14));
+            g.setColor(Color.WHITE);
+            g.drawString(dialogMessage, dX + 10, dY + 50);
         }
     }
 

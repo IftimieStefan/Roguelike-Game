@@ -14,6 +14,8 @@ public class Player
     private float x, y;
     private float speed = 3.0f;
     private boolean up, down, left, right; // Starea tastelor
+    private boolean ePressed = false;
+    private boolean interact = false;
     private BufferedImage currentFrame;
     private int i=0;
     private int timer=0;
@@ -36,6 +38,11 @@ public class Player
                 if(key == KeyEvent.VK_S) down = true;
                 if(key == KeyEvent.VK_A) left = true;
                 if(key == KeyEvent.VK_D) right = true;
+
+                if(key == KeyEvent.VK_E && !ePressed) {
+                    interact = true;
+                    ePressed = true;
+                }
             }
 
             @Override
@@ -46,6 +53,7 @@ public class Player
                 if(key == KeyEvent.VK_S) down = false;
                 if(key == KeyEvent.VK_A) left = false;
                 if(key == KeyEvent.VK_D) right = false;
+                if(key == KeyEvent.VK_E) ePressed = false;
             }
         });
 
@@ -102,4 +110,12 @@ public class Player
 
     public float GetX() { return x; }
     public float GetY() { return y; }
+
+    public boolean consumeInteract() {
+        if (interact) {
+            interact = false;
+            return true;
+        }
+        return false;
+    }
 }

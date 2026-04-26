@@ -2,6 +2,7 @@ package PaooGame.Managers;
 
 import PaooGame.Entities.Inamic;
 import PaooGame.Entities.Npc;
+import PaooGame.Entities.Player;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -55,6 +56,21 @@ public class EntityManager {
         // apdait npcis
         for (int i = 0; i < npcs.size(); i++) {
             npcs.get(i).Update();
+        }
+    }
+
+    public void checkInteractions(Player player) {
+        if (player != null && player.consumeInteract()) {
+            for (Npc npc : npcs) {
+                float dx = npc.getX() - player.GetX();
+                float dy = npc.getY() - player.GetY();
+                float distance = (float) Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance <= 120) { // asprites sunt 48x48 so ma imare distanta
+                    npc.toggleDialog();
+                    System.out.println("Toggled dialog!");
+                }
+            }
         }
     }
 

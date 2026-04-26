@@ -6,7 +6,8 @@ import java.awt.*;
 public class Bity extends Npc {
 
     public Bity(float x, float y) {
-        super(x, y, "Bity", "nmk");
+        super(x, y, "Bity", "Salut! Ai grija mare la foci, sunt periculoase!");
+        this.showDialog = true;
     }
 
     @Override
@@ -33,8 +34,8 @@ public class Bity extends Npc {
         g.setFont(new Font("Arial", Font.BOLD, 12));
         FontMetrics fm = g.getFontMetrics();
         
-        int textX = (int) x - xOff + (48 - fm.stringWidth(name)) / 2;
-        int textY = (int) y - yOff - 5;
+        int textX = (int) x - xOff + (48 - fm.stringWidth(name)) / 2; // latimea patratuluix
+        int textY = (int) y - yOff - 5; // sta la 5 pixeli deasupra patratului - scazi cresti adica mergi in sus
 
         g.drawString(name, textX, textY);
 

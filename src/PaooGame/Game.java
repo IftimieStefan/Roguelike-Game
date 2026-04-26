@@ -137,7 +137,7 @@ public class Game implements Runnable
                     player = new Player(100, 100, wnd.GetCanvas());
                     
                     entityManager = new PaooGame.Managers.EntityManager();
-                    entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, 10, 2f));
+                    entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, 10, 2f, player));
                     entityManager.addNpc(new PaooGame.Entities.Bity(200, 200));
 
                     camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());
@@ -161,7 +161,10 @@ public class Game implements Runnable
             {
                 if (currentMap !=null) currentMap.Update();
                 if (player != null) player.Update();
-                if (entityManager != null) entityManager.Update();
+                if (entityManager != null) {
+                    entityManager.Update();
+                    entityManager.checkInteractions(player);
+                }
                 if (camera != null && player != null) camera.centerOnDinu(player);
             }
 
