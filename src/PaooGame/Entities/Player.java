@@ -27,6 +27,8 @@ public class Player
     private int amo=10;
     private  long lastReload=0;
     private final int reloadTime=200;
+    private boolean ePressed = false;
+    private boolean interact = false;
 
     public Player(float startX, float startY, Canvas canvas)
     {
@@ -46,6 +48,11 @@ public class Player
                 if(key == KeyEvent.VK_D) right = true;
                 if(key==KeyEvent.VK_SPACE) isShooting=true;
                 if(key==KeyEvent.VK_R) Reload();
+
+                if(key == KeyEvent.VK_E && !ePressed) {
+                    interact = true;
+                    ePressed = true;
+                }
             }
 
             @Override
@@ -57,6 +64,7 @@ public class Player
                 if(key == KeyEvent.VK_A) left = false;
                 if(key == KeyEvent.VK_D) right = false;
                 if(key==KeyEvent.VK_SPACE) isShooting=false;
+                if(key == KeyEvent.VK_E) ePressed = false;
             }
         });
 
@@ -205,4 +213,12 @@ public class Player
 
     public float GetX() { return x; }
     public float GetY() { return y; }
+
+    public boolean consumeInteract() {
+        if (interact) {
+            interact = false;
+            return true;
+        }
+        return false;
+    }
 }

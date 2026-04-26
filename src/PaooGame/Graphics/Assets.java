@@ -22,6 +22,7 @@ public class Assets
     public static BufferedImage peretecoltdj;
     public static BufferedImage peretecoltss;
     public static BufferedImage peretecoltsj;
+    public static BufferedImage peretecolt;
     public static BufferedImage townGrassDestroyed;
     public static BufferedImage townSoil;
     public static BufferedImage water;
@@ -53,6 +54,12 @@ public class Assets
         peretecoltss = sheet.crop(0,2);
         peretecoltsj = sheet.crop(1,2);
         water = sheet.crop(1, 1);
+        snow = sheet.crop(0, 0);
+        ice = sheet.crop(1, 4);
+        pereteorizontal = sheet.crop(1,0);
+        peretevertical = sheet.crop(2,1);
+        peretecolt = sheet.crop(2,0);
+//        water = sheet.crop(1, 1);
         playerRight[0] = dinu.crop(1,1);
         playerRight[1]=dinu.crop(2,1);
         playerRight[2]=dinu.crop(3,1);
@@ -66,5 +73,15 @@ public class Assets
         playerUp[1]=dinu.crop(4,0);
         playerUp[2]=dinu.crop(0,1);
 
+//        snow = sheet.cropAbsolute(1200,619,230,220);
+
+//        water = sheet.crop(2, 0);
+//        townGrassDestroyed = sheet.crop(1, 1);
+//        townSoil = sheet.crop(2, 1);
+//        tree = sheet.crop(3, 1);
+//        rockUp = sheet.crop(2, 2);
+//        rockDown = sheet.crop(3, 2);
+//        rockLeft = sheet.crop(0, 3);
+//        rockRight = sheet.crop(1, 3);
     }
 }

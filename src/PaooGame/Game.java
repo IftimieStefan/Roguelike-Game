@@ -28,6 +28,7 @@ public class Game implements Runnable
     private MainMenuState   mainMenu;
     private Player          player;     //DINU
     private PaooGame.MapLoader currentMap;
+    private PaooGame.Managers.EntityManager entityManager;
 
     private float animTime = 0;
 
@@ -134,8 +135,16 @@ public class Game implements Runnable
 
                     currentMap = new PaooGame.MapLoader("res/harti/Level1/room1.txt");//incarcam nivelul 1
                     player = new Player(100, 100, wnd.GetCanvas());
-                    camera = new GameCamera(wnd.GetWndWidth(), wnd.GetWndHeight());
+                    
+                    entityManager = new PaooGame.Managers.EntityManager();
+                    entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, 10, 2f, player));
+                    entityManager.addNpc(new PaooGame.Entities.Bity(200, 200));
+
+                    camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());
+                    camera.centerOnDinu(player);
+
                     ClearMouseListeners();
+
                     gameState = GameState.PLAYING;//trecem in starea de joc
                     wnd.GetCanvas().requestFocusInWindow();
                 }
@@ -152,6 +161,10 @@ public class Game implements Runnable
             {
                 if (currentMap !=null) currentMap.Update();
                 if (player != null) player.Update();
+                if (entityManager != null) {
+                    entityManager.Update();
+                    entityManager.checkInteractions(player);
+                }
                 if (camera != null && player != null) camera.centerOnDinu(player);
             }
 
@@ -188,6 +201,7 @@ public class Game implements Runnable
         {
             if(currentMap!=null) currentMap.Draw(g, camera);
             if(player!=null) player.Draw(g, camera);
+            if(entityManager!=null) entityManager.Draw(g);
         }
 
         bs.show();

@@ -22,7 +22,8 @@ public class Tile
     public static Tile peretecoltss = new PereteColtSS(6);
     public static Tile peretecoltsj = new PereteColtSJ(7);
     public static Tile peretecoltdj = new PereteColtDJ(8);
-    public static Tile peretecoltds = new PereteColtDS(9);
+    public static Tile peretecoltds = new PereteColtDS(9);;
+    public static Tile peretecolt = new PereteColt(6);
 
 
 
