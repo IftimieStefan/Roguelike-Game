@@ -3,6 +3,7 @@ package PaooGame.Managers;
 import PaooGame.Entities.Inamic;
 import PaooGame.Entities.Npc;
 import PaooGame.Entities.Player;
+import PaooGame.Entities.Snowball;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class EntityManager {
         }
 
         // Coliziune bulgari cu inamici
-        if (player != null) {
+  /*      if (player != null) {
             for (PaooGame.Entities.Snowball snowball : player.getSnowballs()) {
                 if (snowball.isActive()) {
                     for (int i = 0; i < enemies.size(); i++) {
@@ -89,6 +90,51 @@ public class EntityManager {
                         }
                     }
                 }
+            }
+        }
+*/
+        //coliziune bulgari inamici 2
+        ArrayList<Snowball> snowballs=player.getSnowballs();
+
+        if(snowballs!=null)
+        {
+            for (Inamic inamic:enemies)
+            {
+                for (Snowball snowball : snowballs)
+                {
+                    if (snowball.isActive())
+                    {
+                        if (inamic.getHitbox().intersects(snowball.getHitbox()))
+                        {
+                            inamic.takeDamage(5);
+                            snowball.setActive(false);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        //coliziune atac melee inamici
+        if(player.isMeleeAttacking())
+        {
+            for (Inamic inamic:enemies)
+            {
+                if(player.getMeleeHitbox().intersects(inamic.getHitbox()))
+                {
+                    inamic.takeDamage(5);
+                    player.stopMelee();
+                    break;
+                }
+            }
+        }
+
+        //coliziune inamici player
+        for (Inamic inamic:enemies)
+        {
+            if(player.getHitbox().intersects(inamic.getHitbox()))
+            {
+                player.takeDamage();
             }
         }
     }

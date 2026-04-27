@@ -1,4 +1,6 @@
 package PaooGame.Entities;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import PaooGame.Graphics.Assets;
 
@@ -10,6 +12,7 @@ import java.awt.image.BufferedImage;
 // ASTA_I DINU, taticu' jocului.
 public class Player
 {
+    private Canvas canvas;
 
     private float x, y;
 
@@ -17,7 +20,7 @@ public class Player
     private float speed = 3.0f;
 
     // Butoane apasate si faze.
-    private boolean up, down, left, right, isShooting=false, isReloading=false;
+    private boolean up, down, left, right, leftClick, rightClick, isReloading=false;
 
     // Poza lu Dinu din momentu' asta.
     private BufferedImage currentFrame;
@@ -25,11 +28,23 @@ public class Player
     private int timer=0;
     private final int ANIMATION_SPEED=10;
 
+    // detalii hitbox
+    private int hitboxOffset=4;
+    private int hitboxSize=40;
+
+    //HP Dinu
+    private int maxHP=5;
+    private int currentHP=5;
+    private long lastDamage=0;//pt animatie
+
+    //cnt iframe
+    private long iFrame=1000;
+    private long lastiFrame=0;
+
     // Bulgarii zburatori ai lu' Dinu.
     private ArrayList<Snowball> snowballs = new ArrayList<>();
     private ArrayList<Bomb> bombs = new ArrayList<>();
 
-    private int attackMode = 0; // Tipul de atac curent
     private long lastAttackTime; // Timpul de la ultimul atac pentru cooldown
     private int attackCooldown = 500; // Cooldown intre bulgari tras (in milisecunde)
 
@@ -50,12 +65,22 @@ public class Player
     private long lastBomb;
     private final long bombReloadTime = 60000;
 
+    //Atac mele
+    private boolean isMeleeAttacking = false;
+    private long meleeTimer = 0;
+    private final long meleeDuration = 150;
+
+    //Dash
+    private int dashX=80,dashY=80;//distanta
+    private long lastDash;
+    private int dashReloadTime=2000;
+
     public Player(float startX, float startY, Canvas canvas)
     {
+        this.canvas=canvas;
         this.x = startX;
         this.y = startY;
         currentFrame = Assets.playerDown[0];
-        lastBomb = System.currentTimeMillis();
 
         canvas.addKeyListener(new KeyAdapter()
         {
@@ -67,9 +92,9 @@ public class Player
                 if(key == KeyEvent.VK_S) down = true;
                 if(key == KeyEvent.VK_A) left = true;
                 if(key == KeyEvent.VK_D) right = true;
-                if(key == KeyEvent.VK_SPACE) isShooting=true;
                 if(key == KeyEvent.VK_R) Reload();
                 if(key == KeyEvent.VK_Q) throwBomb();
+                if(key == KeyEvent.VK_SPACE) dash();
                 if(key == KeyEvent.VK_E && !ePressed) {
                     interact = true;
                     ePressed = true;
@@ -84,43 +109,53 @@ public class Player
                 if(key == KeyEvent.VK_S) down = false;
                 if(key == KeyEvent.VK_A) left = false;
                 if(key == KeyEvent.VK_D) right = false;
-                if(key==KeyEvent.VK_SPACE) isShooting=false;
                 if(key == KeyEvent.VK_E) ePressed = false;
             }
         });
 
-        canvas.setFocusable(true);
-        canvas.requestFocusInWindow();
     }
 
-    private void Attack()
+    public void setLeftClick(boolean state) { leftClick = state; }
+    public void setRightClick(boolean state) { rightClick = state; }
+
+    public Rectangle getHitbox()
+    {
+        return new Rectangle((int)x + hitboxOffset, (int)y+hitboxOffset,hitboxSize,hitboxSize);
+    }
+
+    public void Attack(int attackMode)
     {
         if(System.currentTimeMillis()-lastAttackTime<attackCooldown) return;
-        if(amo==0 || isReloading) return;
 
-        float sX=0,sY=0;
-
-        switch (lastDir)
+        if(attackMode==0)
         {
-            case 0: sY = -7; break;
-            case 1: sY = 7;  break;
-            case 2: sX = -7; break;
-            case 3: sX = 7;  break;
+            if(amo==0 || isReloading) return;
+            float sX=0,sY=0;
+            switch (lastDir)
+            {
+                case 0:
+                    sY = -7;
+                    break;
+                case 1:
+                    sY = 7;
+                    break;
+                case 2:
+                    sX = -7;
+                    break;
+                case 3:
+                    sX = 7;
+                    break;
+            }
+            snowballs.add(new Snowball(x,y,sX,sY));
+            amo--;
+            lastAttackTime=System.currentTimeMillis();
         }
-
-        switch (attackMode)
+        else if (attackMode==1)
         {
-            case 0:
-                snowballs.add(new Snowball(x,y,sX,sY));
-                --amo;
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
+            isMeleeAttacking=true;
+            meleeTimer=System.currentTimeMillis();
+            lastAttackTime=System.currentTimeMillis();
         }
-
-        lastAttackTime=System.currentTimeMillis();
     }
 
     private void Reload()
@@ -147,6 +182,68 @@ public class Player
 
         bombs.add(new Bomb(x, y, dirX, dirY));
         currentBomb--;
+    }
+
+    public Rectangle getMeleeHitbox()
+    {
+        int range = 40; // Cât de departe ajunge lovitura
+        if (!isMeleeAttacking) return new Rectangle(0, 0, 0, 0);
+
+        switch (lastDir)
+        {
+            case 0: return new Rectangle((int)x + 8, (int)y - range, 48, range); // Sus
+            case 1: return new Rectangle((int)x + 8, (int)y + 64, 48, range);    // Jos
+            case 2: return new Rectangle((int)x - range, (int)y + 8, range, 48); // Stânga
+            case 3: return new Rectangle((int)x + 64, (int)y + 8, range, 48);    // Dreapta
+            default: return new Rectangle(0, 0, 0, 0);
+        }
+    }
+
+    public boolean isMeleeAttacking()
+    {
+        return isMeleeAttacking;
+    }
+
+    public void stopMelee()
+    {
+        this.isMeleeAttacking=false;
+        this.meleeTimer=0;
+    }
+
+    public void takeDamage()
+    {
+        if(System.currentTimeMillis()-lastiFrame>=iFrame)
+        {
+            currentHP--;
+            lastiFrame=System.currentTimeMillis();
+            lastDamage=System.currentTimeMillis();
+        }
+       // if(currentHP==0) gameOver();
+    }
+
+    private void dash()
+    {
+        if(System.currentTimeMillis()-lastDash<dashReloadTime) return;
+
+        //invulnerabilitate pt feel
+        lastiFrame=System.currentTimeMillis();
+
+        switch(lastDir)
+        {
+            case 0: // Sus
+                y=y-dashX;
+                break;
+            case 1: // Jos
+                y=y+dashY;
+                break;
+            case 2: // Stânga
+                x=x-dashX;
+                break;
+            case 3: // Dreapta
+                x=x+dashX;
+                break;
+        }
+        lastDash=System.currentTimeMillis();
     }
 
     public void Update()
@@ -179,10 +276,6 @@ public class Player
             currentFrame = Assets.playerRight[i];
             isMoving=true;
             lastDir=3;
-        }
-        if(isShooting && !isReloading)
-        {
-            Attack();
         }
 
         if(isMoving)
@@ -218,6 +311,16 @@ public class Player
             }
         }
 
+        //selectare atac
+        if(leftClick)
+        {
+            Attack(0);
+        }
+        else if(rightClick)
+        {
+            Attack(1);
+        }
+
         // Reload muniție
         if(isReloading)
         {
@@ -243,8 +346,17 @@ public class Player
         } else {
             lastBomb = System.currentTimeMillis();
         }
-    }
 
+        // Cooldown atac mele
+        if(isMeleeAttacking)
+        {
+            if(System.currentTimeMillis() - meleeTimer > meleeDuration)
+            {
+                isMeleeAttacking = false;
+            }
+        }
+
+    }
 
     public void Draw(Graphics g, PaooGame.Core.GameCamera camera)
     {
@@ -256,37 +368,103 @@ public class Player
         for (Snowball s:snowballs) s.Draw(g,camera);
         for (Bomb b:bombs) b.Draw(g,camera);
 
+        //animatie invulnerabilitate
+        boolean drawPlayer = true;
+        if (System.currentTimeMillis() - lastDamage < iFrame) {
+            if ((System.currentTimeMillis() / 50) % 2 == 0) {
+                drawPlayer = false;
+            }
+        }
+
         //player
-        g.drawImage(currentFrame, (int)x - xOff, (int)y - yOff, null);
 
-
+        if(drawPlayer)
+        {
+            g.drawImage(currentFrame, (int) x - xOff, (int) y - yOff, null);
+        }
 
         //hud
-        int r=32;
-        int hudX=32,hudY=32;
+        int r = 32;
+        int gap = 38;
+        int hudX = canvas.getWidth() - (maxHP * gap) - 40;
+        int hudY = 50;
 
-        // Indicator Bulgări
+        // Indicator HP
+        for (int h = 0; h < maxHP; h++) {
+            int heartX = hudX + (h * gap);
+
+            g.setColor(Color.BLACK);
+            g.drawOval(heartX - 2, hudY - 42, r + 4, r + 4);
+
+            if (h < currentHP) {
+                g.setColor(Color.RED);
+                g.fillOval(heartX, hudY - 40, r, r); // Inima are acum mărimea r (32px)
+            }
+        }
+
+        // UI Bulgări
+        g.setFont(new Font("Arial", Font.BOLD, 25));
+        String ammoText = amo + "/" + maxAmo;
         g.setColor(Color.BLACK);
-        g.fillOval(hudX-1,hudY-1,r+4,r+4);
+        g.drawString(ammoText, hudX - 80, hudY + 24);
+
+        g.setColor(Color.BLACK);
+        g.fillOval(hudX - 2, hudY - 2, r + 4, r + 4);
         g.setColor(Color.WHITE);
-        g.fillOval(hudX,hudY,r,r);
-        g.setColor(new Color(200,200,200));
-        g.drawOval(hudX,hudY,r,r);
-        g.setFont(new Font("Arial",Font.BOLD, 30));
-        g.drawString(amo+"/"+maxAmo,hudX+r+10,hudY+24);
+        g.fillOval(hudX, hudY, r, r);
+        g.setColor(new Color(200, 200, 200));
+        g.drawOval(hudX, hudY, r, r);
 
-        // Indicator Bombe
-        int bombHudY = hudY + 45;
+        // UI Bombe
+        int bombRowY = hudY + 42;
         g.setColor(Color.BLACK);
-        g.fillOval(hudX-1, bombHudY-1, r+4, r+4);
+        g.drawString("x" + currentBomb, hudX - 45, bombRowY + 24);
+
+        g.setColor(Color.BLACK);
+        g.fillOval(hudX - 2, bombRowY - 2, r + 4, r + 4);
         g.setColor(Color.DARK_GRAY);
-        g.fillOval(hudX, bombHudY, r, r);
-        g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("x" + currentBomb, hudX+r+10, bombHudY+24);
+        g.fillOval(hudX, bombRowY, r, r);
+
+        //animatie atac melee
+        if (isMeleeAttacking)
+        {
+            g.setColor(Color.RED);
+            // Coordonate player
+            int px = (int) x - xOff;
+            int py = (int) y - yOff;
+
+            // Dimensiunile atac
+            int width = 0;
+            int height = 0;
+            int dx = 0; // offset player
+            int dy = 0; // offset player
+
+            switch (lastDir)
+            {
+                case 0: // Sus
+                    width = 40; height = 20;
+                    dx = 4; dy = -20;
+                    break;
+                case 1: // Jos
+                    width = 40; height = 20;
+                    dx = 4; dy = 48; // Jos
+                    break;
+                case 2: // Stânga
+                    width = 20; height = 40;
+                    dx = -20; dy = 4;
+                    break;
+                case 3: // Dreapta
+                    width = 20; height = 40;
+                    dx = 48; dy = 4;
+                    break;
+            }
+            g.fillRect(px + dx, py + dy, width, height);
+        }
     }
 
     public float GetX() { return x; }
     public float GetY() { return y; }
+
 
     public boolean consumeInteract() {
         if (interact) {

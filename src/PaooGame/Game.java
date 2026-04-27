@@ -40,6 +40,7 @@ public class Game implements Runnable
     private PaooGame.Managers.EntityManager entityManager;
 
     private float animTime = 0;
+    private boolean mouseListenerAdded = false;
 
     public Game(String title, int width, int height)
     {
@@ -142,11 +143,52 @@ public class Game implements Runnable
 
                 if(saveMenu.GetSelectedSlot()!=-1)
                 {
-                    int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
+                    ClearMouseListeners();
 
                     currentMap = new PaooGame.MapLoader("res/harti/Level1/room1.txt");//incarcam nivelul 1
                     player = new Player(100, 100, wnd.GetCanvas());
-                    
+
+                    if(!mouseListenerAdded)
+                    {
+                        wnd.GetCanvas().addMouseListener(new java.awt.event.MouseAdapter()
+                        {
+                            @Override
+                            public void mousePressed(java.awt.event.MouseEvent e)
+                            {
+                                if(gameState == GameState.PLAYING && player != null)
+                                {
+                                    if(e.getButton() == java.awt.event.MouseEvent.BUTTON1)
+                                    {
+                                        player.setLeftClick(true); // Trage cu bulgări
+                                    }
+                                    else if(e.getButton() == java.awt.event.MouseEvent.BUTTON3)
+                                    {
+                                        player.setRightClick(true); // Dă cu pumnul (Melee)
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void mouseReleased(java.awt.event.MouseEvent e)
+                            {
+                                if(gameState == GameState.PLAYING && player != null)
+                                {
+                                    if(e.getButton() == java.awt.event.MouseEvent.BUTTON1)
+                                    {
+                                        player.setLeftClick(false);
+                                    }
+                                    else if(e.getButton() == java.awt.event.MouseEvent.BUTTON3)
+                                    {
+                                        player.setRightClick(false);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                        mouseListenerAdded=true;
+                    int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
+
+
                     entityManager = new PaooGame.Managers.EntityManager();
                     entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, player));
                     entityManager.addNpc(new PaooGame.Entities.Bity(200, 200));
@@ -154,7 +196,6 @@ public class Game implements Runnable
                     camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());
                     camera.centerOnDinu(player);
 
-                    ClearMouseListeners();
 
                     gameState = GameState.PLAYING;//trecem in starea de joc
                     wnd.GetCanvas().requestFocusInWindow();
@@ -225,6 +266,7 @@ public class Game implements Runnable
         {
             wnd.GetCanvas().removeMouseListener(ml);
         }
+        mouseListenerAdded=false;
     }
 
 }

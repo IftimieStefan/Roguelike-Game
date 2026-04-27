@@ -40,5 +40,8 @@ public class Snowball
     public float getX() { return x; }
     public float getY() { return y; }
     public void setActive(boolean active) { this.active = active; }
-    public int getRadius() { return r; }
+    public Rectangle getHitbox()
+    {
+        return new Rectangle((int)x, (int)y,24,24);
+    }
 }
