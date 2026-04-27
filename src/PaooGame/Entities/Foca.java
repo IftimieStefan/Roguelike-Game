@@ -33,7 +33,7 @@ public class Foca extends Inamic{
             if (distance <= 40) { // Printeaza praduiala.
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - lastAttackTime > 1000) { // 1 pe secz
-                    player.takeDamage(4);
+                    player.takeDamage();
                     lastAttackTime = currentTime;
                 }
             } else if (distance > 0) {

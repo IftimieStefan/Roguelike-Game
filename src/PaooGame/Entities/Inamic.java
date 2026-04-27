@@ -8,6 +8,7 @@ public abstract class Inamic {
     protected int health; // HP curent zic.
     protected int maxHealth; // Viata lui full.
     protected float speed; // Cat de repede fuge.
+    protected int hitboxOffset=16, hitboxSize=40;
 
     // Valori de baza din fabrica.
     public Inamic(float stX,float stY,int stHealth,float stSpeed){
@@ -31,6 +32,11 @@ public abstract class Inamic {
 
     public float getY() {
         return y;
+    }
+
+    public Rectangle getHitbox()
+    {
+        return new Rectangle((int)x + hitboxOffset, (int)y+hitboxOffset,hitboxSize,hitboxSize);
     }
 
     public int getHealth() {

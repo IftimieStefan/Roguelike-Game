@@ -66,7 +66,7 @@ public class EntityManager {
                 float dx = npc.getX() - player.GetX();
                 float dy = npc.getY() - player.GetY();
                 float distance = (float) Math.sqrt(dx * dx + dy * dy);
-                
+
                 if (distance <= 120) { // asprites sunt 48x48 so ma imare distanta
                     npc.toggleDialog();
                     System.out.println("Toggled dialog!");
@@ -74,23 +74,38 @@ public class EntityManager {
             }
         }
 
-        // Coliziune bulgari cu inamici
-        if (player != null) {
-            for (Snowball snowball : player.getSnowballs()) {
-                if (snowball.isActive()) {
-                    for (int i = 0; i < enemies.size(); i++) {
-                        Inamic inamic = enemies.get(i);
-                        float dx = snowball.getX() - inamic.getX();
-                        float dy = snowball.getY() - inamic.getY();
-                        float distance = (float) Math.sqrt(dx * dx + dy * dy);//in principiu daca distanta dintre 2 carcuri este <= suma razelor se intersect
-                        if (distance <= 48) { //distanta test
+        //coliziune bulgari inamici 2
+        ArrayList<Snowball> snowballs = player.getSnowballs();
 
+        if (snowballs != null) {
+            for (Inamic inamic : enemies) {
+                for (Snowball snowball : snowballs) {
+                    if (snowball.isActive()) {
+                        if (inamic.getHitbox().intersects(snowball.getHitbox())) {
                             inamic.takeDamage(5);
                             snowball.setActive(false);
                             break;
                         }
                     }
                 }
+            }
+        }
+
+        //coliziune atac melee inamici
+        if (player.isMeleeAttacking()) {
+            for (Inamic inamic : enemies) {
+                if (player.getMeleeHitbox().intersects(inamic.getHitbox())) {
+                    inamic.takeDamage(5);
+                    player.stopMelee();
+                    break;
+                }
+            }
+        }
+
+        //coliziune inamici player
+        for (Inamic inamic : enemies) {
+            if (player.getHitbox().intersects(inamic.getHitbox())) {
+                player.takeDamage();
             }
         }
     }
