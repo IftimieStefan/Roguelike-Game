@@ -1,11 +1,12 @@
 package PaooGame.Core;
 
-import PaooGame.Entities.Player;
+import PaooGame.Entities.Player.Player;
 
 public class GameCamera {
     private static GameCamera instance;
     private float xOff,yOff;
     private int gameWidth, gameHeight;
+    private float zoom = 1.3f; // Nivel standard de zoom
 
     private GameCamera (int gameWidth, int gameHeight){
         this.gameWidth = gameWidth;
@@ -28,9 +29,17 @@ public class GameCamera {
     }
 
     public void centerOnDinu(Player p){
-        // pentru a centra mijlocul jucatorului pe ecran
-        xOff = p.GetX() - gameWidth / 2f + 48;
-        yOff = p.GetY() - gameHeight / 2f + 48;
+        // pentru a centra mijlocul jucatorului pe ecran, respectand marirea zoom-ului
+        xOff = p.GetX() - (gameWidth / zoom) / 2f + 48;
+        yOff = p.GetY() - (gameHeight / zoom) / 2f + 48 ;
+    }
+
+    public float getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(float zoom) {
+        this.zoom = zoom;
     }
 
     public void move(float x,float y){

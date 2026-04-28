@@ -15,6 +15,7 @@ public class MainMenuState
     private Rectangle   optionsButton;
     private boolean     playPressed;    /*!< Flag - s-a apasat Play */
     private boolean     exitPressed;    /*!< Flag - s-a apasat Exit */
+    private boolean     optionsPressed;
     private float       animTime;       /*!< Contor pentru animatie */
 
     public MainMenuState(GameWindow wnd)
@@ -22,6 +23,7 @@ public class MainMenuState
         this.wnd        = wnd;
         playPressed     = false;
         exitPressed     = false;
+        optionsPressed  = false;
         animTime        = 0;
 
         int cx = wnd.GetCanvas().getWidth() / 2; // mijloc pe latime
@@ -38,6 +40,10 @@ public class MainMenuState
                 if(playButton.contains(e.getPoint()))
                 {
                     playPressed = true;
+                }
+                if(optionsButton.contains(e.getPoint()))
+                {
+                    optionsPressed = true;
                 }
                 if(exitButton.contains(e.getPoint()))
                 {
@@ -114,8 +120,10 @@ public class MainMenuState
     }
 
     public boolean IsPlayPressed() { return playPressed; }
+    public boolean IsOptionsPressed() { return optionsPressed; }
 
     public void Reset() {
         this.playPressed = false;
+        this.optionsPressed = false;
     }
 }
