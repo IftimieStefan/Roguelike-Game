@@ -5,10 +5,13 @@ import PaooGame.Entities.Enemies.EnemyFactory;
 import PaooGame.Entities.NPCs.Bity;
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Graphics.Assets;
+import PaooGame.Managers.LevelManager;
 import PaooGame.States.*;
 import PaooGame.Entities.Player.Player;
 
 import java.awt.*;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferStrategy;
 
 // Inima jocului, tine tot frate.
@@ -36,10 +39,10 @@ public class Game implements Runnable
     private Player          player;     // DINU - personajul principal
     
     // Extrage harta din txt.
-    private PaooGame.MapLoader currentMap;
+    private PaooGame.Graphics.MapLoader currentMap;
     
-    // Seful la inamici si chestii.
-    private PaooGame.Managers.EntityManager entityManager;
+    // Seful la scene si chestii
+    private LevelManager levelManager;
 
     private float animTime = 0;
     private boolean mouseListenerAdded = false;
@@ -165,7 +168,6 @@ public class Game implements Runnable
                 {
                     ClearMouseListeners();
 
-                    currentMap = new PaooGame.MapLoader("res/harti/Level1/room1.txt");//incarcam nivelul 1
                     player = new Player(100, 100, wnd.GetCanvas());
 
                     if(!mouseListenerAdded)
@@ -205,21 +207,13 @@ public class Game implements Runnable
                             }
                         });
                     }
-                        mouseListenerAdded=true;
+                    mouseListenerAdded=true;
                     int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
-
-
-                    entityManager = new PaooGame.Managers.EntityManager();
-                    
-                    entityManager.addEnemy(EnemyFactory.createEnemy("BOSS_COWBOY", 300, 300, player));
-                    entityManager.addEnemy(EnemyFactory.createEnemy("FAST_FOCA", 300, 3500, player));
-                    entityManager.addEnemy(EnemyFactory.createEnemy("FOCA_COWBOY", 300, 320, player));
-                    
-                    entityManager.addNpc(new Bity(200, 200));
 
                     camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());
                     camera.centerOnDinu(player);
 
+                    levelManager = new LevelManager(player, camera);
 
                     gameState = GameState.PLAYING;//trecem in starea de joc
                     wnd.GetCanvas().requestFocusInWindow();
@@ -235,11 +229,9 @@ public class Game implements Runnable
             }
             else if(gameState==GameState.PLAYING)
             {
-                if (currentMap !=null) currentMap.Update();
                 if (player != null) player.Update();
-                if (entityManager != null) {
-                    entityManager.Update();
-                    entityManager.checkInteractions(player);
+                if (levelManager != null) {
+                    levelManager.Update();
                 }
                 if (camera != null && player != null) camera.centerOnDinu(player);
             }
@@ -287,9 +279,16 @@ public class Game implements Runnable
                 g2d.scale(zoom, zoom);
             }
 
-            if(currentMap!=null) currentMap.Draw(g, camera);
-            if(player!=null) player.Draw(g, camera);
-            if(entityManager!=null) entityManager.Draw(g);
+            if(levelManager != null) {
+                if(levelManager.getCurrentMap() != null) levelManager.getCurrentMap().Draw(g, camera);
+                if(player != null) player.Draw(g, camera);
+                if(levelManager.getEntityManager() != null) levelManager.getEntityManager().Draw(g);
+
+                // fog of war sub hud peste mapa
+                if(levelManager.isFogOfWarActive() && player != null) {
+                    //TODO FOW
+                }
+            }
 
             // Reseteaza transformarea ca sa desenam HUD-ul normal
             g2d.setTransform(old);
