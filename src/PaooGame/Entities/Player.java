@@ -394,10 +394,10 @@ public class Player
     {
         int r = 32;
         int gap = 38;
-        int hudX = canvas.getWidth() - (maxHP * gap) - 40;
-        int hudY = 50;
+        int hudX = (maxHP * gap)  ;
+        int hudY = 100;
         for (int h = 0; h < maxHP; h++) {
-            int heartX = hudX + (h * gap);
+            int heartX = hudX + (h * gap) - 140;
 
             g.setColor(Color.BLACK);
             g.drawOval(heartX - 2, hudY - 42, r + 4, r + 4);
@@ -423,7 +423,7 @@ public class Player
         g.setColor(new Color(200, 200, 200));
         g.drawOval(hudX, hudY, r, r);
         g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString(amo + "/" + maxAmo, hudX + r + 10, hudY + 24);
+        g.drawString(amo + "/" + maxAmo, hudX + r + 10, hudY + 30 );
     }
 
     private void drawBombCounter(Graphics g) {
@@ -437,7 +437,7 @@ public class Player
         g.setColor(Color.DARK_GRAY);
         g.fillOval(hudX, bombHudY, r, r);
         g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("x" + currentBomb, hudX + r + 10, bombHudY + 24);
+        g.drawString("x" + currentBomb, hudX + r + 10, bombHudY + 30 );
     }
 
     private void drawMelee(Graphics g, int xOff, int yOff)

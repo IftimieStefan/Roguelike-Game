@@ -46,6 +46,7 @@ public class Foca extends Inamic{
     @Override
     public void Draw(Graphics g) {
         GameCamera camera = PaooGame.Core.GameCamera.getInstance();
+
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;
         int yOff = (camera != null) ? (int)camera.getyOff() : 0;
 

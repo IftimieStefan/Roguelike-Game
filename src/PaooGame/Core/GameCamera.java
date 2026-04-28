@@ -30,7 +30,7 @@ public class GameCamera {
     public void centerOnDinu(Player p){
         // pentru a centra mijlocul jucatorului pe ecran
         xOff = p.GetX() - gameWidth / 2f + 48;
-        yOff = p.GetY() - gameHeight / 2f + 48;
+        yOff = p.GetY() - gameHeight / 2f + 48 ;
     }
 
     public void move(float x,float y){

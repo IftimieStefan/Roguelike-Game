@@ -65,7 +65,6 @@ public class Game implements Runnable
         this.title=title;
     }
 
-    // Metoda run() contine Game Loop-ul principal care dicteaza FPS-ul si viteza elementelor din joc.
     public void run()
     {
         InitGame();
