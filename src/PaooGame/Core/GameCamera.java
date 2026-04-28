@@ -1,6 +1,6 @@
 package PaooGame.Core;
 
-import PaooGame.Entities.Player;
+import PaooGame.Entities.Player.Player;
 
 public class GameCamera {
     private static GameCamera instance;

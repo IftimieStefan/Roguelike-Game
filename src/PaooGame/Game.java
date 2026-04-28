@@ -1,11 +1,12 @@
 package PaooGame;
 
 import PaooGame.Core.GameCamera;
+import PaooGame.Entities.Enemies.EnemyFactory;
+import PaooGame.Entities.NPCs.Bity;
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Graphics.Assets;
 import PaooGame.States.*;
-import PaooGame.Tiles.Tile;
-import PaooGame.Entities.Player;
+import PaooGame.Entities.Player.Player;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -14,7 +15,7 @@ import java.awt.image.BufferStrategy;
 // Rularea pe alt thread curat.
 public class Game implements Runnable
 {
-    public enum GameState { MENU, SAVE_SELECTION, PLAYING }
+    public enum GameState { MENU, SAVE_SELECTION, PLAYING, OPTIONS }
 
     private GameWindow      wnd;
     private boolean         runState;
@@ -29,6 +30,7 @@ public class Game implements Runnable
     private GameState       gameState;
     private SaveSelectionState saveMenu;
     private MainMenuState   mainMenu;
+    private OptionsState    optionsMenu;
     
     // Main character-ul
     private Player          player;     // DINU - personajul principal
@@ -57,6 +59,7 @@ public class Game implements Runnable
         gameState = GameState.MENU;
         mainMenu  = new MainMenuState(wnd);
         saveMenu = new SaveSelectionState(wnd);
+        optionsMenu = new OptionsState(wnd);
 
     }
 
@@ -135,8 +138,26 @@ public class Game implements Runnable
                 saveMenu = new SaveSelectionState(wnd);
                 mainMenu.Reset();
             }
+            if(mainMenu.IsOptionsPressed())
+            {
+                ClearMouseListeners();
+                gameState = GameState.OPTIONS;
+                optionsMenu = new OptionsState(wnd);
+                mainMenu.Reset();
+            }
         }
-            else if(gameState == GameState.SAVE_SELECTION)
+        else if (gameState == GameState.OPTIONS)
+        {
+            optionsMenu.Update(animTime);
+            if (optionsMenu.IsBackPressed())
+            {
+                ClearMouseListeners();
+                gameState = GameState.MENU;
+                mainMenu = new MainMenuState(wnd);
+                optionsMenu.Reset();
+            }
+        }
+        else if(gameState == GameState.SAVE_SELECTION)
             {
                 saveMenu.Update(animTime);
 
@@ -189,10 +210,12 @@ public class Game implements Runnable
 
 
                     entityManager = new PaooGame.Managers.EntityManager();
-                    entityManager.addEnemy(new PaooGame.Entities.Foca(300, 300, player));
-                    entityManager.addEnemy(new PaooGame.Entities.Foca(300, 3500, player));
-                    entityManager.addEnemy(new PaooGame.Entities.Foca_Cowboy(300, 320, player));
-                    entityManager.addNpc(new PaooGame.Entities.Bity(200, 200));
+                    
+                    entityManager.addEnemy(EnemyFactory.createEnemy("BOSS_COWBOY", 300, 300, player));
+                    entityManager.addEnemy(EnemyFactory.createEnemy("FAST_FOCA", 300, 3500, player));
+                    entityManager.addEnemy(EnemyFactory.createEnemy("FOCA_COWBOY", 300, 320, player));
+                    
+                    entityManager.addNpc(new Bity(200, 200));
 
                     camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());
                     camera.centerOnDinu(player);
@@ -249,6 +272,10 @@ public class Game implements Runnable
         else if(gameState == GameState.SAVE_SELECTION)
         {
             saveMenu.Draw(g);
+        }
+        else if(gameState == GameState.OPTIONS)
+        {
+            optionsMenu.Draw(g);
         }
         else if(gameState == GameState.PLAYING)
         {

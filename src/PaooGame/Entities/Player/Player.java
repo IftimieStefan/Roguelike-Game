@@ -1,7 +1,8 @@
-package PaooGame.Entities;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+package PaooGame.Entities.Player;
 import java.util.ArrayList;
+
+import PaooGame.Entities.Projectiles.Bomb;
+import PaooGame.Entities.Projectiles.Snowball;
 import PaooGame.Graphics.Assets;
 
 import java.awt.*;

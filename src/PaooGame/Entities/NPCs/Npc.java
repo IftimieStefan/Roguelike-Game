@@ -1,4 +1,4 @@
-package PaooGame.Entities;
+package PaooGame.Entities.NPCs;
 
 import PaooGame.Core.GameCamera;
 import java.awt.*;

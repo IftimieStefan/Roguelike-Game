@@ -1,4 +1,4 @@
-package PaooGame.Entities;
+package PaooGame.Entities.Enemies;
 
 import java.awt.*;
 

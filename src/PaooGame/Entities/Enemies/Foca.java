@@ -1,13 +1,14 @@
-package PaooGame.Entities;
+package PaooGame.Entities.Enemies;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import PaooGame.Core.GameCamera;
+import PaooGame.Entities.Player.Player;
 import PaooGame.Graphics.Assets;
 
 // Inamic basic, gen Foca.
-public class Foca extends Inamic{
+public class Foca extends Inamic {
     private Player player; // Tinta inamicului.
     private long lastAttackTime = 0; // Timer spam consola.
     private BufferedImage sprite; // Poza inamicului.

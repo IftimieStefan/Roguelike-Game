@@ -1,9 +1,9 @@
 package PaooGame.Managers;
 
-import PaooGame.Entities.Inamic;
-import PaooGame.Entities.Npc;
-import PaooGame.Entities.Player;
-import PaooGame.Entities.Snowball;
+import PaooGame.Entities.Enemies.Inamic;
+import PaooGame.Entities.NPCs.Npc;
+import PaooGame.Entities.Player.Player;
+import PaooGame.Entities.Projectiles.Snowball;
 
 import java.awt.*;
 import java.util.ArrayList;
