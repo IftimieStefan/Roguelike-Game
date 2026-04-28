@@ -1,9 +1,6 @@
 package PaooGame.Managers;
 
-import PaooGame.Entities.Inamic;
-import PaooGame.Entities.Npc;
-import PaooGame.Entities.Player;
-import PaooGame.Entities.Snowball;
+import PaooGame.Entities.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -78,10 +75,14 @@ public class EntityManager {
         ArrayList<Snowball> snowballs = player.getSnowballs();
 
         if (snowballs != null) {
-            for (Inamic inamic : enemies) {
-                for (Snowball snowball : snowballs) {
-                    if (snowball.isActive()) {
-                        if (inamic.getHitbox().intersects(snowball.getHitbox())) {
+            for (Inamic inamic : enemies)
+            {
+                for (Snowball snowball : snowballs)
+                {
+                    if (snowball.isActive())
+                    {
+                        if (inamic.getHitbox().intersects(snowball.getHitbox()))
+                        {
                             inamic.takeDamage(5);
                             snowball.setActive(false);
                             break;
@@ -92,9 +93,12 @@ public class EntityManager {
         }
 
         //coliziune atac melee inamici
-        if (player.isMeleeAttacking()) {
-            for (Inamic inamic : enemies) {
-                if (player.getMeleeHitbox().intersects(inamic.getHitbox())) {
+        if (player.isMeleeAttacking())
+        {
+            for (Inamic inamic : enemies)
+            {
+                if (player.getMeleeHitbox().intersects(inamic.getHitbox()))
+                {
                     inamic.takeDamage(5);
                     player.stopMelee();
                     break;
@@ -103,9 +107,20 @@ public class EntityManager {
         }
 
         //coliziune inamici player
-        for (Inamic inamic : enemies) {
+        for (Inamic inamic : enemies)
+        {
             if (player.getHitbox().intersects(inamic.getHitbox())) {
                 player.takeDamage();
+            }
+        }
+
+    }
+
+    //damage explozie
+    public void processExplosion(Rectangle explosionBox) {
+        for (Inamic inamic : enemies) {
+            if (explosionBox.intersects(inamic.getHitbox())) {
+                inamic.takeDamage(20);
             }
         }
     }

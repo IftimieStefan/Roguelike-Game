@@ -2,15 +2,23 @@ package PaooGame.Entities;
 
 import PaooGame.Core.GameCamera;
 import java.awt.*;
+import PaooGame.Managers.EntityManager;
 
 public class Bomb
 {
+    //pt animatie
     private float startX, startY, targetX, targetY, currentX, currentY;
     private float progress = 0;
     private float speed = 0.02f; // Viteza zborului
     private int maxHeight = 60;  // Înălțimea saltului
     private int r = 24;
     private boolean active = true;
+
+    //pt explozie
+    private boolean isExploding = false;
+    private long explosionTimer = 0;
+    private final int explosionDuration = 200;
+    private int explosionRadius=100;
 
     public Bomb(float x, float y, float dirX, float dirY)
     {
@@ -22,14 +30,28 @@ public class Bomb
         this.targetY = startY + dirY * 200;
     }
 
-    public void Update() {
+    public void Update(PaooGame.Managers.EntityManager em)
+    {
         if (progress < 1.0f) {
             progress += speed;
             currentX = startX + (targetX - startX) * progress;
             currentY = startY + (targetY - startY) * progress;
-        } else {
-            active = false;
+        } else if (!isExploding){
+            isExploding=true;
+            explosionTimer=System.currentTimeMillis();
+            if(em!=null) {
+                em.processExplosion(getExplosionHitbox());
+            }
         }
+
+        if(isExploding)
+        {
+            if(System.currentTimeMillis()-explosionTimer>explosionDuration)
+            {
+                active=false;
+            }
+        }
+
     }
 
     public void Draw(Graphics g, GameCamera camera) {
@@ -52,4 +74,12 @@ public class Bomb
     }
 
     public boolean isActive() { return active; }
+
+    public Rectangle getExplosionHitbox()
+    {
+        if (!isExploding) return new Rectangle(0, 0, 0, 0);
+        return new Rectangle((int)targetX - explosionRadius/2, (int)targetY - explosionRadius/2, explosionRadius, explosionRadius);
+    }
+
+    public boolean isExploding() { return isExploding; }
 }

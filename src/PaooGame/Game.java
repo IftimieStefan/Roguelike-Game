@@ -145,7 +145,7 @@ public class Game implements Runnable
                 {
                     ClearMouseListeners();
 
-                    currentMap = new PaooGame.MapLoader("res/harti/Level1/room1.txt");//incarcam nivelul 1
+                    currentMap = new PaooGame.MapLoader("res/harti/Level1/room1.csv");//incarcam nivelul 1
                     player = new Player(100, 100, wnd.GetCanvas());
 
                     if(!mouseListenerAdded)
@@ -214,8 +214,8 @@ public class Game implements Runnable
             else if(gameState==GameState.PLAYING)
             {
                 if (currentMap !=null) currentMap.Update();
-                if (player != null) player.Update();
-                if (entityManager != null) {
+                if (entityManager != null && player!=null) {
+                    player.Update(entityManager);
                     entityManager.Update();
                     entityManager.checkInteractions(player);
                 }

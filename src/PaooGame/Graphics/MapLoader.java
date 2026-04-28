@@ -9,7 +9,7 @@ import java.io.File;
 
 public class MapLoader
 {
-    private int width, height;
+    private int width=60, height=40;
     private int[][] tiles;
 
     public MapLoader(String path)
@@ -23,8 +23,7 @@ public class MapLoader
             File file = new File(path);
             Scanner sc = new Scanner(file);
 
-            width = sc.nextInt();
-            height = sc.nextInt();//citim dimensiunile hartii
+            sc.useDelimiter("[,\\s\\n\\r]+");
             tiles = new int[width][height];
 
             for (int j = 0; j < height; ++j) {

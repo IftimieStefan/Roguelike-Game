@@ -3,6 +3,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import PaooGame.Graphics.Assets;
+import PaooGame.Managers.EntityManager;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -246,7 +247,7 @@ public class Player
         lastDash=System.currentTimeMillis();
     }
 
-    public void Update()
+    public void Update(EntityManager em)
     {
         boolean isMoving=false;
         if(up)
@@ -304,7 +305,7 @@ public class Player
         for(int k=0; k<bombs.size();k++)
         {
             Bomb b=bombs.get(k);
-            b.Update();
+            b.Update(em);
             if(!b.isActive()) {
                 bombs.remove(k);
                 k--;
@@ -492,5 +493,9 @@ public class Player
 
     public ArrayList<Snowball> getSnowballs() {
         return snowballs;
+    }
+
+    public ArrayList<Bomb> getBombs() {
+        return bombs;
     }
 }
