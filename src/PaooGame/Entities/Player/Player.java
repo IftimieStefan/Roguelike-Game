@@ -384,11 +384,15 @@ public class Player
             g.drawImage(currentFrame, (int) x - xOff, (int) y - yOff, null);
         }
 
-        //hud
+        //atac melee
+        drawMelee(g,xOff,yOff);
+    }
+
+    public void DrawHUD(Graphics g)
+    {
         drawHP(g);
         drawSnowballCounter(g);
         drawBombCounter(g);
-        drawMelee(g,xOff,yOff);
     }
 
     private void drawHP(Graphics g)

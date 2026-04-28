@@ -279,9 +279,22 @@ public class Game implements Runnable
         }
         else if(gameState == GameState.PLAYING)
         {
+            Graphics2D g2d = (Graphics2D) g;
+            java.awt.geom.AffineTransform old = g2d.getTransform();
+
+            if (camera != null) {
+                float zoom = camera.getZoom();
+                g2d.scale(zoom, zoom);
+            }
+
             if(currentMap!=null) currentMap.Draw(g, camera);
             if(player!=null) player.Draw(g, camera);
             if(entityManager!=null) entityManager.Draw(g);
+
+            // Reseteaza transformarea ca sa desenam HUD-ul normal
+            g2d.setTransform(old);
+
+            if(player!=null) player.DrawHUD(g);
         }
 
         bs.show();
