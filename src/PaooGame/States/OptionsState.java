@@ -1,13 +1,13 @@
 package PaooGame.States;
 
 import PaooGame.GameWindow.GameWindow;
+import PaooGame.Managers.StateManager;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class OptionsState {
-    private GameWindow wnd;
+public class OptionsState extends State{
     private float animTime;
 
     private Rectangle backButton;
@@ -17,7 +17,7 @@ public class OptionsState {
     private boolean devModeOn = false;
 
     public OptionsState(GameWindow wnd) {
-        this.wnd = wnd;
+        super(wnd);
         this.animTime = 0;
 
         int cx = wnd.GetCanvas().getWidth() / 2;
@@ -40,6 +40,11 @@ public class OptionsState {
 
     public void Update(float time) {
         this.animTime = time;
+
+        if(backPressed){
+            StateManager.SetState(new MainMenuState(wnd));
+            CurataMouseListeners();
+        }
     }
 
     public void Draw(Graphics g) {

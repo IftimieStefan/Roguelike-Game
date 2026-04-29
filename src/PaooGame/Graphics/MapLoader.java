@@ -72,14 +72,13 @@ public class MapLoader
                 {
                     int xOff = 0, yOff = 0;
 
-                    // Dacă avem cameră, preluăm offset-urile ei
+                    // luam offseturi
                     if (camera != null) {
                         xOff = (int)camera.getxOff();
                         yOff = (int)camera.getyOff();
                     }
 
-                    // Desenăm folosind Tile.TILE_WIDTH (48) și scădem camera
-                    // Astfel, dacă pinguinul merge la dreapta, camera scade din X și harta "vine" spre noi
+                    // dimensiune tile latime si scadem offset
                     t.Draw(g, i * Tile.TILE_WIDTH - xOff, j * Tile.TILE_HEIGHT - yOff);
                 }
             }

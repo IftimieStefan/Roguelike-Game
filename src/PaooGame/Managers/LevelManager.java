@@ -96,7 +96,7 @@ public class LevelManager {
             for(Npc npc : entityManager.getNpcs()) {
                 if(npc instanceof Bity) {
                     if(npc.isTalkedTo()) {
-                        return false; // Bity removes fog of war
+                        return false; // Bity remov FOW
                     } else {
                         return true;
                     }
