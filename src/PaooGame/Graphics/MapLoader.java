@@ -1,4 +1,4 @@
-package PaooGame;
+package PaooGame.Graphics;
 
 import java.awt.*;
 
@@ -9,7 +9,7 @@ import java.io.File;
 
 public class MapLoader
 {
-    private int width=60, height=40;
+    private int width=50, height=40;
     private int[][] tiles;
 
     public MapLoader(String path)

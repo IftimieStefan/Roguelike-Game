@@ -23,12 +23,12 @@ public class Assets
     public static BufferedImage peretecoltss;
     public static BufferedImage peretecoltsj;
     public static BufferedImage peretecolt;
-    public static BufferedImage townGrassDestroyed;
-    public static BufferedImage townSoil;
+    public static BufferedImage grass;
+    public static BufferedImage rock;
     public static BufferedImage water;
-    public static BufferedImage rockUp;
-    public static BufferedImage rockDown;
-    public static BufferedImage rockLeft;
+    public static BufferedImage stick;
+    public static BufferedImage usaorizontal;
+    public static BufferedImage usavertical;
     public static BufferedImage rockRight;
     public static BufferedImage tree;
 
@@ -69,7 +69,12 @@ public class Assets
         pereteorizontal = sheet.crop(1,0);
         peretevertical = sheet.crop(2,1);
         peretecolt = sheet.crop(2,0);
-//        water = sheet.crop(1, 1);
+        usaorizontal = sheet.crop(1,3);
+        usavertical=sheet.crop(2,4);
+        stick=sheet.crop(0,3);
+        rock=sheet.crop(0,4);
+        grass=sheet.crop(0,5);
+
         playerRight[0] = dinu.crop(1,1);
         playerRight[1]=dinu.crop(2,1);
         playerRight[2]=dinu.crop(3,1);

@@ -21,6 +21,11 @@ public class Tile
     public static Tile peretecoltss = new PereteColtSS(6);
     public static Tile peretecoltsj = new PereteColtSJ(7);
     public static Tile peretecoltdj = new PereteColtDJ(8);
+    public static Tile stickTile = new StickTile(9);
+    public static Tile usaOrizontal = new UsaOrizontal(10);
+    public static Tile rockTile=new RockTile(12);
+    public static Tile usaVertical = new UsaVertical(14);
+    public static Tile grassTile= new GrassTile(15);
 
 
     public static final int TILE_WIDTH  = 48;                       /*!< Latimea unei dale.*/
@@ -71,6 +76,7 @@ public class Tile
     {
         return false;
     }
+    public boolean isDoor(){ return false;}
 
     /*! \fn public int GetId()
         \brief Returneaza id-ul dalei.

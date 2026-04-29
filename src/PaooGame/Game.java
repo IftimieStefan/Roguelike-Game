@@ -4,7 +4,7 @@ import PaooGame.Core.GameCamera;
 import PaooGame.Entities.Enemies.EnemyFactory;
 import PaooGame.Entities.NPCs.Bity;
 import PaooGame.GameWindow.GameWindow;
-import PaooGame.Graphics.Assets;
+import PaooGame.Graphics.*;
 import PaooGame.States.*;
 import PaooGame.Entities.Player.Player;
 
@@ -36,7 +36,7 @@ public class Game implements Runnable
     private Player          player;     // DINU - personajul principal
     
     // Extrage harta din txt.
-    private PaooGame.MapLoader currentMap;
+    private MapLoader currentMap;
     
     // Seful la inamici si chestii.
     private PaooGame.Managers.EntityManager entityManager;
@@ -72,19 +72,19 @@ public class Game implements Runnable
     {
         InitGame();
         long oldTime = System.nanoTime();
-        long curentTime;
+        long currentTime;
 
         final int    framesPerSecond = 60;
         final double timeFrame       = 1000000000 / framesPerSecond;
 
         while(runState == true)
         {
-            curentTime = System.nanoTime();
-            if((curentTime - oldTime) > timeFrame)
+            currentTime = System.nanoTime();
+            if((currentTime - oldTime) > timeFrame)
             {
                 Update();
                 Draw();
-                oldTime = curentTime;
+                oldTime = currentTime;
             }
         }
     }
@@ -165,7 +165,7 @@ public class Game implements Runnable
                 {
                     ClearMouseListeners();
 
-                    currentMap = new PaooGame.MapLoader("res/harti/Level1/room1.csv");//incarcam nivelul 1
+                    currentMap = new MapLoader("res/harti/Level1/room1.csv");//incarcam nivelul 1
                     player = new Player(100, 100, wnd.GetCanvas());
 
                     if(!mouseListenerAdded)
