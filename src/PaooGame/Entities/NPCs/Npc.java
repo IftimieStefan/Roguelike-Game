@@ -10,6 +10,7 @@ public abstract class Npc {
     
     // Cand e true, va aparea mesajul pe ecran
     protected boolean showDialog = false;
+    protected boolean hasBeenTalkedTo = false;
 
     public Npc(float x, float y, String name, String dialogMessage) {
         this.x = x;
@@ -55,8 +56,12 @@ public abstract class Npc {
 
     public void toggleDialog() {
         showDialog = !showDialog;
+        if(showDialog) {
+            hasBeenTalkedTo = true;
+        }
     }
 
     public float getX() { return x; }
     public float getY() { return y; }
+    public boolean isTalkedTo() { return hasBeenTalkedTo; }
 }

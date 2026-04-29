@@ -6,11 +6,14 @@ import PaooGame.Core.GameCamera;
 import PaooGame.Tiles.Tile;
 import java.util.Scanner;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapLoader
 {
     private int width=50, height=40;
     private int[][] tiles;
+    private List<String> entityData;
 
     public MapLoader(String path)
     {
@@ -31,6 +34,15 @@ public class MapLoader
                     tiles[i][j] = sc.nextInt();//citim valorile tile-urilor de pe harta
                 }
             }
+
+            entityData = new ArrayList<>();
+            // Citim restul fisierului pentru entitati
+            while(sc.hasNext()) {
+                String line = sc.nextLine().trim();
+                if(!line.isEmpty()) {
+                    entityData.add(line);
+                }
+            }
             sc.close();
         }catch(Exception e)
         {
@@ -42,6 +54,10 @@ public class MapLoader
     public void Update()
     {
 
+    }
+
+    public List<String> getEntityData() {
+        return entityData;
     }
 
     public void Draw(Graphics g, GameCamera camera)

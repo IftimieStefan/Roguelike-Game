@@ -486,6 +486,8 @@ public class Player
 
     public float GetX() { return x; }
     public float GetY() { return y; }
+    public void setX(float x) { this.x = x; }
+    public void setY(float y) { this.y = y; }
 
 
     public boolean consumeInteract() {
