@@ -27,7 +27,7 @@ public class LevelManager {
     }
 
     public void loadRoom() {
-        String mapPath = "res/harti/Level" + currentLevel + "/room" + currentRoom + ".txt";
+        String mapPath = "res/harti/Level" + currentLevel + "/room" + currentRoom + ".csv";
         
         File f = new File(mapPath);
         if(!f.exists()) {
@@ -35,7 +35,7 @@ public class LevelManager {
                 // Nu mai exista camere in acest nivel, trecem la nivelul urmator
                 currentLevel++;
                 currentRoom = 1;
-                mapPath = "res/harti/Level" + currentLevel + "/room" + currentRoom + ".txt";
+                mapPath = "res/harti/Level" + currentLevel + "/room" + currentRoom + ".csv";
                 f = new File(mapPath);
                 if(!f.exists()) {
                     System.out.println("Ai terminat jocul!");
@@ -77,7 +77,7 @@ public class LevelManager {
     }
 
     public void Update() {
-        if(!mapExists) return;
+        if(!mapExists || currentMap==null) return;
 
         currentMap.Update();
         entityManager.Update();
