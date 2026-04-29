@@ -1,15 +1,15 @@
 package PaooGame.States;
 
 import PaooGame.GameWindow.GameWindow;
+import PaooGame.Managers.StateManager;
 import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class MainMenuState
+public class MainMenuState extends State
 {
-    private GameWindow  wnd;
     private Rectangle   playButton;     //play
     private Rectangle   exitButton;     /*!< Zona butonului Exit */
     private Rectangle   optionsButton;
@@ -20,7 +20,7 @@ public class MainMenuState
 
     public MainMenuState(GameWindow wnd)
     {
-        this.wnd        = wnd;
+        super(wnd);
         playPressed     = false;
         exitPressed     = false;
         optionsPressed  = false;
@@ -59,6 +59,14 @@ public class MainMenuState
         if(exitPressed)
         {
             System.exit(0);
+        }
+        if(playPressed){
+            CurataMouseListeners();
+            StateManager.SetState(new SaveSelectionState(wnd));
+        }
+        if(optionsPressed){
+            CurataMouseListeners();
+            StateManager.SetState(new OptionsState(wnd));
         }
     }
 
