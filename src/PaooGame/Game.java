@@ -41,7 +41,7 @@ public class Game implements Runnable
 
     // Extrage harta din txt.
     private MapLoader currentMap;
-    
+
     // Seful la scene si chestii
     private LevelManager levelManager;
 
