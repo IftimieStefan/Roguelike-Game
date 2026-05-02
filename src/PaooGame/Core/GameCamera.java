@@ -30,8 +30,8 @@ public class GameCamera {
 
     public void centerOnDinu(Player p){
         // pentru a centra mijlocul jucatorului pe ecran, respectand marirea zoom-ului
-        xOff = p.GetX() - (gameWidth / zoom) / 2f + 48;
-        yOff = p.GetY() - (gameHeight / zoom) / 2f + 48 ;
+        xOff = p.getX() - (gameWidth / zoom) / 2f + 48;
+        yOff = p.getY() - (gameHeight / zoom) / 2f + 48 ;
     }
 
     public float getZoom() {

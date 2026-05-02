@@ -39,9 +39,6 @@ public class Game implements Runnable
     // Main character-ul
     private Player          player;     // DINU - personajul principal
 
-    //Pentru proiectilele lui Dinu
-    private EntityManager em=new EntityManager();
-
     // Extrage harta din txt.
     private MapLoader currentMap;
     
@@ -234,7 +231,7 @@ public class Game implements Runnable
             }
             else if(gameState==GameState.PLAYING)
             {
-                if (player != null) player.Update(em);
+                if (player != null) player.Update(levelManager);
                 if (levelManager != null) {
                     levelManager.Update();
                 }
