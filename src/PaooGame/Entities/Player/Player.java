@@ -91,11 +91,11 @@ public class Player
     private long lastDash;
     private int dashReloadTime=2000;
 
-    public Player(float startX, float startY, Canvas canvas)
+    public Player(Canvas canvas)
     {
         this.canvas=canvas;
-        this.x = startX;
-        this.y = startY;
+//        this.x = startX;
+//        this.y = startY;
         currentFrame = Assets.playerDown[0];
 
         //ii dam abilitati lui Dinu

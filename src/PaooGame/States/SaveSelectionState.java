@@ -1,13 +1,14 @@
 package PaooGame.States;
 
 import PaooGame.GameWindow.GameWindow;
+import PaooGame.Managers.StateManager;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class SaveSelectionState
+public class SaveSelectionState extends State
 {
-    private GameWindow wnd;
     private Rectangle[] saveSlots;  // Un vector de 3 dreptunghiuri pentru sloturi
     private Rectangle   backButton;
     private int         selectedSlot = -1; // -1 inseamna nicio selectie
@@ -15,7 +16,7 @@ public class SaveSelectionState
     private float animTime = 0;
 
     public SaveSelectionState(GameWindow wnd) {
-        this.wnd = wnd;
+        super(wnd);
         int cx = wnd.GetCanvas().getWidth() / 2;
 
         // Definim 3 butoane (sloturi) unul sub altul
@@ -47,6 +48,16 @@ public class SaveSelectionState
     public void Update(float time)
     {
         this.animTime=time;
+
+        if(backPressed){
+            StateManager.SetState(new MainMenuState(wnd));
+            CurataMouseListeners();
+        }
+
+        if(selectedSlot != -1 ){
+            CurataMouseListeners();
+            StateManager.SetState(new PlayState(wnd));
+        }
     }
 
     public void Draw(Graphics g) {
