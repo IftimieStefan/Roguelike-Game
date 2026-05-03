@@ -15,7 +15,7 @@ public class Assets
     public static BufferedImage[] playerDown=new BufferedImage[3];
     public static BufferedImage[] playerUp=new BufferedImage[3];
     public static BufferedImage snow;
-    public static BufferedImage ice;
+    public static BufferedImage ice,ices,icen,icee,icene,icew,icenw,icese,icesw;
     public static BufferedImage pereteorizontal;
     public static BufferedImage peretevertical;
     public static BufferedImage peretecoltds;
@@ -31,6 +31,7 @@ public class Assets
     public static BufferedImage usavertical;
     public static BufferedImage rockRight;
     public static BufferedImage tree;
+    public static BufferedImage shore;
 
     public  static BufferedImage inamic_samurai;
     public  static BufferedImage inamic_cowboy;
@@ -56,7 +57,15 @@ public class Assets
 
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         snow = sheet.crop(0, 0);
-        ice = sheet.crop(1, 4);
+        ice = sheet.crop(1, 7);
+        icen=sheet.crop(1,6);
+        ices=sheet.crop(1,8);
+        icee=sheet.crop(2,7);
+        icew=sheet.crop(0,7);
+        icene=sheet.crop(2,6);
+        icenw=sheet.crop(0,6);
+        icese=sheet.crop(2,8);
+        icesw=sheet.crop(0,8);
         pereteorizontal = sheet.crop(1,0);
         peretevertical = sheet.crop(2,1);
         peretecoltdj=sheet.crop(2,2);
@@ -65,7 +74,6 @@ public class Assets
         peretecoltsj = sheet.crop(1,2);
         water = sheet.crop(1, 1);
         snow = sheet.crop(0, 0);
-        ice = sheet.crop(1, 4);
         pereteorizontal = sheet.crop(1,0);
         peretevertical = sheet.crop(2,1);
         peretecolt = sheet.crop(2,0);
@@ -74,6 +82,7 @@ public class Assets
         stick=sheet.crop(0,3);
         rock=sheet.crop(0,4);
         grass=sheet.crop(0,5);
+        shore=sheet.crop(0,1);
 
         playerRight[0] = dinu.crop(1,1);
         playerRight[1]=dinu.crop(2,1);

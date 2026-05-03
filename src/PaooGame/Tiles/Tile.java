@@ -15,7 +15,8 @@ public class Tile
         /// o singura data in memorie
     public static Tile snowTile        = new SnowTile(0);
     public static Tile pereteorizontal = new PereteOrizontal(1);
-    public static Tile peretecoltds = new PereteColtDS(2);;
+    public static Tile peretecoltds = new PereteColtDS(2);
+    public static Tile shoreTile = new ShoreTile(3);
     public static Tile waterTile        = new WaterTile(4);
     public static Tile peretevertical = new PereteVertical(5);
     public static Tile peretecoltss = new PereteColtSS(6);
@@ -26,6 +27,16 @@ public class Tile
     public static Tile rockTile=new RockTile(12);
     public static Tile usaVertical = new UsaVertical(14);
     public static Tile grassTile= new GrassTile(15);
+    public static Tile iceTileNW=new IceTileNW(18);
+    public static Tile iceTileN=new IceTileN(19);
+    public static Tile iceTileNE=new IceTileNE(20);
+    public static Tile iceTileW=new IceTileW(21);
+    public static Tile iceTile=new IceTile(22);
+    public static Tile iceTileE=new IceTileE(23);
+    public static Tile iceTileSW=new IceTileSW(24);
+    public static Tile iceTileS=new IceTileS(25);
+    public static Tile iceTileSE=new IceTileSE(26);
+
 
 
     public static final int TILE_WIDTH  = 48;                       /*!< Latimea unei dale.*/
