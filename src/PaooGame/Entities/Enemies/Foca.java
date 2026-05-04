@@ -24,8 +24,8 @@ public class Foca extends Inamic {
     // Urmareste jucatorul cand e langa.
     public void Update() {
         if (player != null) {
-            float px = player.GetX();
-            float py = player.GetY();
+            float px = player.getX();
+            float py = player.getY();
 
             float dx = px - this.x;
             float dy = py - this.y;

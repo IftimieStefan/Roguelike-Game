@@ -54,7 +54,7 @@ public class PlayState extends State {
     @Override
     public void Update(float time) {
         if(player !=null && levelManager != null){
-            player.Update(levelManager.getEntityManager());
+            player.Update(levelManager);
         }
 
         if(camera !=null){

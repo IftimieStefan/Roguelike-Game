@@ -4,22 +4,30 @@ import java.util.ArrayList;
 import PaooGame.Entities.Projectiles.Bomb;
 import PaooGame.Entities.Projectiles.Snowball;
 import PaooGame.Graphics.Assets;
-import PaooGame.Managers.EntityManager;
+import PaooGame.Managers.LevelManager;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
 // ASTA_I DINU, taticu' jocului.
 public class Player
 {
     private Canvas canvas;
 
+    //coordonatele
     private float x, y;
+
+    //directiile
+    private int dirX,dirY;
 
     // Viteza ba nene.
     private float speed = 3.0f;
+    private boolean isMoving=false;
 
     // Butoane apasate si faze.
     private boolean up, down, left, right, leftClick, rightClick, isReloading=false;
@@ -45,10 +53,16 @@ public class Player
 
     // Bulgarii zburatori ai lu' Dinu.
     private ArrayList<Snowball> snowballs = new ArrayList<>();
-    private ArrayList<Bomb> bombs = new ArrayList<>();
-
     private long lastAttackTime; // Timpul de la ultimul atac pentru cooldown
     private int attackCooldown = 500; // Cooldown intre bulgari tras (in milisecunde)
+    private int rangeDMG=5;
+
+    //abilitatile lui Dinu
+    private ArrayList<Ability> abilities = new ArrayList<>();
+    private ArrayList<Bomb> bombs = new ArrayList<>();
+    private int abilityIndex =0;
+    private boolean abilityPressed=false;
+
 
     private int lastDir=0; // Ultima directie in care s-a miscat jucatorul pentru directia atacului (0=sus, 1=jos, 2=stanga, 3=dreapta)
 
@@ -56,24 +70,24 @@ public class Player
     private int maxAmo=10; // Maxim de bulgari
     private int amo=10; // Numarul curent de bulgari disponibili
     private long lastReload=0; // Ultimul reload time
-    private final int reloadTime=200; // Timpul de asteptare intre reîncarcari
+    private int reloadTime=200; // Timpul de asteptare intre reîncarcari
 
     private boolean ePressed = false; // A dat E sau?
     private boolean interact = false; // Parla con NPC-u?
-
-    // Aatac bomba
-    private int currentBomb = 2;
-    private int maxBomb = 2;
-    private long lastBomb;
-    private final long bombReloadTime = 60000;
 
     //Atac mele
     private boolean isMeleeAttacking = false;
     private long meleeTimer = 0;
     private final long meleeDuration = 150;
+    private boolean meleeOnly=false;
+    private int meleeDMG=10;
 
     //Dash
-    private int dashX=80,dashY=80;//distanta
+    private boolean isDashing=false;
+    private int dashX,dashY;
+    private float dashDistance=80;//distanta;
+    private float dashSpeed=0.1f;
+    private float dashProgress=0;
     private long lastDash;
     private int dashReloadTime=2000;
 
@@ -83,6 +97,11 @@ public class Player
 //        this.x = startX;
 //        this.y = startY;
         currentFrame = Assets.playerDown[0];
+
+        //ii dam abilitati lui Dinu
+        abilities.add(new BombAbility());
+        abilities.add(new FervorAbility());
+        abilities.add(new BerserkAbility());
 
         canvas.addKeyListener(new KeyAdapter()
         {
@@ -95,11 +114,20 @@ public class Player
                 if(key == KeyEvent.VK_A) left = true;
                 if(key == KeyEvent.VK_D) right = true;
                 if(key == KeyEvent.VK_R) Reload();
-                if(key == KeyEvent.VK_Q) throwBomb();
+                if(key == KeyEvent.VK_Q) abilityPressed=true;
                 if(key == KeyEvent.VK_SPACE) dash();
                 if(key == KeyEvent.VK_E && !ePressed) {
                     interact = true;
                     ePressed = true;
+                }
+                if (key >= KeyEvent.VK_1 && key <= KeyEvent.VK_3)
+                {
+                    int targetIndex = key - KeyEvent.VK_1;
+
+                    if (targetIndex < abilities.size())
+                    {
+                        abilityIndex = targetIndex;
+                    }
                 }
             }
 
@@ -111,7 +139,23 @@ public class Player
                 if(key == KeyEvent.VK_S) down = false;
                 if(key == KeyEvent.VK_A) left = false;
                 if(key == KeyEvent.VK_D) right = false;
+                if(key == KeyEvent.VK_Q) abilityPressed=false;
                 if(key == KeyEvent.VK_E) ePressed = false;
+            }
+        });
+
+        canvas.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                int rotation = e.getWheelRotation();
+
+                if (!abilities.isEmpty()) {
+                    if (rotation > 0) {
+                        abilityIndex = (abilityIndex + 1) % abilities.size();
+                    } else {
+                        abilityIndex = (abilityIndex - 1 + abilities.size()) % abilities.size();
+                    }
+                }
             }
         });
 
@@ -129,25 +173,17 @@ public class Player
     {
         if(System.currentTimeMillis()-lastAttackTime<attackCooldown) return;
 
+        int sX=0,sY=0;
+        switch (lastDir)
+        {
+            case 0: sY=-1; break; // Sus
+            case 1: sY =1;  break; // Jos
+            case 2: sX = -1; break; // Stânga
+            case 3: sX = 1;  break; // Dreapta
+        }
         if(attackMode==0)
         {
             if(amo==0 || isReloading) return;
-            float sX=0,sY=0;
-            switch (lastDir)
-            {
-                case 0:
-                    sY = -7;
-                    break;
-                case 1:
-                    sY = 7;
-                    break;
-                case 2:
-                    sX = -7;
-                    break;
-                case 3:
-                    sX = 7;
-                    break;
-            }
             snowballs.add(new Snowball(x,y,sX,sY));
             amo--;
             lastAttackTime=System.currentTimeMillis();
@@ -169,21 +205,12 @@ public class Player
         }
     }
 
-    private void throwBomb()
+    private void useAbilty(LevelManager lm)
     {
-        if(currentBomb <= 0) return;
-
-        float dirX = 0, dirY = 0;
-        switch (lastDir)
+        if(!abilities.isEmpty())
         {
-            case 0: dirY = -1; break;
-            case 1: dirY = 1;  break;
-            case 2: dirX = -1; break;
-            case 3: dirX = 1;  break;
+            abilities.get(abilityIndex).use(this,lm);
         }
-
-        bombs.add(new Bomb(x, y, dirX, dirY));
-        currentBomb--;
     }
 
     public Rectangle getMeleeHitbox()
@@ -225,59 +252,63 @@ public class Player
 
     private void dash()
     {
-        if(System.currentTimeMillis()-lastDash<dashReloadTime) return;
+
+        if(System.currentTimeMillis()-lastDash<dashReloadTime || dirX==0 && dirY==0) return;
 
         //invulnerabilitate pt feel
+        isDashing=true;
+        dashX=dirX;
+        dashY=dirY;
         lastiFrame=System.currentTimeMillis();
-
-        switch(lastDir)
-        {
-            case 0: // Sus
-                y=y-dashX;
-                break;
-            case 1: // Jos
-                y=y+dashY;
-                break;
-            case 2: // Stânga
-                x=x-dashX;
-                break;
-            case 3: // Dreapta
-                x=x+dashX;
-                break;
-        }
         lastDash=System.currentTimeMillis();
     }
 
-    public void Update(EntityManager em)
+    public void Update(LevelManager lm)
     {
-        boolean isMoving=false;
+        if(!isDashing)
+        {
+        isMoving=false;
         if(up)
         {
-            y -= speed;
+            dirY=-1;
             currentFrame = Assets.playerUp[i];
             isMoving=true;
             lastDir=0;
         }
-        if(down)
+        else if(down)
         {
-            y += speed;
+            dirY=1;
             currentFrame = Assets.playerDown[i];
             isMoving=true;
             lastDir=1;
         }
+        else
+        {
+            dirY=0;
+        }
         if(left)
         {
-            x -= speed;
+            dirX=-1;
             currentFrame = Assets.playerLeft[i];
             isMoving=true;
             lastDir=2;
         }
-        if(right)
+        else if(right)
         {
-            x += speed;
+            dirX=+1;
             currentFrame = Assets.playerRight[i];
             isMoving=true;
             lastDir=3;
+        }
+        else
+        {
+            dirX=0;
+        }
+        if(isMoving)
+        {
+            x = x + dirX * speed;
+            y = y + dirY * speed;
+        }
         }
 
         if(isMoving)
@@ -302,11 +333,46 @@ public class Player
             }
         }
 
+        //Update abilitati
+        if(abilityPressed)
+        {
+            useAbilty(lm);
+            abilityPressed=false;
+        }
+
+        if(!abilities.isEmpty())
+        {
+            abilities.get(abilityIndex).Update();
+
+            for(Ability a:abilities)
+            {
+                if (a instanceof FervorAbility)
+                {
+                    FervorAbility fervor = (FervorAbility) a;
+                    if (fervor.isActive() && System.currentTimeMillis() - fervor.getActivationTime() > fervor.getDuration()) {
+
+                        this.attackCooldown = 500;
+                        this.reloadTime = 200;
+                        fervor.setActive(false);
+                    }
+                }
+                else if (a instanceof BerserkAbility) {
+                    BerserkAbility berserk = (BerserkAbility) a;
+                    if (berserk.isActive() && System.currentTimeMillis() - berserk.getActivationTime() > berserk.getDuration()) {
+                        this.meleeOnly = false;
+                        this.meleeDMG = 10;
+                        this.speed = 3.0f;
+                        berserk.setActive(false);
+                    }
+                }
+            }
+        }
+
         // Update bombe
         for(int k=0; k<bombs.size();k++)
         {
             Bomb b=bombs.get(k);
-            b.Update(em);
+            b.Update(lm.getEntityManager());
             if(!b.isActive()) {
                 bombs.remove(k);
                 k--;
@@ -314,13 +380,13 @@ public class Player
         }
 
         //selectare atac
-        if(leftClick)
-        {
-            Attack(0);
-        }
-        else if(rightClick)
+        if(meleeOnly || rightClick)
         {
             Attack(1);
+        }
+        else if(leftClick)
+        {
+            Attack(0);
         }
 
         // Reload muniție
@@ -337,17 +403,6 @@ public class Player
                 }
             }
         }
-        // Regenerare bombe
-        if(currentBomb < maxBomb)
-        {
-            if(System.currentTimeMillis() - lastBomb >= bombReloadTime)
-            {
-                currentBomb++;
-                lastBomb = System.currentTimeMillis();
-            }
-        } else {
-            lastBomb = System.currentTimeMillis();
-        }
 
         // Cooldown atac mele
         if(isMeleeAttacking)
@@ -358,6 +413,20 @@ public class Player
             }
         }
 
+        if(isDashing)
+        {
+            if (dashProgress < 1)
+            {
+                dashProgress = dashProgress + dashSpeed;
+                x = x + dashX*dashDistance * dashSpeed;
+                y = y + dashY*dashDistance * dashSpeed;
+            }
+            else
+            {
+                dashProgress = 0;
+                isDashing=false;
+            }
+        }
     }
 
     public void Draw(Graphics g, PaooGame.Core.GameCamera camera)
@@ -393,7 +462,24 @@ public class Player
     {
         drawHP(g);
         drawSnowballCounter(g);
-        drawBombCounter(g);
+
+        if(!abilities.isEmpty())
+        {
+            Ability activeAbility = abilities.get(abilityIndex);
+
+            if (activeAbility instanceof BombAbility)
+            {
+                drawBombHUD(g,activeAbility);
+            }
+            else if (activeAbility instanceof FervorAbility)
+            {
+                drawFervorHUD(g, (FervorAbility) activeAbility);
+            }
+            else if (activeAbility instanceof BerserkAbility)
+            {
+                drawBerserkHUD(g, (BerserkAbility) activeAbility);
+            }
+        }
     }
 
     private void drawHP(Graphics g)
@@ -432,18 +518,105 @@ public class Player
         g.drawString(amo + "/" + maxAmo, hudX + r + 10, hudY + 30 );
     }
 
-    private void drawBombCounter(Graphics g) {
+    private void drawBombHUD(Graphics g, Ability bomb) {
         int r = 32;
         int gap = 38;
-        int hudX = canvas.getWidth() - (maxHP * gap) - 40,hudY=50;
-        int bombHudY = hudY + 45;
+        int hudX = canvas.getWidth() - (maxHP * gap) - 40;
+        int hudY = 95;
+
+        // Desenăm cercul de fundal
+        g.setColor(Color.BLACK);
+        g.fillOval(hudX - 1, hudY - 1, r + 4, r + 4);
+        g.setColor(Color.DARK_GRAY);
+        g.fillOval(hudX, hudY, r, r);
+
+        // Afișăm numărul de bombe
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 25));
+        g.drawString("x" + bomb.getCharges(), hudX + r + 10, hudY + 25);
+    }
+
+    private void drawFervorHUD(Graphics g, FervorAbility fervor) {
+        int barWidth = 100;
+        int barHeight = 20;
+        int gap = 38;
+        int hudX = canvas.getWidth() - (maxHP * gap) - 40;
+        int hudY = 110;
+
+        // fundalul barei
+        g.setColor(Color.BLACK);
+        g.fillRect(hudX, hudY, barWidth, barHeight);
+
+        float progress = 1.0f;
+        Color barColor = Color.GRAY;
+
+        if (fervor.isActive()) {
+            long timeActive = System.currentTimeMillis() - fervor.getActivationTime();
+            progress = 1.0f - (float) timeActive / fervor.getDuration();
+            barColor=Color.ORANGE;
+        }
+        else if (fervor.getCharges() > 0)
+        {
+            progress = 1.0f;
+            barColor = Color.GREEN;
+        }
+        else
+        {
+            long timeSinceLastUse = System.currentTimeMillis() - fervor.getActivationTime();
+            progress = (float) timeSinceLastUse / 30000; // 30000 e cooldown-ul tău
+            barColor = Color.DARK_GRAY;
+        }
+
+
+        progress = Math.min(1.0f, Math.max(0f, progress));
+        g.setColor(barColor);
+        g.fillRect(hudX + 2, hudY + 2, (int) ((barWidth - 4) * progress), barHeight - 4);
 
         g.setColor(Color.BLACK);
-        g.fillOval(hudX - 1, bombHudY - 1, r + 4, r + 4);
-        g.setColor(Color.DARK_GRAY);
-        g.fillOval(hudX, bombHudY, r, r);
-        g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("x" + currentBomb, hudX + r + 10, bombHudY + 30 );
+        g.setFont(new Font("Arial", Font.BOLD, 12));
+        String status = fervor.isActive() ? "ACTIVE" : (fervor.getCharges() > 0 ? "FERVOR READY" : "RECHARGING...");
+        g.drawString(status, hudX, hudY - 5);
+    }
+
+    private void drawBerserkHUD(Graphics g, BerserkAbility berserk) {
+        int barWidth = 100;
+        int barHeight = 20;
+        int gap = 38;
+        int hudX = canvas.getWidth() - (maxHP * gap) - 40;
+        int hudY = 110;
+
+        g.setColor(Color.BLACK);
+        g.fillRect(hudX, hudY, barWidth, barHeight);
+
+        float progress = 1.0f;
+        Color barColor = Color.GRAY;
+
+        if (berserk.isActive()) {
+            long timeActive = System.currentTimeMillis() - berserk.getActivationTime();
+            progress = 1.0f - (float) timeActive / berserk.getDuration();
+            barColor=Color.RED;
+        }
+        else if (berserk.getCharges() > 0)
+        {
+            progress = 1.0f;
+            barColor = Color.GREEN;
+        }
+        else
+        {
+            long timeSinceLastUse = System.currentTimeMillis() - berserk.getActivationTime();
+            progress = (float) timeSinceLastUse / 30000; // 30000 e cooldown-ul tău
+            barColor = Color.DARK_GRAY;
+        }
+
+
+        progress = Math.min(1.0f, Math.max(0f, progress));
+        g.setColor(barColor);
+        g.fillRect(hudX + 2, hudY + 2, (int) ((barWidth - 4) * progress), barHeight - 4);
+
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 12));
+        String text = berserk.isActive() ? "ACTIVE" : (berserk.getCharges() > 0 ? "BERSERK READY" : "RECHARGING...");
+        g.drawString(text, hudX, hudY - 5);
     }
 
     private void drawMelee(Graphics g, int xOff, int yOff)
@@ -484,8 +657,9 @@ public class Player
         }
     }
 
-    public float GetX() { return x; }
-    public float GetY() { return y; }
+    public float getX() { return x; }
+    public float getY() { return y; }
+    public int getLastDir(){return lastDir;}
     public void setX(float x) { this.x = x; }
     public void setY(float y) { this.y = y; }
 
@@ -504,5 +678,33 @@ public class Player
 
     public ArrayList<Bomb> getBombs() {
         return bombs;
+    }
+
+    public void setAttackCooldown(int attackCooldown){
+        this.attackCooldown=attackCooldown;
+    }
+
+    public void setReloadTime(int reloadTime) {
+        this.reloadTime=reloadTime;
+    }
+
+    public void setMeleeOnly(boolean state){
+        this.meleeOnly=state;
+    }
+
+    public void setMeleeDMG(int meleeDMG){
+        this.meleeDMG=meleeDMG;
+    }
+
+    public int getMeleeDMG(){
+        return this.meleeDMG;
+    }
+
+    public int getRangeDMG(){
+        return this.rangeDMG;
+    }
+
+    public void setSpeed(float speed){
+        this.speed=speed;
     }
 }

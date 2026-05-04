@@ -12,8 +12,8 @@ public class Snowball
     {
         this.x=x+24;
         this.y=y+24;
-        this.speedX=speedX;
-        this.speedY=speedY;
+        this.speedX=speedX*7;
+        this.speedY=speedY*7;
     }
 
     public void Update()

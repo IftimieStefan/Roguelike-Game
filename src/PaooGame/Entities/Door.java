@@ -47,8 +47,8 @@ public class Door implements EnemyDeathObs {
     public boolean tryInteract(Player player) {
         if (!isOpen || isActivated) return false;
 
-        float dx = x - player.GetX();
-        float dy = y - player.GetY();
+        float dx = x - player.getX();
+        float dy = y - player.getY();
         float dist = (float) Math.sqrt(dx * dx + dy * dy);
 
         if (dist <= INTERACT_DISTANCE) {

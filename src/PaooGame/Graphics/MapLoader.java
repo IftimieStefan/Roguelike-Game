@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MapLoader
 {
-    private int width=50, height=40;
+    private int width, height;
     private int[][] tiles;
     private List<String> entityData;
 
@@ -27,6 +27,9 @@ public class MapLoader
             Scanner sc = new Scanner(file);
 
             sc.useDelimiter("[,\\s\\n\\r]+");
+
+            width=sc.nextInt();
+            height=sc.nextInt();
             tiles = new int[width][height];
 
             for (int j = 0; j < height; ++j) {
@@ -62,21 +65,22 @@ public class MapLoader
 
     public void Draw(Graphics g, GameCamera camera)
     {
-        for(int j = 0; j < height; ++j)
+        int xOff = (camera != null) ? (int)camera.getxOff() : 0;
+        int yOff = (camera != null) ? (int)camera.getyOff() : 0;
+
+        int xStart = Math.max(0, xOff / Tile.TILE_WIDTH);
+        int xEnd = Math.min(width, (xOff + 1920) / Tile.TILE_WIDTH + 1); // 800 e latimea ecranului
+
+        int yStart = Math.max(0, yOff / Tile.TILE_HEIGHT);
+        int yEnd = Math.min(height, (yOff + 1080) / Tile.TILE_HEIGHT + 1); // 600 e ianaltimea ecranului
+
+        for(int j = yStart; j < yEnd; ++j)
         {
-            for(int i = 0; i < width; ++i)
+            for(int i = xStart; i < xEnd; ++i)
             {
                 Tile t = Tile.tiles[tiles[i][j]];
                 if(t != null)
                 {
-                    int xOff = 0, yOff = 0;
-
-                    // luam offseturi
-                    if (camera != null) {
-                        xOff = (int)camera.getxOff();
-                        yOff = (int)camera.getyOff();
-                    }
-
                     // dimensiune tile latime si scadem offset
                     t.Draw(g, i * Tile.TILE_WIDTH - xOff, j * Tile.TILE_HEIGHT - yOff);
                 }

@@ -105,10 +105,10 @@ public class EntityManager {
             if (door != null && door.tryInteract(player)) {
                 System.out.println("Door activated! Transitioning...");
             } else {
-                for (Npc npc : npcs) {
-                    float dx = npc.getX() - player.GetX();
-                    float dy = npc.getY() - player.GetY();
-                    float distance = (float) Math.sqrt(dx * dx + dy * dy);
+            for (Npc npc : npcs) {
+                float dx = npc.getX() - player.getX();
+                float dy = npc.getY() - player.getY();
+                float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
                     if (distance <= 120) { // asprites sunt 48x48 so ma imare distanta
                         npc.toggleDialog();
@@ -126,7 +126,7 @@ public class EntityManager {
                 for (Snowball snowball : snowballs) {
                     if (snowball.isActive()) {
                         if (inamic.getHitbox().intersects(snowball.getHitbox())) {
-                            inamic.takeDamage(5);
+                            inamic.takeDamage(player.getRangeDMG());
                             snowball.setActive(false);
                             break;
                         }
@@ -139,7 +139,7 @@ public class EntityManager {
         if (player.isMeleeAttacking()) {
             for (Inamic inamic : enemies) {
                 if (player.getMeleeHitbox().intersects(inamic.getHitbox())) {
-                    inamic.takeDamage(5);
+                    inamic.takeDamage(player.getMeleeDMG());
                     player.stopMelee();
                     break;
                 }
