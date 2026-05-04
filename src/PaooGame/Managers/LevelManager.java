@@ -3,6 +3,7 @@ package PaooGame.Managers;
 import PaooGame.Game;
 import PaooGame.Graphics.MapLoader;
 import PaooGame.Entities.Player.Player;
+import PaooGame.Entities.Door;
 import PaooGame.Entities.Enemies.EnemyFactory;
 import PaooGame.Entities.NPCs.Npc;
 import PaooGame.Entities.NPCs.Bity;
@@ -72,6 +73,16 @@ public class LevelManager {
                 int y = Integer.parseInt(parts[3]);
                 //TODO sa pun npc la enemyfcatory?
 //                entityManager.addNpc(new Bity(x, y));
+            } else if (type.equals("Door") && parts.length >= 3) {
+                int x = Integer.parseInt(parts[1]);
+                int y = Integer.parseInt(parts[2]);
+                Door door = new Door(x, y);
+                // Callback: cand player-ul activeaza usa, trecem la urmatoarea camera
+                door.setOnActivate(() -> {
+                    currentRoom++;
+                    loadRoom();
+                });
+                entityManager.setDoor(door);
             }
         }
     }
@@ -83,12 +94,8 @@ public class LevelManager {
         entityManager.Update();
         entityManager.checkInteractions(player);
 
-        // Verificam daca am omorat toti inamicii
-        if(entityManager.getEnemies().isEmpty()) {
-            System.out.println("Toti inamicii au fost eliminati. Trecem la urmatoarea camera!");
-            currentRoom++;
-            loadRoom();
-        }
+        // Tranzitia se face prin Door.onActivate callback
+        // Nu mai facem tranzitie automata cand inamicii mor
     }
 
     public boolean isFogOfWarActive() {

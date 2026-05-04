@@ -4,8 +4,8 @@ public class FastEnemyDecorator extends EnemyDecorator {
 
     public FastEnemyDecorator(Inamic wrappee) {
         super(wrappee);
-        // Modificam direct campul protejat speed al inamicului impachetat
-        this.wrappee.speed += 2.0f; 
+        this.wrappee.speed += 2.0f;
+        // Modificam direct campul speed
         this.speed = this.wrappee.speed;
     }
 }

@@ -34,9 +34,4 @@ public abstract class EnemyDecorator extends Inamic {
         wrappee.takeDamage(damage);
         this.health = wrappee.getHealth();
     }
-
-    // Putem permite suprascrierea getSpeed si getHealth din wrappee,
-    // insa daca wrappee are o logica interna (cum are Foca), trebuie sa avem grija
-    // la setter-uri sau la modificarea starii. In cazul de fata, decoram in constructor
-    // proprietatiile de baza, daca e nevoie, sau in Update.
 }
