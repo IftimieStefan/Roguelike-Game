@@ -11,7 +11,7 @@ import java.awt.*;
  * Implementeaza Observer pattern — se deschide cand toti inamicii mor.
  * Player-ul trebuie sa apese E langa usa deschisa pentru a trece mai departe.
  */
-public class Door implements EnemyDeathObs {
+public class Door implements Entity, Interactable, EnemyDeathObs {
     private float x, y;
     private boolean isOpen;       // Se deschide cand mor toti inamicii (Observer)
     private boolean isActivated;  // Player-ul a interactionat cu ea
@@ -40,6 +40,15 @@ public class Door implements EnemyDeathObs {
     public void onDeadEnemies() {
         isOpen = true;
     }
+
+    @Override
+    public void Update() { }  
+
+    @Override
+    public boolean isActive() { return !isActivated; }  // Dispare dupa
+
+    @Override
+    public float getInteractRange() { return INTERACT_DISTANCE; }
 
     /**
      * Returneaza true daca interactiunea a fost consumata (usa deschisa + player aproape).

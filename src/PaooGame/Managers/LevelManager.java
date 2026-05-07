@@ -2,13 +2,16 @@ package PaooGame.Managers;
 
 import PaooGame.Game;
 import PaooGame.Graphics.MapLoader;
+import PaooGame.Graphics.FogOfWar;
 import PaooGame.Entities.Player.Player;
 import PaooGame.Entities.Door;
 import PaooGame.Entities.Enemies.EnemyFactory;
-import PaooGame.Entities.NPCs.Npc;
+import PaooGame.Entities.Enemies.Inamic;
 import PaooGame.Entities.NPCs.Bity;
 import PaooGame.Core.GameCamera;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LevelManager {
     private int currentLevel = 1;
@@ -20,6 +23,9 @@ public class LevelManager {
     private GameCamera camera;
 
     private boolean mapExists = true;
+    private boolean delayedSpawn = false;     // Spawn intarziat (doar Level 1)
+    private List<String> delayedEntityData = new ArrayList<>();
+    private FogOfWar fogOfWar;
 
     public LevelManager(Player player, GameCamera camera) {
         this.player = player;
@@ -52,6 +58,21 @@ public class LevelManager {
 
         currentMap = new MapLoader(mapPath);
         entityManager = new EntityManager();
+        delayedEntityData.clear();
+
+        // Setam limitele camerei pe baza dimensiunilor hartii
+        if (camera != null) {
+            camera.setMapBounds(
+                currentMap.getWidth() * PaooGame.Tiles.Tile.TILE_WIDTH,
+                currentMap.getHeight() * PaooGame.Tiles.Tile.TILE_HEIGHT
+            );
+        }
+
+        // Fog of war pe toate nivelurile
+        fogOfWar = new FogOfWar(currentMap.getWidth(), currentMap.getHeight());
+
+        // Spawn intarziat doar pe Level 1 Room 1 (inamicii apar dupa ce vb cu Bity)
+        delayedSpawn = (currentLevel == 1 && currentRoom == 1);
 
         // Generam entitatile din fisierul hartii
         for (String line : currentMap.getEntityData()) {
@@ -62,57 +83,77 @@ public class LevelManager {
             if (type.equals("Player")) {
                 player.setX(Integer.parseInt(parts[1]));
                 player.setY(Integer.parseInt(parts[2]));
-            } else if (type.equals("Enemy") && parts.length >= 4) {
-                String enemyType = parts[1];
-                int x = Integer.parseInt(parts[2]);
-                int y = Integer.parseInt(parts[3]);
-                entityManager.addEnemy(EnemyFactory.createEnemy(enemyType, x, y, player));
+            } else if (type.equals("Enemy") || type.equals("Door")) {
+                if (delayedSpawn) {
+                    // Amanam spawn pana dupa interactiunea cu NPC
+                    delayedEntityData.add(line);
+                } else {
+                    spawnEntity(parts);
+                }
             } else if (type.equals("Npc") && parts.length >= 4) {
-                String npcType = parts[1];
                 int x = Integer.parseInt(parts[2]);
                 int y = Integer.parseInt(parts[3]);
-                //TODO sa pun npc la enemyfcatory?
-//                entityManager.addNpc(new Bity(x, y));
-            } else if (type.equals("Door") && parts.length >= 3) {
-                int x = Integer.parseInt(parts[1]);
-                int y = Integer.parseInt(parts[2]);
-                Door door = new Door(x, y);
-                // Callback: cand player-ul activeaza usa, trecem la urmatoarea camera
-                door.setOnActivate(() -> {
-                    currentRoom++;
-                    loadRoom();
-                });
-                entityManager.setDoor(door);
+                entityManager.addEntity(new Bity(x, y));
             }
         }
     }
+
+    // Spawneaza o entitate din datele parsate
+    private void spawnEntity(String[] parts) {
+        String type = parts[0];
+        if (type.equals("Enemy") && parts.length >= 4) {
+            String enemyType = parts[1];
+            int x = Integer.parseInt(parts[2]);
+            int y = Integer.parseInt(parts[3]);
+            Inamic enemy = EnemyFactory.createEnemy(enemyType, x, y, player);
+            if (parts.length >= 5) {
+                enemy = EnemyFactory.applyDecorators(enemy, parts[4]);
+            }
+            entityManager.addEntity(enemy);
+        } else if (type.equals("Door") && parts.length >= 3) {
+            int x = Integer.parseInt(parts[1]);
+            int y = Integer.parseInt(parts[2]);
+            Door door = new Door(x, y);
+            door.setOnActivate(() -> {
+                currentRoom++;
+                loadRoom();
+            });
+            entityManager.addEntity(door);
+        }
+    }
+
+    // Spawneaza inamicii si usa dupa ce fog-ul e ridicat
+    public void spawnDelayedEntities() {
+        for (String line : delayedEntityData) {
+            spawnEntity(line.split(" "));
+        }
+        delayedEntityData.clear();
+        delayedSpawn = false;
+    }
+
+    public boolean isDelayedSpawn() { return delayedSpawn; }
+
+    public FogOfWar getFogOfWar() { return fogOfWar; }
 
     public void Update() {
         if(!mapExists || currentMap==null) return;
 
         currentMap.Update();
         entityManager.Update();
-        entityManager.checkInteractions(player);
 
-        // Tranzitia se face prin Door.onActivate callback
-        // Nu mai facem tranzitie automata cand inamicii mor
-    }
-
-    public boolean isFogOfWarActive() {
-        if(currentLevel == 1 && currentRoom == 1) {
-            for(Npc npc : entityManager.getNpcs()) {
-                if(npc instanceof Bity) {
-                    if(npc.isTalkedTo()) {
-                        return false; // Bity remov FOW
-                    } else {
-                        return true;
-                    }
-                }
-            }
-            return true;
+        // Update fog of war cu pozitia playerului (pe toate nivelurile)
+        if (fogOfWar != null) {
+            fogOfWar.updateVisibility(player.getX(), player.getY());
         }
-        return false;
+
+        // Coliziuni si interacțiuni — delegate la CollisionSystem
+        CollisionSystem.handleInteractions(player, entityManager, this);
+        CollisionSystem.handleProjectiles(player, entityManager.getEnemies());
+        CollisionSystem.handleMelee(player, entityManager.getEnemies());
+        CollisionSystem.handleContactDamage(player, entityManager.getEnemies());
+        CollisionSystem.handleEnemyBullets(player, entityManager.getEnemies());
     }
+
 
     public MapLoader getCurrentMap() { return currentMap; }
     public EntityManager getEntityManager() { return entityManager; }

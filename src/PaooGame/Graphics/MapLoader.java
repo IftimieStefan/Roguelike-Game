@@ -63,6 +63,9 @@ public class MapLoader
         return entityData;
     }
 
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
+
     public void Draw(Graphics g, GameCamera camera)
     {
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;

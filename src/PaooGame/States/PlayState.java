@@ -8,13 +8,13 @@ import PaooGame.Managers.EntityManager;
 import PaooGame.Managers.LevelManager;
 
 import java.awt.*;
-import java.awt.image.BufferStrategy;
 
 public class PlayState extends State {
 
     Player player;
     LevelManager levelManager;
     GameCamera camera;
+
 
 
     public PlayState(GameWindow wnd) {
@@ -40,9 +40,9 @@ public class PlayState extends State {
             public void mouseReleased(java.awt.event.MouseEvent e) {
                 if (player != null) {
                     if (e.getButton() == java.awt.event.MouseEvent.BUTTON1) {
-                        player.setLeftClick(false); // Oprește trasul
+                        player.setLeftClick(false);
                     } else if (e.getButton() == java.awt.event.MouseEvent.BUTTON3) {
-                        player.setRightClick(false); // Oprește pumnul
+                        player.setRightClick(false);
                     }
                 }
             }
@@ -64,6 +64,8 @@ public class PlayState extends State {
         if(levelManager !=null){
             levelManager.Update();
         }
+
+
     }
 
     @Override
@@ -80,17 +82,17 @@ public class PlayState extends State {
             if(levelManager.getCurrentMap() != null) levelManager.getCurrentMap().Draw(g, camera);
             if(player != null) player.Draw(g, camera);
             if(levelManager.getEntityManager() != null) levelManager.getEntityManager().Draw(g);
-
-            // fog of war sub hud peste mapa
-            if(levelManager.isFogOfWarActive() && player != null) {
-                //TODO FOW
-            }
         }
 
-        // Reseteaza transformarea ca sa desenam HUD-ul normal
+        // Reseteaza transformarea
         g2d.setTransform(old);
+
+        // Fog of war bazat pe tile-uri (pe toate nivelurile)
+        if (levelManager != null && levelManager.getFogOfWar() != null) {
+            levelManager.getFogOfWar().Draw(g2d, camera, wnd.GetWndWidth(), wnd.GetWndHeight());
+        }
 
         if(player!=null) player.DrawHUD(g);
     }
-
+    
 }

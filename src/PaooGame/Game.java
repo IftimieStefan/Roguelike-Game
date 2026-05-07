@@ -29,12 +29,6 @@ public class Game implements Runnable {
 
     private GameCamera camera;
 
-    // Fazele jocului zic, meniurile.
-//    private GameState       gameState;
-//    private SaveSelectionState saveMenu;
-//    private MainMenuState   mainMenu;
-//    private OptionsState    optionsMenu;
-
     // Main character-ul
     private Player player;     // DINU - personajul principal
 
@@ -57,12 +51,6 @@ public class Game implements Runnable {
         wnd.BuildGameWindow();
         Assets.Init();
         StateManager.SetState(new MainMenuState(wnd));
-
-//        gameState = GameState.MENU;
-//        mainMenu  = new MainMenuState(wnd);
-//        saveMenu = new SaveSelectionState(wnd);
-//        optionsMenu = new OptionsState(wnd);
-
     }
 
     // Pune titlu la joc simplu.
@@ -117,119 +105,6 @@ public class Game implements Runnable {
         if(StateManager.GetState() != null) {
             StateManager.GetState().Update(animTime);
         }
-//
-//        animTime += 0.005;
-//        if(StateManager.GetState() != null) {
-//            StateManager.GetState().Update(animTime);
-//        }
-//
-//        animTime += 0.005;
-//
-//        if(gameState == GameState.MENU)//meniu prinipal
-//        {
-//            mainMenu.Update(animTime);
-//
-//            if(mainMenu.IsPlayPressed())
-//            {
-//                ClearMouseListeners();
-//                gameState = GameState.SAVE_SELECTION;//trecem in starea de seletie a salavrilor
-//                saveMenu = new SaveSelectionState(wnd);
-//                mainMenu.Reset();
-//            }
-//            if(mainMenu.IsOptionsPressed())
-//            {
-//                ClearMouseListeners();
-//                gameState = GameState.OPTIONS;
-//                optionsMenu = new OptionsState(wnd);
-//                mainMenu.Reset();
-//            }
-//        }
-//        else if (gameState == GameState.OPTIONS)
-//        {
-//            optionsMenu.Update(animTime);
-//            if (optionsMenu.IsBackPressed())
-//            {
-//                ClearMouseListeners();
-//                gameState = GameState.MENU;
-//                mainMenu = new MainMenuState(wnd);
-//                optionsMenu.Reset();
-//            }
-//        }
-//        else if(gameState == GameState.SAVE_SELECTION)
-//            {
-//                saveMenu.Update(animTime);
-//
-//                if(saveMenu.GetSelectedSlot()!=-1)
-//                {
-//                    ClearMouseListeners();
-//
-//                    player = new Player(100, 100, wnd.GetCanvas());
-//
-//                    if(!mouseListenerAdded)
-//                    {
-//                        wnd.GetCanvas().addMouseListener(new java.awt.event.MouseAdapter()
-//                        {
-//                            @Override
-//                            public void mousePressed(java.awt.event.MouseEvent e)
-//                            {
-//                                if(gameState == GameState.PLAYING && player != null)
-//                                {
-//                                    if(e.getButton() == java.awt.event.MouseEvent.BUTTON1)
-//                                    {
-//                                        player.setLeftClick(true); // Trage cu bulgări
-//                                    }
-//                                    else if(e.getButton() == java.awt.event.MouseEvent.BUTTON3)
-//                                    {
-//                                        player.setRightClick(true); // Dă cu pumnul (Melee)
-//                                    }
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void mouseReleased(java.awt.event.MouseEvent e)
-//                            {
-//                                if(gameState == GameState.PLAYING && player != null)
-//                                {
-//                                    if(e.getButton() == java.awt.event.MouseEvent.BUTTON1)
-//                                    {
-//                                        player.setLeftClick(false);
-//                                    }
-//                                    else if(e.getButton() == java.awt.event.MouseEvent.BUTTON3)
-//                                    {
-//                                        player.setRightClick(false);
-//                                    }
-//                                }
-//                            }
-//                        });
-//                    }
-//                    mouseListenerAdded=true;
-//                    int idSalvare = saveMenu.GetSelectedSlot();//ce salvare incarcam
-//
-//                    camera = GameCamera.getInstance(wnd.GetWndWidth(), wnd.GetWndHeight());
-//                    camera.centerOnDinu(player);
-//
-//                    levelManager = new LevelManager(player, camera);
-//
-//                    gameState = GameState.PLAYING;//trecem in starea de joc
-//                    wnd.GetCanvas().requestFocusInWindow();
-//                }
-//
-//                if(saveMenu.IsBackPressed())//ne intoarcem la meniul prinipal
-//                {
-//                    ClearMouseListeners();
-//                    gameState=GameState.MENU;
-//                    mainMenu=new MainMenuState(wnd);
-//                    saveMenu.Reset();
-//                }
-//            }
-//            else if(gameState==GameState.PLAYING)
-//            {
-//                if (player != null) player.Update();
-//                if (levelManager != null) {
-//                    levelManager.Update();
-//                }
-//                if (camera != null && player != null) camera.centerOnDinu(player);
-//            }
     }
 
     private void Draw()
@@ -251,44 +126,6 @@ public class Game implements Runnable {
         g = bs.getDrawGraphics();
         g.clearRect(0, 0, wnd.GetWndWidth(), wnd.GetWndHeight());
 
-//        if(gameState == GameState.MENU)
-//        {
-//            mainMenu.Draw(g);
-//        }
-//        else if(gameState == GameState.SAVE_SELECTION)
-//        {
-//            saveMenu.Draw(g);
-//        }
-//        else if(gameState == GameState.OPTIONS)
-//        {
-//            optionsMenu.Draw(g);
-//        }
-//        else if(gameState == GameState.PLAYING)
-//        {
-//            Graphics2D g2d = (Graphics2D) g;
-//            java.awt.geom.AffineTransform old = g2d.getTransform();
-//
-//            if (camera != null) {
-//                float zoom = camera.getZoom();
-//                g2d.scale(zoom, zoom);
-//            }
-//
-//            if(levelManager != null) {
-//                if(levelManager.getCurrentMap() != null) levelManager.getCurrentMap().Draw(g, camera);
-//                if(player != null) player.Draw(g, camera);
-//                if(levelManager.getEntityManager() != null) levelManager.getEntityManager().Draw(g);
-//
-//                // fog of war sub hud peste mapa
-//                if(levelManager.isFogOfWarActive() && player != null) {
-//                    //TODO FOW
-//                }
-//            }
-//
-//            // Reseteaza transformarea ca sa desenam HUD-ul normal
-//            g2d.setTransform(old);
-//
-//            if(player!=null) player.DrawHUD(g);
-//        }
         if(StateManager.GetState() != null) {
             StateManager.GetState().Draw(g);
         }

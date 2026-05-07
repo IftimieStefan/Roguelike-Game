@@ -1,9 +1,12 @@
 package PaooGame.Entities.Enemies;
 
+import PaooGame.Entities.Damageable;
+import PaooGame.Entities.Entity;
+
 import java.awt.*;
 
 // Sablon parinte pentru baietii rai.
-public abstract class Inamic {
+public abstract class Inamic implements Entity, Damageable {
     protected float x,y; // Coordonate harta.
     protected int health; // HP curent zic.
     protected int maxHealth; // Viata lui full.
@@ -21,6 +24,11 @@ public abstract class Inamic {
 
     public abstract void Update();
     public abstract void Draw(Graphics g);
+
+    @Override
+    public boolean isActive() {
+        return health > 0;  // Mort = scos 
+    }
 
     public float getSpeed() {
         return speed;

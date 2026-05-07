@@ -7,7 +7,7 @@ import java.awt.*;
 public class Bity extends Npc {
 
     public Bity(float x, float y) {
-        super(x, y, "Bity", "Salut! Ai grija mare la foci, sunt periculoase!");
+        super(x, y, "Bity", "Ti-am oferit intelepciunea de care aveai nevoie!");
         this.showDialog = false;
     }
 

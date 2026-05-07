@@ -1,9 +1,13 @@
 package PaooGame.Entities.NPCs;
 
 import PaooGame.Core.GameCamera;
+import PaooGame.Entities.Entity;
+import PaooGame.Entities.Interactable;
+import PaooGame.Entities.Player.Player;
+
 import java.awt.*;
 
-public abstract class Npc {
+public abstract class Npc implements Entity, Interactable {
     protected float x, y;
     protected String name;
     protected String dialogMessage;
@@ -20,6 +24,25 @@ public abstract class Npc {
     }
 
     public abstract void Update();
+
+    @Override
+    public boolean isActive() { return true; }  // NPC-urile nu mor
+
+    @Override
+    public float getInteractRange() { return 120f; }  // Max distance
+
+    @Override
+    public boolean tryInteract(Player player) {
+        // Calculeaza distance player - npc
+        float dx = x - player.getX();
+        float dy = y - player.getY();
+        float dist = (float) Math.sqrt(dx * dx + dy * dy);
+        if (dist <= getInteractRange()) {
+            toggleDialog();  
+            return true;
+        }
+        return false;
+    }
 
     public void Draw(Graphics g) {
         if (showDialog) {
