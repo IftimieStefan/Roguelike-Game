@@ -5,6 +5,7 @@ import PaooGame.Entities.Enemies.EnemyFactory;
 import PaooGame.Entities.NPCs.Bity;
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Graphics.Assets;
+import PaooGame.Managers.DatabaseManager;
 import PaooGame.Managers.LevelManager;
 import PaooGame.Managers.StateManager;
 import PaooGame.States.*;
@@ -49,6 +50,7 @@ public class Game implements Runnable {
 
     private void InitGame() {
         wnd.BuildGameWindow();
+        DatabaseManager.Initialize();
         Assets.Init();
         StateManager.SetState(new MainMenuState(wnd));
     }

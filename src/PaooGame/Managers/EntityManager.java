@@ -64,7 +64,6 @@ public class EntityManager {
         if (!hasEnemies && !alrNotif) notifyAllD();   // Deschide door
     }
 
-
     public void Draw(Graphics g) {
         for (Entity e : entities) e.Draw(g);
     }

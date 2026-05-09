@@ -42,8 +42,8 @@ public class OptionsState extends State{
         this.animTime = time;
 
         if(backPressed){
+            CurataInput();
             StateManager.SetState(new MainMenuState(wnd));
-            CurataMouseListeners();
         }
     }
 

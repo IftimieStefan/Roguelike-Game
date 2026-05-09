@@ -24,6 +24,7 @@ public class LevelManager {
 
     private boolean mapExists = true;
     private boolean delayedSpawn = false;     // Spawn intarziat (doar Level 1)
+    private boolean forceEmptyRoom = false; //ca sa nu loadam inamicii in camera in care dam load la save
     private List<String> delayedEntityData = new ArrayList<>();
     private FogOfWar fogOfWar;
 
@@ -83,19 +84,25 @@ public class LevelManager {
             if (type.equals("Player")) {
                 player.setX(Integer.parseInt(parts[1]));
                 player.setY(Integer.parseInt(parts[2]));
-            } else if (type.equals("Enemy") || type.equals("Door")) {
+            } else if (type.equals("Enemy"))
+            {
+                if (forceEmptyRoom) continue;
                 if (delayedSpawn) {
                     // Amanam spawn pana dupa interactiunea cu NPC
                     delayedEntityData.add(line);
                 } else {
                     spawnEntity(parts);
                 }
+            } else if (type.equals("Door"))
+            {
+                spawnEntity(parts);
             } else if (type.equals("Npc") && parts.length >= 4) {
                 int x = Integer.parseInt(parts[2]);
                 int y = Integer.parseInt(parts[3]);
                 entityManager.addEntity(new Bity(x, y));
             }
         }
+        this.forceEmptyRoom=false;
     }
 
     // Spawneaza o entitate din datele parsate
@@ -154,6 +161,16 @@ public class LevelManager {
         CollisionSystem.handleEnemyBullets(player, entityManager.getEnemies());
     }
 
+    public int getCurrentLevel(){return currentLevel;}
+    public int getCurrentRoom(){return currentRoom;}
+
+    public void setLevelAndRoom(int level, int room)
+    {
+        this.currentLevel=level;
+        this.currentRoom=room;
+        this.forceEmptyRoom=true;
+        loadRoom();
+    }
 
     public MapLoader getCurrentMap() { return currentMap; }
     public EntityManager getEntityManager() { return entityManager; }

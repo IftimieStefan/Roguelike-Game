@@ -1,6 +1,8 @@
 package PaooGame.States;
 
 import PaooGame.GameWindow.GameWindow;
+import PaooGame.Managers.Data.SaveData;
+import PaooGame.Managers.DatabaseManager;
 import PaooGame.Managers.StateManager;
 
 import java.awt.*;
@@ -10,6 +12,7 @@ import java.awt.event.MouseEvent;
 public class SaveSelectionState extends State
 {
     private Rectangle[] saveSlots;  // Un vector de 3 dreptunghiuri pentru sloturi
+    private SaveData[] slotsData;// datele in baza de date
     private Rectangle   backButton;
     private int         selectedSlot = -1; // -1 inseamna nicio selectie
     private boolean     backPressed = false;
@@ -21,8 +24,11 @@ public class SaveSelectionState extends State
 
         // Definim 3 butoane (sloturi) unul sub altul
         saveSlots = new Rectangle[3];
+        slotsData = new SaveData[3];
+
         for(int i = 0; i < 3; i++) {
             saveSlots[i] = new Rectangle(cx - 150, 250 + (i * 110), 300, 80);
+            slotsData[i] = DatabaseManager.LoadProgress(i+1);
         }
 
         // Buton de inapoi in coltul stanga sus
@@ -50,13 +56,15 @@ public class SaveSelectionState extends State
         this.animTime=time;
 
         if(backPressed){
+            CurataInput();
             StateManager.SetState(new MainMenuState(wnd));
-            CurataMouseListeners();
+            backPressed=false;
         }
 
         if(selectedSlot != -1 ){
-            CurataMouseListeners();
-            StateManager.SetState(new PlayState(wnd));
+            CurataInput();
+            StateManager.SetState(new PlayState(wnd,selectedSlot));
+            selectedSlot=-1;
         }
     }
 
@@ -85,7 +93,18 @@ public class SaveSelectionState extends State
 
         // Desenam cele 3 sloturi
         for(int i = 0; i < 3; i++) {
-            drawButton(g, saveSlots[i], "Slot " + (i + 1), new Color(60, 100, 150));
+            String label;
+            Color btnColor;
+
+            if(slotsData[i]==null)
+            {
+                label = "Slot " + (i+1) + " - New Game";
+                btnColor = new Color(60, 100, 150);
+            } else {
+                label = "Slot " + (i+1) + " - Lvl " + slotsData[i].getLevel() + " - Room " + slotsData[i].getRoom();
+                btnColor = new Color(40, 160, 80);
+            }
+            drawButton(g, saveSlots[i], label,btnColor);
         }
 
         // Desenam butonul Back

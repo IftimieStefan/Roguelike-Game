@@ -1,14 +1,17 @@
 package PaooGame.Entities.Player;
 import java.util.ArrayList;
 
+import PaooGame.Entities.Damageable;
+import PaooGame.Entities.Entity;
 import PaooGame.Entities.Projectiles.Bomb;
 import PaooGame.Entities.Projectiles.Snowball;
 import PaooGame.Graphics.Assets;
 import PaooGame.Managers.LevelManager;
 
 import java.awt.*;
-import java.awt.event.KeyAdapter;
+import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.image.BufferedImage;
 
 import java.awt.event.MouseWheelEvent;
@@ -30,6 +33,7 @@ public class Player
     private boolean isMoving=false;
 
     // Butoane apasate si faze.
+    private KeyListener keyControls;
     private boolean up, down, left, right, leftClick, rightClick, isReloading=false;
 
     // Poza lu Dinu din momentu' asta.
@@ -103,7 +107,7 @@ public class Player
         abilities.add(new FervorAbility());
         abilities.add(new BerserkAbility());
 
-        canvas.addKeyListener(new KeyAdapter()
+        keyControls=new KeyAdapter()
         {
             @Override
             public void keyPressed(KeyEvent e)
@@ -142,7 +146,9 @@ public class Player
                 if(key == KeyEvent.VK_Q) abilityPressed=false;
                 if(key == KeyEvent.VK_E) ePressed = false;
             }
-        });
+        };
+
+        canvas.addKeyListener(keyControls);
 
         canvas.addMouseWheelListener(new MouseWheelListener() {
             @Override
@@ -695,7 +701,6 @@ public class Player
     public void setMeleeDMG(int meleeDMG){
         this.meleeDMG=meleeDMG;
     }
-
     public int getMeleeDMG(){
         return this.meleeDMG;
     }
@@ -704,7 +709,15 @@ public class Player
         return this.rangeDMG;
     }
 
+    public int getCurrentHP(){return this.currentHP;}
+    public void setCurrentHP(int HP){this.currentHP=HP;}
+
     public void setSpeed(float speed){
         this.speed=speed;
     }
+
+    public KeyListener getKeyControls() {
+        return keyControls;
+    }
+
 }

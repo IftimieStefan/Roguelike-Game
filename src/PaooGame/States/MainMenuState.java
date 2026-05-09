@@ -2,7 +2,6 @@ package PaooGame.States;
 
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Managers.StateManager;
-import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -61,11 +60,11 @@ public class MainMenuState extends State
             System.exit(0);
         }
         if(playPressed){
-            CurataMouseListeners();
+            CurataInput();
             StateManager.SetState(new SaveSelectionState(wnd));
         }
         if(optionsPressed){
-            CurataMouseListeners();
+            CurataInput();
             StateManager.SetState(new OptionsState(wnd));
         }
     }
