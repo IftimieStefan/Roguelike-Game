@@ -24,11 +24,6 @@ public class CollisionSystem {
             if (e instanceof Interactable) {
                 Interactable it = (Interactable) e;
                 if (it.tryInteract(player)) {
-                    // Daca e NPC si suntem pe Level 1, spawneaza inamicii
-                    if (e instanceof Npc && lm != null && lm.isDelayedSpawn()) {
-                        em.liftFog();
-                        lm.spawnDelayedEntities();
-                    }
                     return;   
                 }
             }

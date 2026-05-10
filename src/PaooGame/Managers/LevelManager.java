@@ -23,9 +23,7 @@ public class LevelManager {
     private GameCamera camera;
 
     private boolean mapExists = true;
-    private boolean delayedSpawn = false;     // Spawn intarziat (doar Level 1)
     private boolean forceEmptyRoom = false; //ca sa nu loadam inamicii in camera in care dam load la save
-    private List<String> delayedEntityData = new ArrayList<>();
     private FogOfWar fogOfWar;
 
     public LevelManager(Player player, GameCamera camera) {
@@ -59,7 +57,6 @@ public class LevelManager {
 
         currentMap = new MapLoader(mapPath);
         entityManager = new EntityManager();
-        delayedEntityData.clear();
 
         // Setam limitele camerei pe baza dimensiunilor hartii
         if (camera != null) {
@@ -71,9 +68,6 @@ public class LevelManager {
 
         // Fog of war pe toate nivelurile
         fogOfWar = new FogOfWar(currentMap.getWidth(), currentMap.getHeight());
-
-        // Spawn intarziat doar pe Level 1 Room 1 (inamicii apar dupa ce vb cu Bity)
-        delayedSpawn = (currentLevel == 1 && currentRoom == 1);
 
         // Generam entitatile din fisierul hartii
         for (String line : currentMap.getEntityData()) {
@@ -87,12 +81,7 @@ public class LevelManager {
             } else if (type.equals("Enemy"))
             {
                 if (forceEmptyRoom) continue;
-                if (delayedSpawn) {
-                    // Amanam spawn pana dupa interactiunea cu NPC
-                    delayedEntityData.add(line);
-                } else {
-                    spawnEntity(parts);
-                }
+                spawnEntity(parts);
             } else if (type.equals("Door"))
             {
                 spawnEntity(parts);
@@ -128,17 +117,6 @@ public class LevelManager {
             entityManager.addEntity(door);
         }
     }
-
-    // Spawneaza inamicii si usa dupa ce fog-ul e ridicat
-    public void spawnDelayedEntities() {
-        for (String line : delayedEntityData) {
-            spawnEntity(line.split(" "));
-        }
-        delayedEntityData.clear();
-        delayedSpawn = false;
-    }
-
-    public boolean isDelayedSpawn() { return delayedSpawn; }
 
     public FogOfWar getFogOfWar() { return fogOfWar; }
 

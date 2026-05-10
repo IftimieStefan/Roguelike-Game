@@ -14,8 +14,6 @@ public class EntityManager {
     private final List<Entity> entities;          // Lista entitati
     private final List<EnemyDeathObs> observers;   // Observers pentru moartea inamicilor
     private boolean alrNotif;                      // Flag
-    private boolean fogLifted = false;              // Fog of war flag
-
 
     public EntityManager() {
         this.entities = new ArrayList<>();
@@ -48,15 +46,6 @@ public class EntityManager {
         for (EnemyDeathObs obs : observers) obs.onDeadEnemies();  // Notify observers
         alrNotif = true;  // Modificam flag
     }
-
-    public void liftFog() { 
-        fogLifted = true; alrNotif = false; 
-        }
-    public boolean isFogLifted() {
-         return fogLifted; 
-         }
-
-
     public void Update() {
         for (Entity e : entities) e.Update();         // Update fiecare entitate
         entities.removeIf(e -> !e.isActive());        // Scoate entit moarte/activate
