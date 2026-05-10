@@ -11,6 +11,8 @@ public class EnemyFactory {
                 return new Foca(x, y, player);
             case "FOCA_COWBOY":
                 return new Foca_Cowboy(x, y, player);
+            case "FOCA_MEXIC":
+                return new Foca_Mexic(x, y, player);
             default:
                 throw new IllegalArgumentException("Unknown enemy type: " + type);
         }

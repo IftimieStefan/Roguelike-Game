@@ -78,11 +78,16 @@ public class MapLoader
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;
         int yOff = (camera != null) ? (int)camera.getyOff() : 0;
 
+        // Calculam viewport-ul vizibil pe baza zoom-ului camerei
+        float zoom = (camera != null) ? camera.getZoom() : 1.0f;
+        int viewWidth = (int)(1920 / zoom);   // Latimea vizibila in pixeli world-space
+        int viewHeight = (int)(1080 / zoom);   // Inaltimea vizibila in pixeli world-space
+
         int xStart = Math.max(0, xOff / Tile.TILE_WIDTH);
-        int xEnd = Math.min(width, (xOff + 1920) / Tile.TILE_WIDTH + 1); // 800 e latimea ecranului
+        int xEnd = Math.min(width, (xOff + viewWidth) / Tile.TILE_WIDTH + 1);
 
         int yStart = Math.max(0, yOff / Tile.TILE_HEIGHT);
-        int yEnd = Math.min(height, (yOff + 1080) / Tile.TILE_HEIGHT + 1); // 600 e ianaltimea ecranului
+        int yEnd = Math.min(height, (yOff + viewHeight) / Tile.TILE_HEIGHT + 1);
 
         for(int j = yStart; j < yEnd; ++j)
         {

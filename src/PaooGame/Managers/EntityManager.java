@@ -28,6 +28,10 @@ public class EntityManager {
         if (entity instanceof EnemyDeathObs) {     // Door in observers
             addObserver((EnemyDeathObs) entity);
         }
+        // Foca Mexic are nevoie de referința la EntityManager pentru buff
+        if (entity instanceof Foca_Mexic) {
+            ((Foca_Mexic) entity).setEntityManager(this);
+        }
     }
 
     // ── Observer pattern ──

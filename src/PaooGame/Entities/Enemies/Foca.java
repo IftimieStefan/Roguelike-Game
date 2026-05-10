@@ -31,9 +31,9 @@ public class Foca extends Inamic {
             float dy = py - this.y;
             float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
-            if (distance <= 40) { // Printeaza praduiala.
+            if (distance <= CONTACT_RANGE) {
                 long currentTime = System.currentTimeMillis();
-                if (currentTime - lastAttackTime > 1000) { // 1 pe secz
+                if (currentTime - lastAttackTime > ATTACK_COOLDOWN) {
                     player.takeDamage();
                     lastAttackTime = currentTime;
                 }
@@ -52,16 +52,23 @@ public class Foca extends Inamic {
         int yOff = (camera != null) ? (int)camera.getyOff() : 0;
 
             // Desenam poza de inamic
-        g.drawImage(sprite, (int)x - xOff, (int)y - yOff, 48, 48, null);
+        g.drawImage(sprite, (int)x - xOff, (int)y - yOff, SPRITE_SIZE, SPRITE_SIZE, null);
 
         // Bara de viata deasupra.
         g.setColor(Color.BLACK);
-        g.fillRect((int)x - xOff, (int)y - yOff - 10, 48, 5);
+        g.fillRect((int)x - xOff, (int)y - yOff - HP_BAR_OFFSET_Y, HP_BAR_WIDTH, HP_BAR_HEIGHT);
         g.setColor(Color.GREEN);
-        int hpWidth = (int)((health / (float)maxHealth) * 48);
+        int hpWidth = (int)((health / (float)maxHealth) * HP_BAR_WIDTH);
         if (hpWidth < 0) hpWidth = 0;
-        g.fillRect((int)x - xOff, (int)y - yOff - 10, hpWidth, 5);
+        g.fillRect((int)x - xOff, (int)y - yOff - HP_BAR_OFFSET_Y, hpWidth, HP_BAR_HEIGHT);
         g.setColor(Color.WHITE);
-        g.drawRect((int)x - xOff, (int)y - yOff - 10, 48, 5);
+        g.drawRect((int)x - xOff, (int)y - yOff - HP_BAR_OFFSET_Y, HP_BAR_WIDTH, HP_BAR_HEIGHT);
+
+        // Indicator buff Foca Mexic
+        if (isBuffed()) {
+            g.setColor(new Color(0, 200, 0));
+            g.setFont(new Font("Arial", Font.BOLD, 14));
+            g.drawString("+", (int)x - xOff + 50, (int)y - yOff - 3);
+        }
     }
 }
