@@ -8,7 +8,7 @@ import java.awt.*;
 public class FogOfWar {
     private boolean[][] visible;    // matricea de vizibilitate per tile
     private int width, height;      // dimensiunea hartii in tile-uri
-    private int viewRadius = 2;     // raza de vizibilitate clara
+    private int viewRadius = 4;     // raza de vizibilitate clara
     private int playerTileX, playerTileY; // pozitia curenta a playerului in tile-uri
 
     // Culoare fog

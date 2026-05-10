@@ -6,7 +6,7 @@ public class GameCamera {
     private static GameCamera instance;
     private float xOff,yOff;
     private int gameWidth, gameHeight;
-    private float zoom = 2.0f; // Nivel standard de zoom
+    private float zoom = 1.7f; // Nivel standard de zoom
 
     // Dimensiunile hartii 
     private int mapWidthPx;

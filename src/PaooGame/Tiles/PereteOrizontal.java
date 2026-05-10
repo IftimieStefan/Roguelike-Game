@@ -17,4 +17,6 @@ public class PereteOrizontal extends Tile
         super(Assets.pereteorizontal, id);
     }
 
+    @Override
+    public boolean IsSolid() { return true; }
 }

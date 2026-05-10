@@ -18,4 +18,6 @@ public class UsaVertical extends Tile
     }
     public boolean isDoor(){ return true;}
 
+    @Override
+    public boolean IsSolid() { return true; }
 }

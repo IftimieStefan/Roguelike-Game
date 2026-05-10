@@ -17,4 +17,6 @@ public class PereteColtDS extends Tile
         super(Assets.peretecoltds, id);
     }
 
+    @Override
+    public boolean IsSolid() { return true; }
 }

@@ -66,6 +66,13 @@ public class MapLoader
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
+    // Returneaza id-ul tile-ului de la coordonatele (tileX, tileY)
+    // Returneaza 0 daca e in afara hartii
+    public int getTileId(int tileX, int tileY) {
+        if (tileX < 0 || tileX >= width || tileY < 0 || tileY >= height) return 0;
+        return tiles[tileX][tileY];
+    }
+
     public void Draw(Graphics g, GameCamera camera)
     {
         int xOff = (camera != null) ? (int)camera.getxOff() : 0;

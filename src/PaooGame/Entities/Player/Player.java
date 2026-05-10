@@ -6,7 +6,9 @@ import PaooGame.Entities.Entity;
 import PaooGame.Entities.Projectiles.Bomb;
 import PaooGame.Entities.Projectiles.Snowball;
 import PaooGame.Graphics.Assets;
+import PaooGame.Graphics.MapLoader;
 import PaooGame.Managers.LevelManager;
+import PaooGame.Tiles.Tile;
 
 import java.awt.*;
 import java.awt.event.KeyListener;
@@ -310,7 +312,21 @@ public class Player
         {
             dirX=0;
         }
-        if(isMoving)
+        if(isMoving && lm != null && lm.getCurrentMap() != null)
+        {
+            float newX = x + dirX * speed;
+            float newY = y + dirY * speed;
+
+            // Verificam coliziunea pe axa X separat
+            if (dirX != 0 && !collidesWithWall(newX, y, lm)) {
+                x = newX;
+            }
+            // Verificam coliziunea pe axa Y separat
+            if (dirY != 0 && !collidesWithWall(x, newY, lm)) {
+                y = newY;
+            }
+        }
+        else if(isMoving)
         {
             x = x + dirX * speed;
             y = y + dirY * speed;
@@ -424,8 +440,25 @@ public class Player
             if (dashProgress < 1)
             {
                 dashProgress = dashProgress + dashSpeed;
-                x = x + dashX*dashDistance * dashSpeed;
-                y = y + dashY*dashDistance * dashSpeed;
+                float dashMoveX = dashX * dashDistance * dashSpeed;
+                float dashMoveY = dashY * dashDistance * dashSpeed;
+
+                // Coliziune si in dash
+                if (lm != null && lm.getCurrentMap() != null) {
+                    if (!collidesWithWall(x + dashMoveX, y, lm)) {
+                        x = x + dashMoveX;
+                    } else { 
+                        isDashing = false; dashProgress = 0; 
+                        }
+                    if (!collidesWithWall(x, y + dashMoveY, lm)) {
+                        y = y + dashMoveY;
+                    } else { 
+                        isDashing = false; dashProgress = 0; 
+                        }
+                } else {
+                    x = x + dashMoveX;
+                    y = y + dashMoveY;
+                }
             }
             else
             {
@@ -433,6 +466,36 @@ public class Player
                 isDashing=false;
             }
         }
+    }
+
+    // Verifica daca hitbox-ul playerului la pozitia (px, py) se intersecteaza cu un tile solid
+    private boolean collidesWithWall(float px, float py, LevelManager lm) {
+        MapLoader map = lm.getCurrentMap();
+        if (map == null) return false;
+
+        // Calculam bounding box-ul hitbox-ului la noua pozitie
+        int left   = (int)(px + hitboxOffset);
+        int right  = (int)(px + hitboxOffset + hitboxSize - 1);
+        int top    = (int)(py + hitboxOffset);
+        int bottom = (int)(py + hitboxOffset + hitboxSize - 1);
+
+        // Convertim la coordonate tile
+        int tileLeft   = left   / Tile.TILE_WIDTH;
+        int tileRight  = right  / Tile.TILE_WIDTH;
+        int tileTop    = top    / Tile.TILE_HEIGHT;
+        int tileBottom = bottom / Tile.TILE_HEIGHT;
+
+        // Verificam fiecare tile pe care l-ar atinge hitbox-ul
+        for (int ty = tileTop; ty <= tileBottom; ty++) {
+            for (int tx = tileLeft; tx <= tileRight; tx++) {
+                int tileId = map.getTileId(tx, ty);
+                Tile t = (tileId >= 0 && tileId < Tile.tiles.length) ? Tile.tiles[tileId] : null;
+                if (t != null && t.IsSolid()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void Draw(Graphics g, PaooGame.Core.GameCamera camera)
