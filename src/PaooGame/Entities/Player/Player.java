@@ -7,8 +7,8 @@ import PaooGame.Entities.Projectiles.Bomb;
 import PaooGame.Entities.Projectiles.Snowball;
 import PaooGame.Graphics.Assets;
 import PaooGame.Graphics.MapLoader;
-import PaooGame.Managers.LevelManager;
 import PaooGame.Managers.CollisionSystem;
+import PaooGame.Managers.LevelManager;
 import PaooGame.Tiles.Tile;
 
 import java.awt.*;
@@ -32,7 +32,7 @@ public class Player
     private int dirX,dirY;
 
     // Viteza ba nene.
-    private float speed = 3.0f;
+    private float speed = 4.0f;
     private boolean isMoving=false;
 
     // Butoane apasate si faze.
@@ -93,7 +93,7 @@ public class Player
     private boolean isDashing=false;
     private int dashX,dashY;
     private float dashDistance=80;//distanta;
-    private float dashSpeed=0.1f;
+    private float dashSpeed=0.15f;
     private float dashProgress=0;
     private long lastDash;
     private int dashReloadTime=2000;
@@ -384,7 +384,7 @@ public class Player
                     if (berserk.isActive() && System.currentTimeMillis() - berserk.getActivationTime() > berserk.getDuration()) {
                         this.meleeOnly = false;
                         this.meleeDMG = 10;
-                        this.speed = 3.0f;
+                        this.speed = 4.0f;
                         berserk.setActive(false);
                     }
                 }
@@ -438,9 +438,17 @@ public class Player
 
         if(isDashing)
         {
-            if (dashProgress < 1)
-            {
-                dashProgress = dashProgress + dashSpeed;
+            lastiFrame = System.currentTimeMillis();
+            int centerX = (int)(x + hitboxOffset + hitboxSize / 2) / Tile.TILE_WIDTH;
+            int centerY = (int)(y + hitboxOffset + hitboxSize / 2) / Tile.TILE_HEIGHT;
+            int currentTileId = lm.getCurrentMap().getTileId(centerX, centerY);
+            boolean onIce = (currentTileId == 22);
+
+            if(dashProgress<1 || onIce) {
+                if (!onIce) {
+                    dashProgress = dashProgress + dashSpeed;
+                }
+
                 float dashMoveX = dashX * dashDistance * dashSpeed;
                 float dashMoveY = dashY * dashDistance * dashSpeed;
 
@@ -448,21 +456,22 @@ public class Player
                 if (lm != null && lm.getCurrentMap() != null) {
                     if (!CollisionSystem.collidesWithWall(x + dashMoveX, y, hitboxOffset, hitboxSize, hitboxSize)) {
                         x = x + dashMoveX;
-                    } else { 
-                        isDashing = false; dashProgress = 0; 
-                        }
-                    if (!CollisionSystem.collidesWithWall(x, y + dashMoveY, hitboxOffset, hitboxSize, hitboxSize)) {
+                    } else {
+                        isDashing = false;
+                        dashProgress = 0;
+                    }
+                    if (!CollisionSystem.collidesWithWall(x, y + dashMoveY, hitboxOffset, hitboxSize, hitboxSize))
+                    {
                         y = y + dashMoveY;
                     } else { 
-                        isDashing = false; dashProgress = 0; 
-                        }
+                        isDashing = false;
+                        dashProgress = 0;
+                    }
                 } else {
                     x = x + dashMoveX;
                     y = y + dashMoveY;
                 }
-            }
-            else
-            {
+            }else {
                 dashProgress = 0;
                 isDashing=false;
             }
@@ -573,7 +582,7 @@ public class Player
         g.fillOval(hudX, hudY, r, r);
 
         // Afișăm numărul de bombe
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(200, 200, 200));
         g.setFont(new Font("Arial", Font.BOLD, 25));
         g.drawString("x" + bomb.getCharges(), hudX + r + 10, hudY + 25);
     }
@@ -614,7 +623,7 @@ public class Player
         g.setColor(barColor);
         g.fillRect(hudX + 2, hudY + 2, (int) ((barWidth - 4) * progress), barHeight - 4);
 
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(200, 200, 200));
         g.setFont(new Font("Arial", Font.BOLD, 12));
         String status = fervor.isActive() ? "ACTIVE" : (fervor.getCharges() > 0 ? "FERVOR READY" : "RECHARGING...");
         g.drawString(status, hudX, hudY - 5);
@@ -655,7 +664,7 @@ public class Player
         g.setColor(barColor);
         g.fillRect(hudX + 2, hudY + 2, (int) ((barWidth - 4) * progress), barHeight - 4);
 
-        g.setColor(Color.BLACK);
+        g.setColor(new Color(200, 200, 200));
         g.setFont(new Font("Arial", Font.BOLD, 12));
         String text = berserk.isActive() ? "ACTIVE" : (berserk.getCharges() > 0 ? "BERSERK READY" : "RECHARGING...");
         g.drawString(text, hudX, hudY - 5);

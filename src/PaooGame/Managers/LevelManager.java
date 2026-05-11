@@ -89,7 +89,13 @@ public class LevelManager {
             } else if (type.equals("Npc") && parts.length >= 4) {
                 int x = Integer.parseInt(parts[2]);
                 int y = Integer.parseInt(parts[3]);
-                entityManager.addEntity(new Bity(x, y));
+                StringBuilder mesajBuilder = new StringBuilder();
+                for (int i=4;i<parts.length;++i)
+                {
+                    mesajBuilder.append(parts[i]).append(" ");
+                }
+                String mesaj=mesajBuilder.toString().trim();
+                entityManager.addEntity(new Bity(x, y, mesaj));
             }
         }
         this.forceEmptyRoom=false;
