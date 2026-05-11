@@ -6,8 +6,8 @@ import java.awt.*;
 
 public class Bity extends Npc {
 
-    public Bity(float x, float y) {
-        super(x, y, "Bity", "Ti-am oferit intelepciunea de care aveai nevoie!");
+    public Bity(float x, float y, String mesaj) {
+        super(x, y, "Bity", mesaj);
         this.showDialog = false;
     }
 

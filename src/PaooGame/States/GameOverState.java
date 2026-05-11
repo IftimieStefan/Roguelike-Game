@@ -15,11 +15,13 @@ public class GameOverState extends State {
     private boolean restartPressed = false;
     private boolean menuPressed    = false;
     private boolean exitPressed    = false;
+    private int slot;//slotul curent
 
     private float animTime;
 
-    public GameOverState(GameWindow wnd) {
+    public GameOverState(GameWindow wnd, int slot) {
         super(wnd);
+        this.slot=slot;
 
         int btnWidth = 220;
         int btnHeight = 60;
@@ -51,7 +53,8 @@ public class GameOverState extends State {
         this.animTime=time;
 
         if (restartPressed) {
-            //CurataMouseListeners();
+            CurataInput();
+            StateManager.SetState(new PlayState(wnd,slot));
             restartPressed = false;
         }
 

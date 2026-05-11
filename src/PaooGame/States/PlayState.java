@@ -57,7 +57,7 @@ public class PlayState extends State {
 
         if(player.getCurrentHP()==0) {
             CurataInput();
-            StateManager.SetState(new GameOverState(wnd));
+            StateManager.SetState(new GameOverState(wnd,slot));
         }
 
         if(playPause)
