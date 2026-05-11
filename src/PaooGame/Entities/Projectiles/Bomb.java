@@ -36,6 +36,12 @@ public class Bomb
             progress += speed;
             currentX = startX + (targetX - startX) * progress;
             currentY = startY + (targetY - startY) * progress;
+            
+            if (PaooGame.Managers.CollisionSystem.collidesWithWall(currentX, currentY, 0, r, r)) {
+                progress = 1.0f; // Forteaza explozia
+                targetX = currentX;
+                targetY = currentY;
+            }
         } else if (!isExploding){
             isExploding=true;
             explosionTimer=System.currentTimeMillis();

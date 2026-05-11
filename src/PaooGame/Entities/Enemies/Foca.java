@@ -38,8 +38,15 @@ public class Foca extends Inamic {
                     lastAttackTime = currentTime;
                 }
             } else if (distance > 0) {
-                this.x += (dx / distance) * speed;
-                this.y += (dy / distance) * speed;
+                float newX = this.x + (dx / distance) * speed;
+                float newY = this.y + (dy / distance) * speed;
+                
+                if (!PaooGame.Managers.CollisionSystem.collidesWithWall(newX, this.y, hitboxOffset, hitboxSize, hitboxSize)) {
+                    this.x = newX;
+                }
+                if (!PaooGame.Managers.CollisionSystem.collidesWithWall(this.x, newY, hitboxOffset, hitboxSize, hitboxSize)) {
+                    this.y = newY;
+                }
             }
         }
     }

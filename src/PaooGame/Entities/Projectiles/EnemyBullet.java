@@ -20,6 +20,9 @@ public class EnemyBullet {
     public void Update() {
         x += speedX;
         y += speedY;
+        if (PaooGame.Managers.CollisionSystem.collidesWithWall(x, y, 0, size, size)) {
+            active = false;
+        }
     }
 
     public void Draw(Graphics g, GameCamera camera) {

@@ -47,7 +47,7 @@ public class FogOfWar {
     public void Draw(Graphics2D g2d, GameCamera camera, int screenW, int screenH) {
         int xOff = (camera != null) ? (int) camera.getxOff() : 0;
         int yOff = (camera != null) ? (int) camera.getyOff() : 0;
-        float zoom = (camera != null) ? camera.getZoom() : 1f;
+        float zoom = (camera != null) ? camera.getZoom() : 2f;
 
         int xStart = Math.max(0, xOff / Tile.TILE_WIDTH);
         int xEnd = Math.min(width, (xOff + screenW) / Tile.TILE_WIDTH + 1);
@@ -62,8 +62,13 @@ public class FogOfWar {
                 if (alpha > 0) {
                     int drawX = (int)((x * Tile.TILE_WIDTH - xOff) * zoom);
                     int drawY = (int)((y * Tile.TILE_HEIGHT - yOff) * zoom);
-                    int drawW = (int)(Tile.TILE_WIDTH * zoom);
-                    int drawH = (int)(Tile.TILE_HEIGHT * zoom);
+                    
+                    int nextX = (int)(((x + 1) * Tile.TILE_WIDTH - xOff) * zoom);
+                    int nextY = (int)(((y + 1) * Tile.TILE_HEIGHT - yOff) * zoom);
+                    
+                    int drawW = nextX - drawX;
+                    int drawH = nextY - drawY;
+                    
                     g2d.setColor(new Color(FOG_R, FOG_G, FOG_B, alpha));
                     g2d.fillRect(drawX, drawY, drawW, drawH);
                 }

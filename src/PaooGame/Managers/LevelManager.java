@@ -56,6 +56,7 @@ public class LevelManager {
         }
 
         currentMap = new MapLoader(mapPath);
+        CollisionSystem.setCurrentMap(currentMap);
         entityManager = new EntityManager();
 
         // Setam limitele camerei pe baza dimensiunilor hartii

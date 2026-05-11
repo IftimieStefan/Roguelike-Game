@@ -20,6 +20,9 @@ public class Snowball
     {
         x=x+speedX;
         y=y+speedY;
+        if (PaooGame.Managers.CollisionSystem.collidesWithWall(x, y, 0, r, r)) {
+            active = false;
+        }
     }
 
     public void Draw(Graphics g, GameCamera camera)
