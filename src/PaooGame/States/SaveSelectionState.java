@@ -13,8 +13,10 @@ public class SaveSelectionState extends State
 {
     private Rectangle[] saveSlots;  // Un vector de 3 dreptunghiuri pentru sloturi
     private SaveData[] slotsData;// datele in baza de date
+    private Rectangle[] deleteButtons;// butoane de delete
     private Rectangle   backButton;
     private int         selectedSlot = -1; // -1 inseamna nicio selectie
+    private int slotToDelete = -1;
     private boolean     backPressed = false;
     private float animTime = 0;
 
@@ -25,9 +27,11 @@ public class SaveSelectionState extends State
         // Definim 3 butoane (sloturi) unul sub altul
         saveSlots = new Rectangle[3];
         slotsData = new SaveData[3];
+        deleteButtons = new Rectangle[3];
 
         for(int i = 0; i < 3; i++) {
             saveSlots[i] = new Rectangle(cx - 150, 250 + (i * 110), 300, 80);
+            deleteButtons[i] = new Rectangle(cx + 150, 250 + (i * 110), 80, 80);
             slotsData[i] = DatabaseManager.LoadProgress(i+1);
         }
 
@@ -41,6 +45,10 @@ public class SaveSelectionState extends State
                 for(int i = 0; i < 3; i++) {
                     if(saveSlots[i].contains(e.getPoint())) {
                         selectedSlot = i + 1; // Salvam slotul 1, 2 sau 3
+                    }
+
+                    if(deleteButtons[i].contains(e.getPoint())) {
+                        slotToDelete=i+1;
                     }
                 }
                 // Verificam butonul back
@@ -59,6 +67,12 @@ public class SaveSelectionState extends State
             CurataInput();
             StateManager.SetState(new MainMenuState(wnd));
             backPressed=false;
+        }
+
+        if (slotToDelete != -1) {
+            DatabaseManager.DeleteProgress(slotToDelete);
+            slotsData[slotToDelete - 1] = null;
+            slotToDelete = -1;
         }
 
         if(selectedSlot != -1 ){
@@ -103,6 +117,7 @@ public class SaveSelectionState extends State
             } else {
                 label = "Slot " + (i+1) + " - Lvl " + slotsData[i].getLevel() + " - Room " + slotsData[i].getRoom();
                 btnColor = new Color(40, 160, 80);
+                drawButton(g, deleteButtons[i], "X", new Color(180, 40, 40));
             }
             drawButton(g, saveSlots[i], label,btnColor);
         }

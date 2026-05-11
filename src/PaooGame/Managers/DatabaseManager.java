@@ -74,4 +74,19 @@ public class DatabaseManager {
         }
         return null;
     }
+
+    public static void DeleteProgress(int slot)
+    {
+        String sql = "DELETE FROM SaveGame WHERE slot_id = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, slot);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Eroare la ștergerea salvării: " + e.getMessage());
+        }
+    }
 }
