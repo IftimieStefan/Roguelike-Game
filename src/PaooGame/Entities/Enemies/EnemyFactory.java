@@ -13,6 +13,8 @@ public class EnemyFactory {
                 return new Foca_Cowboy(x, y, player);
             case "FOCA_MEXIC":
                 return new Foca_Mexic(x, y, player);
+            case "FOCA_ESCROCA":
+                return new Foca_Escroca(x, y, player);
             default:
                 throw new IllegalArgumentException("Unknown enemy type: " + type);
         }
