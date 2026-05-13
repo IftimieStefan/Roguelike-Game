@@ -36,7 +36,7 @@ public class Player
     private boolean isMoving=false;
 
     // Butoane apasate si faze.
-    private KeyListener keyControls;
+    private final KeyListener keyControls;
     private boolean up, down, left, right, leftClick, rightClick, isReloading=false;
 
     // Poza lu Dinu din momentu' asta.
