@@ -117,9 +117,11 @@ public class LevelManager {
         } else if (type.equals("Door") && parts.length >= 3) {
             int x = Integer.parseInt(parts[1]);
             int y = Integer.parseInt(parts[2]);
-            Door door = new Door(x, y);
+            int nextRoom = Integer.parseInt(parts[3]);
+            boolean orientation = Boolean.parseBoolean(parts[4]);
+            Door door = new Door(x, y, nextRoom, orientation);
             door.setOnActivate(() -> {
-                currentRoom++;
+                currentRoom=door.getNextRoom();
                 loadRoom();
             });
             entityManager.addEntity(door);
