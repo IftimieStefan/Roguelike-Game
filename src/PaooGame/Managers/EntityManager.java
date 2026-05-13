@@ -72,7 +72,7 @@ public class EntityManager {
         entities.removeIf(e -> !e.isActive());        // Scoate entit moarte/activate
         if (entitatiEliminate > 0) {
             if (PaooGame.Managers.StateManager.GetState() instanceof PaooGame.States.PlayState) {
-                ((PlayState) StateManager.GetState()).modifyScore(entitatiEliminate * 500);
+                ((PlayState) StateManager.GetState()).modifyScore(entitatiEliminate * 100);
             }
         }
 
