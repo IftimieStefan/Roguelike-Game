@@ -36,6 +36,7 @@ public class Assets
     public  static BufferedImage inamic_samurai;
     public  static BufferedImage inamic_cowboy;
     public  static BufferedImage inamic_mehico;
+    public  static BufferedImage foca_escroca;
 
     /*! \fn public static void Init()
         \brief Functia initializaza referintele catre elementele grafice utilizate.
@@ -50,10 +51,15 @@ public class Assets
         SpriteSheet dinu = new SpriteSheet(ImageLoader.LoadImage("/textures/dinu_cu_esarfa.png"));
 
         SpriteSheet inamici = new SpriteSheet(ImageLoader.LoadImage("/textures/inamici.png"));
+        SpriteSheet boss = new SpriteSheet(ImageLoader.LoadImage("/textures/foca_escrocaa.png"));
+
 
         inamic_samurai = inamici.cropAbsolute(0,0,69,64);
         inamic_mehico = inamici.cropAbsolute(1,139,69,64);
         inamic_cowboy = inamici.cropAbsolute(3,277,69,64);
+        foca_escroca = boss.cropAbsolute(0,2,69,64);
+
+
 
         /// Se obtin subimaginile corespunzatoare elementelor necesare.
         snow = sheet.crop(0, 0);

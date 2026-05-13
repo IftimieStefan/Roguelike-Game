@@ -121,6 +121,14 @@ public class CollisionSystem {
                         b.setActive(false);
                     }
                 }
+            } else if (inamic instanceof PaooGame.Entities.Enemies.Foca_Escroca) {
+                ArrayList<EnemyBullet> bullets = ((PaooGame.Entities.Enemies.Foca_Escroca) inamic).getBullets();
+                for (EnemyBullet b : bullets) {
+                    if (b.isActive() && player.getHitbox().intersects(b.getHitbox())) {
+                        player.takeDamage();
+                        b.setActive(false);
+                    }
+                }
             }
         }
     }

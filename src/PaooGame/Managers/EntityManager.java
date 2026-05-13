@@ -12,23 +12,35 @@ import java.util.List;
 public class EntityManager {
 
     private final List<Entity> entities;          // Lista entitati
+    private final List<Entity> pendingEntities;    // Lista temporara pentru a preveni ConcurrentModificationException
     private final List<EnemyDeathObs> observers;   // Observers pentru moartea inamicilor
     private boolean alrNotif;                      // Flag
+    private boolean isUpdating = false;
 
     public EntityManager() {
         this.entities = new ArrayList<>();
+        this.pendingEntities = new ArrayList<>();
         this.observers = new ArrayList<>();
     }
 
     public void addEntity(Entity entity) {
         if (entity == null) return;
-        entities.add(entity);
+        
+        if (isUpdating) {
+            pendingEntities.add(entity);
+        } else {
+            entities.add(entity);
+        }
+
         if (entity instanceof EnemyDeathObs) {     // Door in observers
             addObserver((EnemyDeathObs) entity);
         }
         // Foca Mexic are nevoie de referința la EntityManager pentru buff
         if (entity instanceof Foca_Mexic) {
             ((Foca_Mexic) entity).setEntityManager(this);
+        }
+        if (entity instanceof Foca_Escroca) {
+            ((Foca_Escroca) entity).setEntityManager(this);
         }
     }
 
@@ -47,7 +59,13 @@ public class EntityManager {
         alrNotif = true;  // Modificam flag
     }
     public void Update() {
+        isUpdating = true;
         for (Entity e : entities) e.Update();         // Update fiecare entitate
+        isUpdating = false;
+        
+        entities.addAll(pendingEntities);
+        pendingEntities.clear();
+        
         entities.removeIf(e -> !e.isActive());        // Scoate entit moarte/activate
 
         boolean hasEnemies = false;
