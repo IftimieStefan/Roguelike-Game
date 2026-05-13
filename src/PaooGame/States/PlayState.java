@@ -154,6 +154,11 @@ public class PlayState extends State {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) playPause = true;
+                if (e.getKeyCode() == KeyEvent.VK_N) {
+                    if (levelManager != null) {
+                        levelManager.skipToNextRoom();
+                    }
+                }
             }
         };
     }

@@ -160,4 +160,9 @@ public class LevelManager {
 
     public MapLoader getCurrentMap() { return currentMap; }
     public EntityManager getEntityManager() { return entityManager; }
+
+    public void skipToNextRoom() {
+        currentRoom++;
+        loadRoom();
+    }
 }
