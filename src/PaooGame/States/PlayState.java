@@ -3,7 +3,6 @@ package PaooGame.States;
 import PaooGame.Core.GameCamera;
 import PaooGame.Entities.Player.Player;
 import PaooGame.GameWindow.GameWindow;
-import PaooGame.Managers.EntityManager;
 import PaooGame.Managers.LevelManager;
 import PaooGame.Managers.StateManager;
 import PaooGame.Managers.DatabaseManager;
@@ -22,6 +21,9 @@ public class PlayState extends State {
     private MouseListener mouseListener;
     private KeyListener keyListener;
     private int slot;
+    private boolean roomSaved=false;
+    private int score = 10000;
+    private long lastSec=System.currentTimeMillis();
 
 
     public PlayState(GameWindow wnd,int slot) {
@@ -36,9 +38,8 @@ public class PlayState extends State {
 
         ActivareInput();
 
-        levelManager = new LevelManager(player,camera);
-
         SaveData data = DatabaseManager.LoadProgress(slot);
+        levelManager = new LevelManager(player,camera);
 
         if(data!=null)
         {
@@ -46,6 +47,7 @@ public class PlayState extends State {
             player.setX(data.getX());
             player.setY(data.getY());
             player.setCurrentHP(data.getHP());
+            setCurrentScore(data.getScore());
         }
     }
 
@@ -58,6 +60,13 @@ public class PlayState extends State {
         if(player.getCurrentHP()==0) {
             CurataInput();
             StateManager.SetState(new GameOverState(wnd,slot));
+            return;
+        }
+
+        if(System.currentTimeMillis()-lastSec>=1000)
+        {
+            if(score > 0) modifyScore(-10);
+            lastSec=System.currentTimeMillis();
         }
 
         if(playPause)
@@ -70,7 +79,17 @@ public class PlayState extends State {
 
         if(levelManager.getEntityManager().getEnemies().isEmpty())
         {
-            DatabaseManager.SaveProgress(slot, player.getCurrentHP(), player.getX(), player.getY(), levelManager.getCurrentLevel(),levelManager.getCurrentRoom());
+            if(!roomSaved) {
+                DatabaseManager.SaveProgress(slot, player.getCurrentHP(), player.getX(), player.getY(), levelManager.getCurrentLevel(), levelManager.getCurrentRoom(), score);
+                roomSaved=true;
+                if (levelManager.getCurrentRoom() == 2 && levelManager.getCurrentLevel() == 3) {
+                    CurataInput();
+                    StateManager.SetState(new WinState(wnd,score));
+                    return;
+                }
+            }
+        } else {
+            roomSaved=false;
         }
 
         if(camera !=null){
@@ -156,5 +175,13 @@ public class PlayState extends State {
         // Forțăm focusul
         wnd.GetCanvas().setFocusable(true);
         wnd.GetCanvas().requestFocusInWindow();
+    }
+
+    public void setCurrentScore(int score){this.score=score;}
+    public int getScore(){return score;}
+    public void modifyScore(int val)
+    {
+        score = score + val;
+        if(score<0) score=0;
     }
 }

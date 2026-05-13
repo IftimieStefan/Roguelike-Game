@@ -3,6 +3,7 @@ package PaooGame.Managers;
 import PaooGame.Entities.Entity;
 import PaooGame.Entities.Door;
 import PaooGame.Entities.Enemies.*;
+import PaooGame.States.PlayState;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -65,8 +66,16 @@ public class EntityManager {
         
         entities.addAll(pendingEntities);
         pendingEntities.clear();
-        
+
+        int entitatiEliminate=(int) entities.stream().filter(e -> !e.isActive() && e instanceof Inamic).count();
+
         entities.removeIf(e -> !e.isActive());        // Scoate entit moarte/activate
+        if (entitatiEliminate > 0) {
+            if (PaooGame.Managers.StateManager.GetState() instanceof PaooGame.States.PlayState) {
+                ((PlayState) StateManager.GetState()).modifyScore(entitatiEliminate * 500);
+            }
+        }
+
 
         boolean hasEnemies = false;
         for (Entity e : entities) {

@@ -23,6 +23,10 @@ public class Foca_Escroca extends Inamic {
 
     // Proiectile
     private ArrayList<EnemyBullet> bullets = new ArrayList<>();
+    private boolean isFiring=false;
+    private int currentWave=0;
+    private long lastWaveTime=0;
+    private final long waveDelay=300;
 
     // Dash / Jump state
     private boolean isDashing = false;
@@ -32,6 +36,9 @@ public class Foca_Escroca extends Inamic {
     private float jumpTargetX, jumpTargetY;
     private float jumpSpeed = 10.0f;
     private float initialSpeed;
+    private float jumpScale=1.0f;
+    private float jumpProgress=0.f;
+    private float jumpStartX, jumpStartY;
 
     private Random rand = new Random();
 
@@ -76,7 +83,20 @@ public class Foca_Escroca extends Inamic {
 
         long currentTime = System.currentTimeMillis();
 
-        if (isDashing) {
+        if(isFiring)
+        {
+            if(currentTime-lastWaveTime>waveDelay)
+            {
+                handleBulletWave();
+                currentWave++;
+                lastWaveTime=currentTime;
+
+                if(currentWave>=3)
+                {
+                    isFiring=false;
+                }
+            }
+        }else if (isDashing) {
             handleDash();
         } else if (isJumping) {
             handleJump();
@@ -119,8 +139,11 @@ public class Foca_Escroca extends Inamic {
         switch (attackType) {
             case 0: // Jump/AoE (Sare spre player)
                 isJumping = true;
+                jumpStartX = this.x;
+                jumpStartY = this.y;
                 jumpTargetX = player.getX();
                 jumpTargetY = player.getY();
+                jumpProgress=0;
                 break;
             case 1: // Dash/Charge
                 isDashing = true;
@@ -130,13 +153,19 @@ public class Foca_Escroca extends Inamic {
                 }
                 break;
             case 2: // Projectile Barrage
-                for (int i = 0; i < 8; i++) {
-                    double angle = Math.toRadians(i * 45);
-                    float dirX = (float) Math.cos(angle);
-                    float dirY = (float) Math.sin(angle);
-                    bullets.add(new EnemyBullet(x + hitboxSize/2f, y + hitboxSize/2f, dirX, dirY));
-                }
+                isFiring = true;
+                currentWave = 0;
+                lastWaveTime = 0;
                 break;
+        }
+    }
+
+    private void handleBulletWave(){
+        for (int i = 0; i < 8; i++) {
+            double angle = Math.toRadians(i * 45 + (currentWave*15));
+            float dirX = (float) Math.cos(angle);
+            float dirY = (float) Math.sin(angle);
+            bullets.add(new EnemyBullet(x + hitboxSize / 2f, y + hitboxSize / 2f, dirX, dirY));
         }
     }
 
@@ -166,18 +195,28 @@ public class Foca_Escroca extends Inamic {
         float dy = jumpTargetY - this.y;
         float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
-        if (distance <= jumpSpeed) {
+        jumpProgress=jumpProgress+0.015f;
+
+        if (jumpProgress>=1.0f) {
             this.x = jumpTargetX;
             this.y = jumpTargetY;
             isJumping = false;
+            jumpProgress=1.0f;
+            jumpScale=1.0f;
+
             // AoE damage cand aterizeaza
             float distToPlayer = (float) Math.sqrt(Math.pow(player.getX() - this.x, 2) + Math.pow(player.getY() - this.y, 2));
             if (distToPlayer <= CONTACT_RANGE * 2.5f) {
                 player.takeDamage();
             }
         } else {
-            this.x += (dx / distance) * jumpSpeed;
-            this.y += (dy / distance) * jumpSpeed;
+            float smoothedProgress = jumpProgress * jumpProgress * (3 - 2 * jumpProgress);
+
+            this.x = jumpStartX + (jumpTargetX - jumpStartX) * smoothedProgress;
+            this.y = jumpStartY + (jumpTargetY - jumpStartY) * smoothedProgress;
+
+            jumpScale = (float) (-4 * Math.pow(jumpProgress - 0.5, 2) + 1.5f);
+            if (jumpScale < 1.0f) jumpScale = 1.0f;
         }
     }
 
@@ -203,9 +242,16 @@ public class Foca_Escroca extends Inamic {
             b.Draw(g, camera);
         }
 
+        int currentSize = (int) (SPRITE_SIZE * 2 * jumpScale);
+
         // Desenam boss-ul mai mare (scale * 2 = 96x96)
         if (sprite != null) {
-            g.drawImage(sprite, (int) x - xOff, (int) y - yOff, SPRITE_SIZE * 2, SPRITE_SIZE * 2, null);
+            g.drawImage(sprite, (int) x - xOff, (int) y - yOff, currentSize, currentSize, null);
+        }
+
+        if (isJumping) {
+            g.setColor(new Color(0, 0, 0, 100));
+            g.fillOval((int)x - xOff, (int)y - yOff + (SPRITE_SIZE * 2) - 10, SPRITE_SIZE * 2, 20);
         }
 
         // Bara de viata a boss-ului
@@ -227,7 +273,7 @@ public class Foca_Escroca extends Inamic {
         g.drawRect((int) x - xOff, (int) y - yOff - HP_BAR_OFFSET_Y - 5, barWidth, HP_BAR_HEIGHT + 5);
         
         // Numele boss-ului
-        g.setColor(Color.WHITE);
+        g.setColor(new Color(200, 200, 200));
         g.setFont(new Font("Arial", Font.BOLD, 12));
         g.drawString("Foca Escroca", (int) x - xOff, (int) y - yOff - HP_BAR_OFFSET_Y - 10);
 

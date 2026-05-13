@@ -41,6 +41,7 @@ public class LevelManager {
                 // Nu mai exista camere in acest nivel, trecem la nivelul urmator
                 currentLevel++;
                 currentRoom = 1;
+                player.setCurrentHP(5);
                 mapPath = "res/harti/Level" + currentLevel + "/room" + currentRoom + ".csv";
                 f = new File(mapPath);
                 if(!f.exists()) {

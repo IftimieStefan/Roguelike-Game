@@ -21,7 +21,8 @@ public class DatabaseManager {
                         "x REAL," +
                         "y REAL," +
                         "level INTEGER, " +
-                        "room INTEGER" +
+                        "room INTEGER, " +
+                        "score INTEGER" +
                         ");";
                 Statement stmt = conn.createStatement();
                 stmt.execute(sql);
@@ -31,8 +32,8 @@ public class DatabaseManager {
         }
     }
 
-    public static void SaveProgress(int slot, int hp, float x, float y, int level, int room) {
-        String sql = "INSERT OR REPLACE INTO SaveGame(slot_id, hp, x, y, level,room) VALUES(?, ?, ?, ?, ?, ?)";
+    public static void SaveProgress(int slot, int hp, float x, float y, int level, int room, int score) {
+        String sql = "INSERT OR REPLACE INTO SaveGame(slot_id, hp, x, y, level,room, score) VALUES(?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -43,6 +44,7 @@ public class DatabaseManager {
             pstmt.setFloat(++i, y);
             pstmt.setInt(++i, level);
             pstmt.setInt(++i, room);
+            pstmt.setInt(++i,score);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,7 +53,7 @@ public class DatabaseManager {
 
     public static SaveData LoadProgress(int slot)
     {
-        String sql = "SELECT hp, x, y, level, room FROM SaveGame WHERE slot_id = ?";
+        String sql = "SELECT hp, x, y, level, room, score FROM SaveGame WHERE slot_id = ?";
 
         try (Connection conn = DriverManager.getConnection(URL);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -66,7 +68,8 @@ public class DatabaseManager {
                         rs.getFloat("x"),
                         rs.getFloat("y"),
                         rs.getInt("level"),
-                        rs.getInt("room")
+                        rs.getInt("room"),
+                        rs.getInt("score")
                 );
             }
         } catch (SQLException e) {

@@ -20,7 +20,7 @@ public class Foca_Cowboy extends Inamic {
     private long lastShootTime = 0;
     private static final long SHOOT_COOLDOWN = 2000;  // 2 secunde intre trageri
     private static final float SHOOT_RANGE = 250;     // Distanta la care incepe sa traga
-    private static final float CHASE_RANGE = 300;     // Distanta la care urmareste
+    private static final float CHASE_RANGE = 500;     // Distanta la care urmareste
 
     public Foca_Cowboy(float stX, float stY, Player player) {
         super(stX, stY, 40, 1.5f);

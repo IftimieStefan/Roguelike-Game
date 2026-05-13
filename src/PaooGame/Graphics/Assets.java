@@ -57,7 +57,7 @@ public class Assets
         inamic_samurai = inamici.cropAbsolute(0,0,69,64);
         inamic_mehico = inamici.cropAbsolute(1,139,69,64);
         inamic_cowboy = inamici.cropAbsolute(3,277,69,64);
-        foca_escroca = boss.cropAbsolute(0,2,69,64);
+        foca_escroca = boss.cropAbsolute(0,2,67,64);
 
 
 

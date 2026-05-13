@@ -1,8 +1,8 @@
 package PaooGame.Entities.Player;
 import java.util.ArrayList;
 
-import PaooGame.Entities.Damageable;
-import PaooGame.Entities.Entity;
+import PaooGame.Managers.StateManager;
+import PaooGame.States.PlayState;
 import PaooGame.Entities.Projectiles.Bomb;
 import PaooGame.Entities.Projectiles.Snowball;
 import PaooGame.Graphics.Assets;
@@ -220,6 +220,9 @@ public class Player
         {
             abilities.get(abilityIndex).use(this,lm);
         }
+        if(StateManager.GetState() instanceof PlayState) {
+            ((PlayState) StateManager.GetState()).modifyScore(-300);
+        }
     }
 
     public Rectangle getMeleeHitbox()
@@ -255,8 +258,11 @@ public class Player
             currentHP--;
             lastiFrame=System.currentTimeMillis();
             lastDamage=System.currentTimeMillis();
+            if(StateManager.GetState() instanceof PlayState)
+            {
+                ((PlayState) StateManager.GetState()).modifyScore(-500);
+            }
         }
-       // if(currentHP==0) gameOver();
     }
 
     private void dash()
@@ -512,6 +518,15 @@ public class Player
     public void DrawHUD(Graphics g)
     {
         drawHP(g);
+
+        //desenare scor
+        if (StateManager.GetState() instanceof PlayState) {
+            int currentScor = ((PlayState) StateManager.GetState()).getScore();
+            g.setColor(new Color(200, 200, 200));
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.drawString("Score: " + currentScor, 50, 120);
+        }
+
         drawSnowballCounter(g);
 
         if(!abilities.isEmpty())

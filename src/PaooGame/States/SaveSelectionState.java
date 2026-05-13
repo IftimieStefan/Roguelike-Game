@@ -76,6 +76,12 @@ public class SaveSelectionState extends State
         }
 
         if(selectedSlot != -1 ){
+            SaveData data=slotsData[selectedSlot-1];
+            if(data!=null && data.getLevel()==3 && data.getRoom()==2)
+            {
+                selectedSlot=-1;
+                return;
+            }
             CurataInput();
             StateManager.SetState(new PlayState(wnd,selectedSlot));
             selectedSlot=-1;
@@ -115,11 +121,16 @@ public class SaveSelectionState extends State
                 label = "Slot " + (i+1) + " - New Game";
                 btnColor = new Color(60, 100, 150);
             } else {
-                label = "Slot " + (i+1) + " - Lvl " + slotsData[i].getLevel() + " - Room " + slotsData[i].getRoom();
-                btnColor = new Color(40, 160, 80);
+                if (slotsData[i].getLevel() == 3 && slotsData[i].getRoom() == 2) {
+                    label = "Slot " + (i + 1) + " - Final Score: " + slotsData[i].getScore();
+                    btnColor = new Color(100, 100, 100); // Gri pentru "dezactivat"
+                } else {
+                    label = "Slot " + (i + 1) + " - Lvl " + slotsData[i].getLevel() + " - Room " + slotsData[i].getRoom();
+                    btnColor = new Color(40, 160, 80);
+                }
                 drawButton(g, deleteButtons[i], "X", new Color(180, 40, 40));
             }
-            drawButton(g, saveSlots[i], label,btnColor);
+            drawButton(g, saveSlots[i], label, btnColor);
         }
 
         // Desenam butonul Back

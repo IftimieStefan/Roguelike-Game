@@ -15,9 +15,11 @@ public class WinState extends State {
     private boolean exitPressed    = false;
 
     private float animTime;
+    private int score;
 
-    public WinState(GameWindow wnd) {
+    public WinState(GameWindow wnd,int score) {
         super(wnd);
+        this.score=score;
 
         int btnWidth = 220;
         int btnHeight = 60;
@@ -90,9 +92,13 @@ public class WinState extends State {
             g.setColor(new Color(0, 0, 0, 150));
             g.drawString(title, titleX + 5, titleY + 5);
             // Titlu
-            g.setColor(new Color(220, 40, 40));
+            g.setColor(new Color(255, 215, 50));
             g.drawString(title, titleX, titleY);
 
+            //Scor
+            String Scor="Final score: "+ score;
+            g.setColor(new Color(255, 215, 50));
+            g.drawString(Scor, titleX+250, titleY+75);
             // Butoane
             DrawButton(g, mainMenuButton, "MENU",    new Color(100, 100, 100));
             DrawButton(g, exitButton,     "EXIT",    new Color(180, 50, 50));
