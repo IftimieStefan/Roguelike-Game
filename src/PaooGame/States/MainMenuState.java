@@ -17,6 +17,10 @@ public class MainMenuState extends State
     private boolean     optionsPressed;
     private float       animTime;       /*!< Contor pentru animatie */
 
+    private boolean hoverPlay = false;
+    private boolean hoverOptions = false;
+    private boolean hoverExit = false;
+
     public MainMenuState(GameWindow wnd)
     {
         super(wnd);
@@ -38,16 +42,36 @@ public class MainMenuState extends State
             {
                 if(playButton.contains(e.getPoint()))
                 {
+                    PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav");
                     playPressed = true;
                 }
                 if(optionsButton.contains(e.getPoint()))
                 {
+                    PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav");
                     optionsPressed = true;
                 }
                 if(exitButton.contains(e.getPoint()))
                 {
+                    PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav");
                     exitPressed = true;
                 }
+            }
+        });
+
+        wnd.GetCanvas().addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if(playButton.contains(e.getPoint())) {
+                    if(!hoverPlay) { hoverPlay = true; PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav"); }
+                } else hoverPlay = false;
+
+                if(optionsButton.contains(e.getPoint())) {
+                    if(!hoverOptions) { hoverOptions = true; PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav"); }
+                } else hoverOptions = false;
+
+                if(exitButton.contains(e.getPoint())) {
+                    if(!hoverExit) { hoverExit = true; PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav"); }
+                } else hoverExit = false;
             }
         });
     }

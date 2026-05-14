@@ -71,6 +71,7 @@ public class EntityManager {
 
         entities.removeIf(e -> !e.isActive());        // Scoate entit moarte/activate
         if (entitatiEliminate > 0) {
+            PaooGame.Audio.AudioPlayer.playSound("res/audio/pop.wav");
             if (PaooGame.Managers.StateManager.GetState() instanceof PaooGame.States.PlayState) {
                 ((PlayState) StateManager.GetState()).modifyScore(entitatiEliminate * 100);
             }

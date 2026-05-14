@@ -39,6 +39,7 @@ public class Door implements Entity, Interactable, EnemyDeathObs {
     @Override
     public void onDeadEnemies() {
         isOpen = true;
+        PaooGame.Audio.AudioPlayer.playSound("res/audio/bomba.wav");
     }
 
     @Override

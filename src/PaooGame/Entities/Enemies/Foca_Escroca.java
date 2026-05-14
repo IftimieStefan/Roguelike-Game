@@ -73,6 +73,7 @@ public class Foca_Escroca extends Inamic {
         if (health <= maxHealth / 2 && phase == 1) {
             phase = 2;
             attackCooldown = 6000; // 6 secunde
+            PaooGame.Audio.AudioPlayer.playSound("res/audio/boss-phase2.wav");
             if (!minionsSpawned && entityManager != null) {
                 spawnMinions();
                 minionsSpawned = true;
@@ -147,6 +148,7 @@ public class Foca_Escroca extends Inamic {
                 break;
             case 1: // Dash/Charge
                 isDashing = true;
+                PaooGame.Audio.AudioPlayer.playSound("res/audio/boss-slide.wav");
                 if (distance > 0) {
                     dashTargetX = dx / distance;
                     dashTargetY = dy / distance;
@@ -161,6 +163,7 @@ public class Foca_Escroca extends Inamic {
     }
 
     private void handleBulletWave(){
+        PaooGame.Audio.AudioPlayer.playSound("res/audio/piuw.wav");
         for (int i = 0; i < 8; i++) {
             double angle = Math.toRadians(i * 45 + (currentWave*15));
             float dirX = (float) Math.cos(angle);

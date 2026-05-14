@@ -58,6 +58,7 @@ public class PlayState extends State {
         }
 
         if(player.getCurrentHP()==0) {
+            PaooGame.Audio.AudioPlayer.playSound("res/audio/death.wav");
             CurataInput();
             StateManager.SetState(new GameOverState(wnd,slot));
             return;
@@ -83,6 +84,7 @@ public class PlayState extends State {
                 DatabaseManager.SaveProgress(slot, player.getCurrentHP(), player.getX(), player.getY(), levelManager.getCurrentLevel(), levelManager.getCurrentRoom(), score);
                 roomSaved=true;
                 if (levelManager.getCurrentRoom() == 2 && levelManager.getCurrentLevel() == 3) {
+                    PaooGame.Audio.AudioPlayer.playSound("res/audio/torrente-presidente.wav");
                     CurataInput();
                     StateManager.SetState(new WinState(wnd,score));
                     return;

@@ -193,6 +193,7 @@ public class Player
         if(attackMode==0)
         {
             if(amo==0 || isReloading) return;
+            PaooGame.Audio.AudioPlayer.playSound("res/audio/throw.wav");
             snowballs.add(new Snowball(x,y,sX,sY));
             amo--;
             lastAttackTime=System.currentTimeMillis();
@@ -255,6 +256,7 @@ public class Player
     {
         if(System.currentTimeMillis()-lastiFrame>=iFrame)
         {
+            PaooGame.Audio.AudioPlayer.playSound("res/audio/oof.wav");
             currentHP--;
             lastiFrame=System.currentTimeMillis();
             lastDamage=System.currentTimeMillis();
@@ -274,6 +276,7 @@ public class Player
         isDashing=true;
         dashX=dirX;
         dashY=dirY;
+        PaooGame.Audio.AudioPlayer.playSound("res/audio/dash.wav");
         lastiFrame=System.currentTimeMillis();
         lastDash=System.currentTimeMillis();
     }
