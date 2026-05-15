@@ -53,6 +53,11 @@ public class PlayState extends State {
 
     @Override
     public void Update(float time) {
+
+        if(levelManager !=null){
+            levelManager.Update();
+        }
+
         if(player !=null && levelManager != null){
             player.Update(levelManager);
         }
@@ -98,9 +103,7 @@ public class PlayState extends State {
             camera.centerOnDinu(player);
         }
 
-        if(levelManager !=null){
-            levelManager.Update();
-        }
+
 
 
     }
@@ -190,5 +193,8 @@ public class PlayState extends State {
     {
         score = score + val;
         if(score<0) score=0;
+    }
+    public void resetRoomSaved() {
+        this.roomSaved = false;
     }
 }

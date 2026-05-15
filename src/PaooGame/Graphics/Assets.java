@@ -72,14 +72,11 @@ public class Assets
         icenw=sheet.crop(0,6);
         icese=sheet.crop(2,8);
         icesw=sheet.crop(0,8);
-        pereteorizontal = sheet.crop(1,0);
-        peretevertical = sheet.crop(2,1);
         peretecoltdj=sheet.crop(2,2);
         peretecoltds = sheet.crop(2,0);
         peretecoltss = sheet.crop(0,2);
         peretecoltsj = sheet.crop(1,2);
         water = sheet.crop(1, 1);
-        snow = sheet.crop(0, 0);
         pereteorizontal = sheet.crop(1,0);
         peretevertical = sheet.crop(2,1);
         peretecolt = sheet.crop(2,0);
@@ -103,7 +100,7 @@ public class Assets
         playerUp[1]=dinu.crop(4,0);
         playerUp[2]=dinu.crop(0,1);
 
-//        snow = sheet.cropAbsolute(1200,619,230,220);
+
 
 //        water = sheet.crop(2, 0);
 //        townGrassDestroyed = sheet.crop(1, 1);
