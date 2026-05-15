@@ -99,15 +99,17 @@ public class EntityManager {
         return result;
     }
 
-    public Door getDoor() {
+    public List<Door> getDoor() {
+        List<Door> result = new ArrayList<>();
         for (Entity e : entities) {
-            if (e instanceof Door) return (Door) e;
+            if (e instanceof Door) result.add((Door) e);
         }
-        return null;
+        return result;
     }
 
 
     public void processExplosion(Rectangle exp) {
-        CollisionSystem.processExplosion(exp, getEnemies());
+        CollisionSystem.processExplosionE(exp, getEnemies());
+        CollisionSystem.processExplosionD(exp, getDoor());
     }
 }

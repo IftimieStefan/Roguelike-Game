@@ -9,6 +9,7 @@ import PaooGame.Entities.Enemies.EnemyFactory;
 import PaooGame.Entities.Enemies.Inamic;
 import PaooGame.Entities.NPCs.Bity;
 import PaooGame.Core.GameCamera;
+import PaooGame.States.PlayState;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +101,9 @@ public class LevelManager {
             }
         }
         this.forceEmptyRoom=false;
+        if(StateManager.GetState() instanceof PlayState) {
+            ((PlayState)StateManager.GetState()).resetRoomSaved();
+        }
     }
 
     // Spawneaza o entitate din datele parsate
@@ -119,7 +123,8 @@ public class LevelManager {
             int y = Integer.parseInt(parts[2]);
             int nextRoom = Integer.parseInt(parts[3]);
             boolean orientation = Boolean.parseBoolean(parts[4]);
-            Door door = new Door(x, y, nextRoom, orientation);
+            boolean isHidden = Boolean.parseBoolean(parts[5]);
+            Door door = new Door(x, y, nextRoom, orientation, isHidden);
             door.setOnActivate(() -> {
                 currentRoom=door.getNextRoom();
                 loadRoom();

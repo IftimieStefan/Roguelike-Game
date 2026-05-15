@@ -12,11 +12,12 @@ import java.awt.*;
  * Player-ul trebuie sa apese E langa usa deschisa pentru a trece mai departe.
  */
 public class Door implements Entity, Interactable, EnemyDeathObs {
-    private float x, y;
+    private int x, y;
     private boolean isOpen;       // Se deschide cand mor toti inamicii (Observer)
     private boolean isActivated;  // Player-ul a interactionat cu ea
     private int nextRoom;
     private boolean orientation;
+    private boolean isHidden;
 
     // Callback pentru tranzitia la urmatorul nivel — evitam dependenta de LevelManager
     private Runnable onActivate;
@@ -24,13 +25,14 @@ public class Door implements Entity, Interactable, EnemyDeathObs {
     private static final int SIZE = 48;
     private static final float INTERACT_DISTANCE = 80f;
 
-    public Door(float x, float y, int nextRoom, boolean orientation) {
+    public Door(int x, int y, int nextRoom, boolean orientation, boolean isHidden) {
         this.x = x;
         this.y = y;
         this.nextRoom=nextRoom;
         this.orientation=orientation;
         this.isOpen = false;
         this.isActivated = false;
+        this.isHidden = isHidden;
     }
 
     /**
@@ -42,7 +44,10 @@ public class Door implements Entity, Interactable, EnemyDeathObs {
 
     @Override
     public void onDeadEnemies() {
-        isOpen = true;
+        if(!isHidden)
+        {
+            isOpen=true;
+        }
     }
 
     @Override
@@ -103,9 +108,8 @@ public class Door implements Entity, Interactable, EnemyDeathObs {
             }
             else {
                 // dam asset de perete orizontal
-                g.drawImage(Assets.usaorizontal, drawX, drawY, SIZE, SIZE, null);
+                g.drawImage(Assets.pereteorizontal, drawX, drawY, SIZE, SIZE, null);
             }
-            g.drawImage(Assets.pereteorizontal,drawX,drawY,SIZE,SIZE,null);
         }
 
         // Text indicator
@@ -116,6 +120,14 @@ public class Door implements Entity, Interactable, EnemyDeathObs {
         }
     }
 
+    public Rectangle getHitbox()
+    {
+        return new Rectangle(x,y,x,y);
+    }
+
+    public void open() {
+        isOpen=true;
+    }
     public boolean isOpen() { return isOpen; }
     public boolean isActivated() { return isActivated; }
     public float getX() { return x; }

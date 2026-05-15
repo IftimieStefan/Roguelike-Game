@@ -41,4 +41,4 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4
 Player 768 912
 Npc Bity 950 700 Te voi ajuta sa ajungi la polul nord.
-Door 1104 912 4 true
+Door 1104 912 4 true false

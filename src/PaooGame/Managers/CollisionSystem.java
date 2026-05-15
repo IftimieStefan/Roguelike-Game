@@ -1,5 +1,6 @@
 package PaooGame.Managers;
 
+import PaooGame.Entities.Door;
 import PaooGame.Entities.Entity;
 import PaooGame.Entities.Interactable;
 import PaooGame.Entities.Damageable;
@@ -102,11 +103,18 @@ public class CollisionSystem {
     }
 
     // Explozie bomba  inamici
-    public static void processExplosion(Rectangle exp, List<Inamic> enemies) {
+    public static void processExplosionE(Rectangle exp, List<Inamic> enemies) {
         for (Inamic inamic : enemies) {
             if (exp.intersects(inamic.getHitbox())) {
                 inamic.takeDamage(20);
             }
+        }
+    }
+
+    //Explozie bomba usi
+    public static void processExplosionD(Rectangle exp, List<Door> doors) {
+        for(Door usa : doors) {
+            if (exp.intersects(usa.getHitbox())) usa.open();
         }
     }
 
