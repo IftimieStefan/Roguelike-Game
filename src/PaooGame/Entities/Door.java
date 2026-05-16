@@ -12,9 +12,12 @@ import java.awt.*;
  * Player-ul trebuie sa apese E langa usa deschisa pentru a trece mai departe.
  */
 public class Door implements Entity, Interactable, EnemyDeathObs {
-    private float x, y;
+    private int x, y;
     private boolean isOpen;       // Se deschide cand mor toti inamicii (Observer)
     private boolean isActivated;  // Player-ul a interactionat cu ea
+    private int nextRoom;
+    private boolean orientation;
+    private boolean isHidden;
 
     // Callback pentru tranzitia la urmatorul nivel — evitam dependenta de LevelManager
     private Runnable onActivate;
@@ -22,11 +25,14 @@ public class Door implements Entity, Interactable, EnemyDeathObs {
     private static final int SIZE = 48;
     private static final float INTERACT_DISTANCE = 80f;
 
-    public Door(float x, float y) {
+    public Door(int x, int y, int nextRoom, boolean orientation, boolean isHidden) {
         this.x = x;
         this.y = y;
+        this.nextRoom=nextRoom;
+        this.orientation=orientation;
         this.isOpen = false;
         this.isActivated = false;
+        this.isHidden = isHidden;
     }
 
     /**
@@ -38,7 +44,10 @@ public class Door implements Entity, Interactable, EnemyDeathObs {
 
     @Override
     public void onDeadEnemies() {
-        isOpen = true;
+        if(!isHidden)
+        {
+            isOpen=true;
+        }
         PaooGame.Audio.AudioPlayer.playSound("res/audio/bomba.wav");
     }
 
@@ -50,6 +59,8 @@ public class Door implements Entity, Interactable, EnemyDeathObs {
 
     @Override
     public float getInteractRange() { return INTERACT_DISTANCE; }
+
+    public int getNextRoom(){ return nextRoom; }
 
     /**
      * Returneaza true daca interactiunea a fost consumata (usa deschisa + player aproape).
@@ -80,26 +91,44 @@ public class Door implements Entity, Interactable, EnemyDeathObs {
         int drawY = (int) y - yOff;
 
         if (isOpen) {
-            // Usa deschisa — verde, player-ul poate trece
-            g.setColor(new Color(0, 200, 0, 180));
-        } else {
-            // Usa inchisa — rosu, inamici inca vii
-            g.setColor(new Color(200, 0, 0, 180));
-        }
-        g.fillRect(drawX, drawY, SIZE, SIZE);
+            // Usa deschisa
+            if(orientation) {
+                // dam asset de usa verticala
+                g.drawImage(Assets.usavertical, drawX, drawY, SIZE, SIZE, null);
+            }
+            else {
+                // dam asset de usa orizontal
+                g.drawImage(Assets.usaorizontal, drawX, drawY, SIZE, SIZE, null);
+            }
 
-        // Contur pentru vizibilitate
-        g.setColor(Color.BLACK);
-        g.drawRect(drawX, drawY, SIZE, SIZE);
+        } else {
+            // Usa inchisa
+            if(orientation) {
+                // dam asset de perete vertical
+                g.drawImage(Assets.peretevertical, drawX, drawY, SIZE, SIZE, null);
+            }
+            else {
+                // dam asset de perete orizontal
+                g.drawImage(Assets.pereteorizontal, drawX, drawY, SIZE, SIZE, null);
+            }
+        }
 
         // Text indicator
         if (isOpen && !isActivated) {
             g.setColor(Color.BLACK);
             g.setFont(new Font("Arial", Font.BOLD, 10));
-            g.drawString("[E] Pentru a trece la nivelul urmator.", drawX + 14, drawY - 5);
+            g.drawString("[E] Pentru a trece la camera urmator.", drawX + 14, drawY - 5);
         }
     }
 
+    public Rectangle getHitbox()
+    {
+        return new Rectangle(x,y,x,y);
+    }
+
+    public void open() {
+        isOpen=true;
+    }
     public boolean isOpen() { return isOpen; }
     public boolean isActivated() { return isActivated; }
     public float getX() { return x; }
