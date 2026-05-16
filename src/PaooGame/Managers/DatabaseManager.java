@@ -26,6 +26,12 @@ public class DatabaseManager {
                         ");";
                 Statement stmt = conn.createStatement();
                 stmt.execute(sql);
+
+                String sqlSettings = "CREATE TABLE IF NOT EXISTS Settings (" +
+                        "key TEXT PRIMARY KEY, " +
+                        "value TEXT" +
+                        ");";
+                stmt.execute(sqlSettings);
             }
         } catch (SQLException e) {
             System.err.println("Eroare la init DB: " + e.getMessage());
@@ -91,5 +97,32 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.out.println("Eroare la ștergerea salvării: " + e.getMessage());
         }
+    }
+
+    public static void SaveSetting(String key, String value) {
+        String sql = "INSERT OR REPLACE INTO Settings(key, value) VALUES(?, ?)";
+        try (Connection conn = DriverManager.getConnection(URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, key);
+            pstmt.setString(2, value);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Eroare la salvarea setarii: " + e.getMessage());
+        }
+    }
+
+    public static String LoadSetting(String key, String defaultValue) {
+        String sql = "SELECT value FROM Settings WHERE key = ?";
+        try (Connection conn = DriverManager.getConnection(URL);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, key);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("value");
+            }
+        } catch (SQLException e) {
+            System.err.println("Eroare la incarcarea setarii: " + e.getMessage());
+        }
+        return defaultValue;
     }
 }

@@ -29,6 +29,11 @@ public class Game implements Runnable {
     private void InitGame() {
         wnd.BuildGameWindow();
         DatabaseManager.Initialize();
+
+        //Incarca volumul salvat din baza de date
+        String savedVol = DatabaseManager.LoadSetting("volume", "0.8");
+            PaooGame.Audio.AudioPlayer.setVolume(Float.parseFloat(savedVol));
+
         Assets.Init();
         StateManager.SetState(new MainMenuState(wnd));
     }
