@@ -1,5 +1,7 @@
 package PaooGame.States;
 
+import PaooGame.Audio.AudioPlayer;
+import PaooGame.Exceptions.DatabaseException;
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Managers.Data.SaveData;
 import PaooGame.Managers.DatabaseManager;
@@ -70,7 +72,14 @@ public class SaveSelectionState extends State
         }
 
         if (slotToDelete != -1) {
-            DatabaseManager.DeleteProgress(slotToDelete);
+            try{
+                DatabaseManager.DeleteProgress(slotToDelete);
+            }catch(DatabaseException e)
+            {
+                if (e.getCause() != null) {
+                    System.err.println("[Cauza Tehnică]: " + e.getCause().getMessage());
+                }
+            }
             slotsData[slotToDelete - 1] = null;
             slotToDelete = -1;
         }

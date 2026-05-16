@@ -1,7 +1,9 @@
 package PaooGame.States;
 
+import PaooGame.Audio.AudioPlayer;
 import PaooGame.Core.GameCamera;
 import PaooGame.Entities.Player.Player;
+import PaooGame.Exceptions.DatabaseException;
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Managers.LevelManager;
 import PaooGame.Managers.StateManager;
@@ -24,6 +26,7 @@ public class PlayState extends State {
     private boolean roomSaved=false;
     private int score = 10000;
     private long lastSec=System.currentTimeMillis();
+    SaveData data;
 
 
     public PlayState(GameWindow wnd,int slot) {
@@ -38,7 +41,15 @@ public class PlayState extends State {
 
         ActivareInput();
 
-        SaveData data = DatabaseManager.LoadProgress(slot);
+        try{
+            data = DatabaseManager.LoadProgress(slot);
+        }catch(DatabaseException e)
+        {
+            if (e.getCause() != null) {
+                System.err.println("[Cauza Tehnică]: " + e.getCause().getMessage());
+            }
+        }
+        levelManager = new LevelManager(player,camera);
         levelManager = new LevelManager(player,camera);
 
         if(data!=null)
@@ -86,7 +97,14 @@ public class PlayState extends State {
         if(levelManager.getEntityManager().getEnemies().isEmpty())
         {
             if(!roomSaved) {
-                DatabaseManager.SaveProgress(slot, player.getCurrentHP(), player.getX(), player.getY(), levelManager.getCurrentLevel(), levelManager.getCurrentRoom(), score);
+                try{
+                    DatabaseManager.SaveProgress(slot, player.getCurrentHP(), player.getX(), player.getY(), levelManager.getCurrentLevel(), levelManager.getCurrentRoom(), score);
+                }catch(DatabaseException e)
+                {
+                    if (e.getCause() != null) {
+                        System.err.println("[Cauza Tehnică]: " + e.getCause().getMessage());
+                    }
+                }
                 roomSaved=true;
                 if (levelManager.getCurrentRoom() == 2 && levelManager.getCurrentLevel() == 3) {
                     PaooGame.Audio.AudioPlayer.playSound("res/audio/torrente-presidente.wav");

@@ -1,5 +1,7 @@
     package PaooGame.Managers;
 import java.sql.*;
+
+import PaooGame.Exceptions.DatabaseException;
 import PaooGame.Managers.Data.SaveData;
 
 public class DatabaseManager {
@@ -34,7 +36,7 @@ public class DatabaseManager {
                 stmt.execute(sqlSettings);
             }
         } catch (SQLException e) {
-            System.err.println("Eroare la init DB: " + e.getMessage());
+            throw new DatabaseException("Eroare la initializarea bazei de date",e);
         }
     }
 
@@ -53,7 +55,7 @@ public class DatabaseManager {
             pstmt.setInt(++i,score);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Eroare la salvarea progresului in baza de date",e);
         }
     }
 
@@ -79,7 +81,7 @@ public class DatabaseManager {
                 );
             }
         } catch (SQLException e) {
-            System.err.println("Eroare la incarcare: " + e.getMessage());
+            throw new DatabaseException("Eroare la inacarcarea progresului in baza de date",e);
         }
         return null;
     }
@@ -95,7 +97,7 @@ public class DatabaseManager {
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Eroare la ștergerea salvării: " + e.getMessage());
+            throw new DatabaseException("Eroare la stergerea progresului din baza de date",e);
         }
     }
 
@@ -107,7 +109,7 @@ public class DatabaseManager {
             pstmt.setString(2, value);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Eroare la salvarea setarii: " + e.getMessage());
+            throw new DatabaseException("Eroare la salvarea setarilor in baza de date",e);
         }
     }
 
@@ -121,7 +123,7 @@ public class DatabaseManager {
                 return rs.getString("value");
             }
         } catch (SQLException e) {
-            System.err.println("Eroare la incarcarea setarii: " + e.getMessage());
+            throw new DatabaseException("Eroare la inacarcarea setarilor in baza de date",e);
         }
         return defaultValue;
     }

@@ -1,5 +1,6 @@
 package PaooGame;
 
+import PaooGame.Exceptions.DatabaseException;
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Graphics.Assets;
 import PaooGame.Managers.DatabaseManager;
@@ -18,6 +19,7 @@ public class Game implements Runnable {
     private Thread gameThread;
     private BufferStrategy bs;
     private Graphics g;
+    String savedVol;
 
     private float animTime = 0;
 
@@ -31,7 +33,15 @@ public class Game implements Runnable {
         DatabaseManager.Initialize();
 
         //Incarca volumul salvat din baza de date
-        String savedVol = DatabaseManager.LoadSetting("volume", "0.8");
+
+        try{
+            savedVol = DatabaseManager.LoadSetting("volume", "0.8");
+        }catch(DatabaseException e)
+        {
+            if (e.getCause() != null) {
+                System.err.println("[Cauza Tehnică]: " + e.getCause().getMessage());
+            }
+        }
             PaooGame.Audio.AudioPlayer.setVolume(Float.parseFloat(savedVol));
 
         Assets.Init();

@@ -1,7 +1,9 @@
 package PaooGame.States;
 
 import PaooGame.Audio.AudioPlayer;
+import PaooGame.Exceptions.DatabaseException;
 import PaooGame.GameWindow.GameWindow;
+import PaooGame.Managers.Data.SaveData;
 import PaooGame.Managers.DatabaseManager;
 import PaooGame.Managers.StateManager;
 
@@ -85,7 +87,14 @@ public class OptionsState extends State{
 
         if(backPressed){
             // Salvam volumul in baza de date
-            DatabaseManager.SaveSetting("volume", String.valueOf(AudioPlayer.getVolume()));
+            try{
+                DatabaseManager.SaveSetting("volume", String.valueOf(AudioPlayer.getVolume()));
+            }catch(DatabaseException e)
+            {
+                if (e.getCause() != null) {
+                    System.err.println("[Cauza Tehnică]: " + e.getCause().getMessage());
+                }
+            }
             CurataInput();
             StateManager.SetState(new MainMenuState(wnd));
         }
