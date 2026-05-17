@@ -70,7 +70,7 @@ public abstract class Inamic implements Entity, Damageable {
 
     public void applyBuff() {
         if (!buffed) {
-            speed = baseSpeed * 1.25f;  // +25% viteză
+            speed = baseSpeed * 1.5f;  // +50% viteză
             int hpBonus = (int)(maxHealth * 0.15f); // +15% HP
             maxHealth += hpBonus;
             health += hpBonus;

@@ -15,7 +15,7 @@ public class Foca extends Inamic {
 
     // Seteaza inceput, viata si poza.
     public Foca(float stX, float stY, Player player) {
-        super(stX, stY, 20, 1.0f);
+        super(stX, stY, 30, 1.0f);
         this.player = player;
         this.sprite = Assets.inamic_samurai;
     }

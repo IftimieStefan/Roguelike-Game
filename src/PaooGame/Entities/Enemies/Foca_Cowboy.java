@@ -23,7 +23,7 @@ public class Foca_Cowboy extends Inamic {
     private static final float CHASE_RANGE = 500;     // Distanta la care urmareste
 
     public Foca_Cowboy(float stX, float stY, Player player) {
-        super(stX, stY, 40, 1.5f);
+        super(stX, stY, 30, 1.5f);
         this.player = player;
         this.sprite = Assets.inamic_cowboy;
     }

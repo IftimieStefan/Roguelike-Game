@@ -31,7 +31,7 @@ public class Foca_Escroca extends Inamic {
     // Dash / Jump state
     private boolean isDashing = false;
     private float dashTargetX, dashTargetY;
-    private float dashSpeed = 6.0f;
+    private float dashSpeed = 10.0f;
     private boolean isJumping = false;
     private float jumpTargetX, jumpTargetY;
     private float jumpSpeed = 10.0f;
