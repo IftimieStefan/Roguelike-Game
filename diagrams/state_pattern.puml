@@ -1,0 +1,129 @@
+@startuml State_Pattern
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 14
+skinparam classHeaderBackgroundColor #2C3E50
+skinparam classFontColor white
+skinparam classBackgroundColor #ECF0F1
+skinparam classAttributeFontColor #2C3E50
+skinparam classBorderColor #2C3E50
+skinparam arrowColor #2C3E50
+skinparam noteBorderColor #E74C3C
+skinparam noteBackgroundColor #FDEDEC
+skinparam noteFontColor #2C3E50
+skinparam packageBorderColor #2980B9
+skinparam packageBackgroundColor #EBF5FB
+skinparam stereotypeFontColor #E74C3C
+
+
+package "PaooGame.Managers" {
+    class StateManager <<Context>> {
+        - {static} currentState : State
+        + {static} SetState(state : State) : void
+        + {static} GetState() : State
+    }
+}
+
+package "PaooGame.States" {
+    abstract class State <<State>> {
+        # wnd : GameWindow
+        + State(wnd : GameWindow)
+        + {abstract} Update(time : float) : void
+        + {abstract} Draw(g : Graphics) : void
+        # CurataInput() : void
+    }
+
+    class MainMenuState {
+        - playPressed : boolean
+        - exitPressed : boolean
+        - optionsPressed : boolean
+        + Update(time : float) : void
+        + Draw(g : Graphics) : void
+    }
+
+    class SaveSelectionState {
+        - saveSlots : Rectangle[]
+        - slotsData : SaveData[]
+        - selectedSlot : int
+        + Update(time : float) : void
+        + Draw(g : Graphics) : void
+    }
+
+    class PlayState {
+        - player : Player
+        - levelManager : LevelManager
+        - camera : GameCamera
+        - playPause : boolean
+        + Update(time : float) : void
+        + Draw(g : Graphics) : void
+    }
+
+    class PauseState {
+        - resumePressed : boolean
+        - mainMenuPressed : boolean
+        - playState : PlayState
+        + Update(time : float) : void
+        + Draw(g : Graphics) : void
+    }
+
+    class OptionsState {
+        - backPressed : boolean
+        - devModeOn : boolean
+        + Update(time : float) : void
+        + Draw(g : Graphics) : void
+    }
+
+    class GameOverState {
+        - restartPressed : boolean
+        - menuPressed : boolean
+        - exitPressed : boolean
+        + Update(time : float) : void
+        + Draw(g : Graphics) : void
+    }
+
+    class WinState {
+        - menuPressed : boolean
+        - exitPressed : boolean
+        - score : int
+        + Update(time : float) : void
+        + Draw(g : Graphics) : void
+    }
+}
+
+StateManager o--> State : currentState
+
+MainMenuState --|> State
+SaveSelectionState --|> State
+PlayState --|> State
+PauseState --|> State
+OptionsState --|> State
+GameOverState --|> State
+WinState --|> State
+
+MainMenuState ..> StateManager
+MainMenuState ..> SaveSelectionState
+MainMenuState ..> OptionsState
+
+SaveSelectionState ..> StateManager
+SaveSelectionState ..> PlayState
+SaveSelectionState ..> MainMenuState
+
+PlayState ..> StateManager
+PlayState ..> PauseState
+PlayState ..> GameOverState
+PlayState ..> WinState
+
+PauseState ..> StateManager
+PauseState ..> MainMenuState
+
+OptionsState ..> StateManager
+OptionsState ..> MainMenuState
+
+GameOverState ..> StateManager
+GameOverState ..> PlayState
+GameOverState ..> MainMenuState
+
+WinState ..> StateManager
+WinState ..> MainMenuState
+
+@enduml

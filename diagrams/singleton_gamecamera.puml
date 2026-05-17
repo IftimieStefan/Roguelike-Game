@@ -1,0 +1,80 @@
+@startuml Singleton_GameCamera
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 14
+skinparam classHeaderBackgroundColor #2C3E50
+skinparam classFontColor white
+skinparam classBackgroundColor #ECF0F1
+skinparam classAttributeFontColor #2C3E50
+skinparam classBorderColor #2C3E50
+skinparam arrowColor #2C3E50
+skinparam noteBorderColor #E74C3C
+skinparam noteBackgroundColor #FDEDEC
+skinparam noteFontColor #2C3E50
+skinparam packageBorderColor #2980B9
+skinparam packageBackgroundColor #EBF5FB
+skinparam stereotypeFontColor #E74C3C
+
+
+package "PaooGame.Core" {
+    class GameCamera <<Singleton>> {
+        - {static} instance : GameCamera
+        - xOff : float
+        - yOff : float
+        - gameWidth : int
+        - gameHeight : int
+        - zoom : float
+        - mapWidthPx : int
+        - mapHeightPx : int
+        __
+        - GameCamera(gameWidth : int, gameHeight : int)
+        + {static} getInstance() : GameCamera
+        + {static} getInstance(gameWidth : int, gameHeight : int) : GameCamera
+        + setMapBounds(mapWidthPx : int, mapHeightPx : int) : void
+        + centerOnDinu(p : Player) : void
+        + getZoom() : float
+        + setZoom(zoom : float) : void
+        + move(x : float, y : float) : void
+        + getxOff() : float
+        + getyOff() : float
+        + setxOff(x : float) : void
+        + setyOff(y : float) : void
+    }
+}
+
+
+package "PaooGame.States" {
+    class PlayState {
+        + camera : GameCamera
+    }
+}
+
+package "PaooGame.Entities.Enemies" {
+    class Foca
+    class Foca_Escroca
+    class Foca_Cowboy
+    class Foca_Mexic
+    class BossEnemyDecorator
+}
+
+package "PaooGame.Entities.NPCs" {
+    class Npc
+    class Bity
+}
+
+package "PaooGame.Entities" {
+    class Door
+}
+
+PlayState ..> GameCamera
+Foca ..> GameCamera 
+Foca_Escroca ..> GameCamera 
+Foca_Cowboy ..> GameCamera 
+Foca_Mexic ..> GameCamera 
+BossEnemyDecorator ..> GameCamera 
+Npc ..> GameCamera 
+Bity ..> GameCamera 
+Door ..> GameCamera 
+
+
+@enduml

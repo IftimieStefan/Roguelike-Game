@@ -1,0 +1,113 @@
+@startuml Factory_EnemyFactory
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 14
+skinparam classHeaderBackgroundColor #2C3E50
+skinparam classFontColor white
+skinparam classBackgroundColor #ECF0F1
+skinparam classAttributeFontColor #2C3E50
+skinparam classBorderColor #2C3E50
+skinparam arrowColor #2C3E50
+skinparam noteBorderColor #E74C3C
+skinparam noteBackgroundColor #FDEDEC
+skinparam noteFontColor #2C3E50
+skinparam packageBorderColor #2980B9
+skinparam packageBackgroundColor #EBF5FB
+skinparam stereotypeFontColor #E74C3C
+
+
+package "PaooGame.Entities" {
+    interface Entity {
+        + Update() : void
+        + Draw(g : Graphics) : void
+        + getX() : float
+        + getY() : float
+        + isActive() : boolean
+    }
+
+    interface Damageable {
+        + takeDamage(amount : int) : void
+        + getHealth() : int
+        + getHitbox() : Rectangle
+    }
+}
+
+package "PaooGame.Entities.Enemies" {
+    abstract class Inamic {
+        # x : float
+        # y : float
+        # health : int
+        # maxHealth : int
+        # speed : float
+        # baseSpeed : float
+        + Inamic(stX : float, stY : float, stHealth : int, stSpeed : float)
+        + {abstract} Update() : void
+        + {abstract} Draw(g : Graphics) : void
+        + isActive() : boolean
+        + takeDamage(catYa : int) : void
+        + getHitbox() : Rectangle
+    }
+
+    class Foca {
+        - player : Player
+        - sprite : BufferedImage
+        + Foca(stX : float, stY : float, player : Player)
+        + Update() : void
+        + Draw(g : Graphics) : void
+    }
+
+    class Foca_Cowboy {
+        - player : Player
+        - sprite : BufferedImage
+        - bullets : ArrayList
+        + Foca_Cowboy(stX : float, stY : float, player : Player)
+        + Update() : void
+        + Draw(g : Graphics) : void
+    }
+
+    class Foca_Mexic {
+        - player : Player
+        - sprite : BufferedImage
+        - entityManager : EntityManager
+        + Foca_Mexic(stX : float, stY : float, player : Player)
+        + Update() : void
+        + Draw(g : Graphics) : void
+    }
+
+    class Foca_Escroca {
+        - player : Player
+        - sprite : BufferedImage
+        - phase : int
+        + Foca_Escroca(stX : float, stY : float, player : Player)
+        + Update() : void
+        + Draw(g : Graphics) : void
+    }
+
+    class EnemyFactory <<Factory>> {
+        + {static} createEnemy(type : String, x : float, y : float, player : Player) : Inamic
+        + {static} applyDecorators(base : Inamic, decorators : String) : Inamic
+    }
+}
+
+package "PaooGame.Managers" {
+    class LevelManager {
+        + loadRoom() : void
+    }
+}
+
+Inamic ..|> Entity
+Inamic ..|> Damageable
+
+Foca --|> Inamic
+Foca_Cowboy --|> Inamic
+Foca_Mexic --|> Inamic
+Foca_Escroca --|> Inamic
+
+EnemyFactory ..> Foca
+EnemyFactory ..> Foca_Cowboy
+EnemyFactory ..> Foca_Mexic
+EnemyFactory ..> Foca_Escroca
+
+LevelManager ..> EnemyFactory
+
+@enduml

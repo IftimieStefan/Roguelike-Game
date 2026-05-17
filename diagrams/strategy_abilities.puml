@@ -1,0 +1,82 @@
+@startuml Strategy_Abilities
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 14
+skinparam classHeaderBackgroundColor #2C3E50
+skinparam classFontColor white
+skinparam classBackgroundColor #ECF0F1
+skinparam classAttributeFontColor #2C3E50
+skinparam classBorderColor #2C3E50
+skinparam arrowColor #2C3E50
+skinparam noteBorderColor #E74C3C
+skinparam noteBackgroundColor #FDEDEC
+skinparam noteFontColor #2C3E50
+skinparam packageBorderColor #2980B9
+skinparam packageBackgroundColor #EBF5FB
+skinparam stereotypeFontColor #E74C3C
+
+
+package "PaooGame.Entities.Player" {
+    class Player <<Context>> {
+        - abilities : ArrayList<Ability>
+        - abilityIndex : int
+        - abilityPressed : boolean
+        - speed : float
+        - attackCooldown : int
+        - reloadTime : int
+        - meleeOnly : boolean
+        - meleeDMG : int
+        + Player(canvas : Canvas)
+        - useAbilty(lm : LevelManager) : void
+        + Update(lm : LevelManager) : void
+        + setAttackCooldown(cd : int) : void
+        + setReloadTime(rt : int) : void
+        + setMeleeOnly(state : boolean) : void
+        + setMeleeDMG(dmg : int) : void
+        + setSpeed(speed : float) : void
+    }
+
+    abstract class Ability <<Strategy>> {
+        # name : String
+        # maxCharges : int
+        # currentCharges : int
+        # lastUse : long
+        # {static} cooldown : long
+        # duration : long
+        # activationTime : long
+        + Ability(name : String, maxCharges : int)
+        + {abstract} use(p : Player, lm : LevelManager) : void
+        + Update() : void
+        + getName() : String
+        + getCharges() : int
+    }
+
+    class BombAbility <<ConcreteStrategy>> {
+        + BombAbility()
+        + use(p : Player, lm : LevelManager) : void
+    }
+
+    class FervorAbility <<ConcreteStrategy>> {
+        - isActive : boolean
+        + FervorAbility()
+        + use(p : Player, lm : LevelManager) : void
+        + isActive() : boolean
+        + setActive(active : boolean) : void
+    }
+
+    class BerserkAbility <<ConcreteStrategy>> {
+        - isActive : boolean
+        + BerserkAbility()
+        + use(p : Player, lm : LevelManager) : void
+        + isActive() : boolean
+        + setActive(active : boolean) : void
+    }
+}
+
+Player o--> Ability : abilities
+
+BombAbility --|> Ability
+FervorAbility --|> Ability
+BerserkAbility --|> Ability
+
+@enduml

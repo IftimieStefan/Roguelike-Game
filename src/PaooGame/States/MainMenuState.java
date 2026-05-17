@@ -1,11 +1,13 @@
 package PaooGame.States;
 
+import PaooGame.Audio.AudioPlayer;
 import PaooGame.GameWindow.GameWindow;
 import PaooGame.Managers.StateManager;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 public class MainMenuState extends State
 {
@@ -42,35 +44,35 @@ public class MainMenuState extends State
             {
                 if(playButton.contains(e.getPoint()))
                 {
-                    PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav");
+                    AudioPlayer.playSound("res/audio/blip_nou.wav");
                     playPressed = true;
                 }
                 if(optionsButton.contains(e.getPoint()))
                 {
-                    PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav");
+                    AudioPlayer.playSound("res/audio/blip_nou.wav");
                     optionsPressed = true;
                 }
                 if(exitButton.contains(e.getPoint()))
                 {
-                    PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav");
+                    AudioPlayer.playSound("res/audio/blip_nou.wav");
                     exitPressed = true;
                 }
             }
         });
 
-        wnd.GetCanvas().addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+        wnd.GetCanvas().addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if(playButton.contains(e.getPoint())) {
-                    if(!hoverPlay) { hoverPlay = true; PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav"); }
+                    if(!hoverPlay) { hoverPlay = true;AudioPlayer.playSound("res/audio/blip_nou.wav"); }
                 } else hoverPlay = false;
 
                 if(optionsButton.contains(e.getPoint())) {
-                    if(!hoverOptions) { hoverOptions = true; PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav"); }
+                    if(!hoverOptions) { hoverOptions = true; AudioPlayer.playSound("res/audio/blip_nou.wav"); }
                 } else hoverOptions = false;
 
                 if(exitButton.contains(e.getPoint())) {
-                    if(!hoverExit) { hoverExit = true; PaooGame.Audio.AudioPlayer.playSound("res/audio/blip.wav"); }
+                    if(!hoverExit) { hoverExit = true; AudioPlayer.playSound("res/audio/blip_nou.wav"); }
                 } else hoverExit = false;
             }
         });
