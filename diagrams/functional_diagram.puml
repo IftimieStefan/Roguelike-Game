@@ -1,0 +1,65 @@
+@startuml Functional_Flow
+
+skinparam ActivityBackgroundColor #ECF0F1
+skinparam ActivityBorderColor #2C3E50
+skinparam ActivityFontColor #2C3E50
+skinparam StartColor #27AE60
+skinparam EndColor #E74C3C
+skinparam ArrowColor #2C3E50
+skinparam ActivityFontSize 12
+
+start
+:Initializare aplicatie (Game.Init());
+:Incarcare Resurse ;
+:Afisare Meniu Principal ;
+
+repeat
+  :Asteapta interactiune utilizator;
+  if (Joc Nou / Incarcare Salvare?) then (da)
+    :Incarcare Date din DB ;
+    :Initializare PlayState;
+    :Incarcare Nivel & Camera curenta ;
+    
+    repeat
+      :Citire Input ;
+      
+      partition "Game Loop Update" {
+        :Actualizare Stare Jucator;
+        :Actualizare Entitati ;
+        :Procesare Coliziuni ;
+        
+        if (Toti inamicii din camera sunt invinsi?) then (da)
+          :Notificare Observers ;
+        endif
+      }
+      
+      partition "Game Loop Render" {
+        :Calcul  camera ;
+        :Desenare Harta ;
+        :Desenare Entitati ;
+        :Desenare Fog Of War ;
+        :Desenare HUD & Elemente Scenariu;
+      }
+      
+      if (Player mort?) then (da)
+        :Trecere in GameOverState;
+        break
+      elseif (Usa activata ?) then (da)
+        :Salvare automata progres in SQLite;
+        :Incarcare Camera / Nivel Urmator;
+      elseif (Boss-ul final este invins?) then (da)
+        :Trecere in WinState;
+        break;
+    :until (Intrerupt / Iesire in Meniu)
+      endif
+  elseif (Schimbare Setari?) then (da)
+    :Deschidere OptionsState;
+    :Modificare Volum / Rezolutie;
+    :Salvare setari in DB Settings (SQLite);
+  endif
+backward:Iesire la Meniu / Restart;
+repeat while (Iesire din joc?) is (nu)
+
+:Inchidere Aplicatie (Eliberare resurse);
+stop
+@enduml

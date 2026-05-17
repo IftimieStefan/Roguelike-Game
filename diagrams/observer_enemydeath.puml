@@ -1,0 +1,82 @@
+@startuml Observer_EnemyDeath
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 14
+skinparam classHeaderBackgroundColor #2C3E50
+skinparam classFontColor white
+skinparam classBackgroundColor #ECF0F1
+skinparam classAttributeFontColor #2C3E50
+skinparam classBorderColor #2C3E50
+skinparam arrowColor #2C3E50
+skinparam noteBorderColor #E74C3C
+skinparam noteBackgroundColor #FDEDEC
+skinparam noteFontColor #2C3E50
+skinparam packageBorderColor #2980B9
+skinparam packageBackgroundColor #EBF5FB
+skinparam stereotypeFontColor #E74C3C
+
+
+package "PaooGame.Entities.Enemies" {
+    interface EnemyDeathObs <<Observer>> {
+        + onDeadEnemies() : void
+    }
+}
+
+package "PaooGame.Entities" {
+    interface Entity {
+        + Update() : void
+        + Draw(g : Graphics) : void
+        + getX() : float
+        + getY() : float
+        + isActive() : boolean
+    }
+
+    interface Interactable {
+        + tryInteract(player : Player) : boolean
+        + getInteractRange() : float
+    }
+
+    class Door <<ConcreteObserver>> {
+        - x : int
+        - y : int
+        - isOpen : boolean
+        - isActivated : boolean
+        - nextRoom : int
+        - orientation : boolean
+        - isHidden : boolean
+        - onActivate : Runnable
+        + Door(x : int, y : int, nextRoom : int, orientation : boolean, isHidden : boolean)
+        + onDeadEnemies() : void
+        + Update() : void
+        + Draw(g : Graphics) : void
+        + tryInteract(player : Player) : boolean
+        + open() : void
+        + isOpen() : boolean
+    }
+}
+
+package "PaooGame.Managers" {
+    class EntityManager <<Subject>> {
+        - entities : List<Entity>
+        - pendingEntities : List<Entity>
+        - observers : List<EnemyDeathObs>
+        - alrNotif : boolean
+        + addEntity(entity : Entity) : void
+        + addObserver(obs : EnemyDeathObs) : void
+        + removeObserver(obs : EnemyDeathObs) : void
+        - notifyAllD() : void
+        + Update() : void
+        + Draw(g : Graphics) : void
+        + getEnemies() : List<Inamic>
+        + getDoor() : List<Door>
+    }
+}
+
+Door ..|> Entity
+Door ..|> Interactable
+Door ..|> EnemyDeathObs
+
+EntityManager o--> EnemyDeathObs : observers
+EntityManager o-->  Entity : entities
+
+@enduml

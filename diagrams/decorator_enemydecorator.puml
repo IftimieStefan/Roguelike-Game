@@ -1,0 +1,109 @@
+@startuml Decorator_EnemyDecorator
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 14
+skinparam classHeaderBackgroundColor #2C3E50
+skinparam classFontColor white
+skinparam classBackgroundColor #ECF0F1
+skinparam classAttributeFontColor #2C3E50
+skinparam classBorderColor #2C3E50
+skinparam arrowColor #2C3E50
+skinparam noteBorderColor #E74C3C
+skinparam noteBackgroundColor #FDEDEC
+skinparam noteFontColor #2C3E50
+skinparam packageBorderColor #2980B9
+skinparam packageBackgroundColor #EBF5FB
+skinparam stereotypeFontColor #E74C3C
+
+
+package "PaooGame.Entities" {
+    interface Entity {
+        + Update() : void
+        + Draw(g : Graphics) : void
+        + getX() : float
+        + getY() : float
+        + isActive() : boolean
+    }
+
+    interface Damageable {
+        + takeDamage(amount : int) : void
+        + getHealth() : int
+        + getHitbox() : Rectangle
+    }
+}
+
+package "PaooGame.Entities.Enemies" {
+    abstract class Inamic {
+        # x : float
+        # y : float
+        # health : int
+        # maxHealth : int
+        # speed : float
+        # baseSpeed : float
+        + Inamic(stX : float, stY : float, stHealth : int, stSpeed : float)
+        + {abstract} Update() : void
+        + {abstract} Draw(g : Graphics) : void
+        + isActive() : boolean
+        + takeDamage(catYa : int) : void
+        + getHitbox() : Rectangle
+    }
+
+    abstract class EnemyDecorator <<Decorator>> {
+        # wrappee : Inamic
+        + EnemyDecorator(wrappee : Inamic)
+        + Update() : void
+        + Draw(g : Graphics) : void
+        + getHitbox() : Rectangle
+        + takeDamage(damage : int) : void
+    }
+
+    class FastEnemyDecorator {
+        + FastEnemyDecorator(wrappee : Inamic)
+    }
+
+    class BossEnemyDecorator {
+        + BossEnemyDecorator(wrappee : Inamic)
+        + Draw(g : Graphics) : void
+    }
+
+    class TankEnemyDecorator {
+        + TankEnemyDecorator(wrappee : Inamic)
+    }
+
+    class Foca {
+        + Update() : void
+        + Draw(g : Graphics) : void
+    }
+
+    class Foca_Cowboy {
+        + Update() : void
+        + Draw(g : Graphics) : void
+    }
+
+    class Foca_Mexic {
+        + Update() : void
+        + Draw(g : Graphics) : void
+    }
+
+    class Foca_Escroca {
+        + Update() : void
+        + Draw(g : Graphics) : void
+    }
+}
+
+Inamic ..|> Entity
+Inamic ..|> Damageable
+
+Foca --|> Inamic
+Foca_Cowboy --|> Inamic
+Foca_Mexic --|> Inamic
+Foca_Escroca --|> Inamic
+
+EnemyDecorator --|> Inamic
+EnemyDecorator o--> Inamic : wrappee
+
+FastEnemyDecorator --|> EnemyDecorator
+BossEnemyDecorator --|> EnemyDecorator
+TankEnemyDecorator --|> EnemyDecorator
+
+@enduml
